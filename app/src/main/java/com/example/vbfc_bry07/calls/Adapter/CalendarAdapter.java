@@ -6,25 +6,26 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.example.vbfc_bry07.calls.Activity.MCPActivity;
 import com.example.vbfc_bry07.calls.CalendarCollection;
+import com.example.vbfc_bry07.calls.Helpers;
 import com.example.vbfc_bry07.calls.R;
 
 public class CalendarAdapter extends BaseAdapter {
-    private Context context;
-    private java.util.Calendar month;
+    Context context;
+    java.util.Calendar month;
     public GregorianCalendar pmonth, pmonthmaxset;
     DateFormat df;
-    private View previousView;
 
     int firstDay, maxWeeknumber, maxP, calMaxP, mnthlength;
     String itemvalue, currentDateString;
@@ -33,16 +34,20 @@ public class CalendarAdapter extends BaseAdapter {
     public ArrayList<CalendarCollection> date_collection_arr;
 
     TextView dayView, with_plan;
+    View previousView;
+
+    Helpers helpers;
 
     public CalendarAdapter(Context context, GregorianCalendar monthCalendar, ArrayList<CalendarCollection> date_collection_arr) {
         this.date_collection_arr = date_collection_arr;
         CalendarAdapter.day_string = new ArrayList<>();
         month = monthCalendar;
-        Locale.setDefault(Locale.ENGLISH);
         GregorianCalendar selectedDate = (GregorianCalendar) monthCalendar.clone();
+        selectedDate.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         month.set(GregorianCalendar.DAY_OF_MONTH, 1);
 
         this.context = context;
+        helpers = new Helpers();
         df = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         currentDateString = df.format(selectedDate.getTime());
         refreshDays();
@@ -85,10 +90,14 @@ public class CalendarAdapter extends BaseAdapter {
             dayView.setTextColor(Color.GRAY);
             dayView.setClickable(false);
             dayView.setFocusable(false);
-        }
+        } else
+            dayView.setTextColor(Color.BLACK);
 
-        if (day_string.get(position).equals(currentDateString))
-            dayView.setTextColor(Color.parseColor("#309635"));
+        if (day_string.get(position).equals(currentDateString)) {
+            MCPActivity.picked_date.setText(helpers.convertToAlphabetDate(currentDateString));
+            MCPActivity.picked_day.setText(helpers.convertToDayOfWeek(currentDateString));
+            dayView.setTextColor(Color.parseColor("#A45F6E"));
+        }
 
         dayView.setText(gridvalue);
         setEventView(position);
@@ -100,12 +109,11 @@ public class CalendarAdapter extends BaseAdapter {
         if (previousView != null)
             previousView.setBackgroundColor(Color.WHITE);
 
-        view.setBackgroundColor(Color.parseColor("#9098FF98"));
+        view.setBackgroundColor(Color.parseColor("#90413B41"));
+        MCPActivity.picked_date.setText(helpers.convertToAlphabetDate(day_string.get(pos)));
 
-        if (day_string.size() > pos) {
-            if (!day_string.get(pos).equals(currentDateString))
-                previousView = view;
-        }
+        if (day_string.size() > pos)
+            previousView = view;
 
         return view;
     }
@@ -166,11 +174,9 @@ public class CalendarAdapter extends BaseAdapter {
             if (len1 > pos) {
                 if (day_string.get(pos).equals(date)) {
                     with_plan.setVisibility(View.VISIBLE);
-//                    v.setBackgroundResource(R.mipmap.rounded_calendar_item);
                     break;
                 } else
                     with_plan.setVisibility(View.INVISIBLE);
-//                    v.setBackgroundResource(0);
             }
         }
     }
@@ -183,7 +189,7 @@ public class CalendarAdapter extends BaseAdapter {
             CalendarCollection cal_collection = CalendarCollection.date_collection_arr.get(i);
             String event_date = cal_collection.date;
 
-            String event_message = cal_collection.event_message;
+//            String event_message = cal_collection.event_message;
 
             if (date.equals(event_date)) {
 //                Toast.makeText(context, "You have event on this date: " + event_date, Toast.LENGTH_LONG).show();
