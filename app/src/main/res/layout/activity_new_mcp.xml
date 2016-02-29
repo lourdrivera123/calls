@@ -187,7 +187,7 @@
                     android:id="@+id/add_call"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/fab_design"
+                    android:background="@drawable/background_fab"
                     android:scaleType="centerCrop"
                     android:src="@mipmap/add"
                     android:visibility="gone" />

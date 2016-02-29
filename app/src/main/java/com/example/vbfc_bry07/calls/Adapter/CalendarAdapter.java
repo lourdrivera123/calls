@@ -111,6 +111,7 @@ public class CalendarAdapter extends BaseAdapter {
 
         view.setBackgroundColor(Color.parseColor("#90413B41"));
         MCPActivity.picked_date.setText(helpers.convertToAlphabetDate(day_string.get(pos)));
+        MCPActivity.picked_day.setText(helpers.convertToDayOfWeek(day_string.get(pos)));
 
         if (day_string.size() > pos)
             previousView = view;

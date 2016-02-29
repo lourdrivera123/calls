@@ -7,9 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DbHelper extends SQLiteOpenHelper {
+    public static String CREATED_AT = "created_at",
+            UPDATED_AT = "updated_at",
+            DELETED_AT = "deleted_at",
+            AI_ID = "id";
 
     static String TBL_PREFERENCES = "Preferences",
-            PREFERENCE_ID = "id",
             PREFERENCE_KEY = "key",
             PREFERENCE_VALUE = "value",
             PREFERENCE_TYPE = "type";
@@ -21,10 +24,12 @@ public class DbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_PREFERENCES = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT UNIQUE, %s TEXT, %s INTEGER)",
-                TBL_PREFERENCES, PREFERENCE_ID, PREFERENCE_KEY, PREFERENCE_VALUE, PREFERENCE_TYPE);
+                TBL_PREFERENCES, AI_ID, PREFERENCE_KEY, PREFERENCE_VALUE, PREFERENCE_TYPE);
 
         db.execSQL(CREATE_PREFERENCES);
         db.execSQL(CallsController.CREATE_PLANS);
+        db.execSQL(DoctorsController.CREATE_DOCTORS);
+        db.execSQL(SpecializationsController.CREATE_SPECIALIZATIONS);
 
         insertToTablePreferences(db);
     }

@@ -8,15 +8,13 @@ public class CallsController extends DbHelper {
     DbHelper dbhelper;
 
     static String TBL_PLANS = "Plans",
-            PLANS_ID = "id",
             PLANS_CYCLE_SET = "cycle_set",
             PLANS_CYCLE_NUMBER = "cycle_number",
             PLANS_STATUS = "status",
-            PLANS_STATUS_DATE = "status_date",
-            PLANS_CREATED_AT = "created_at";
+            PLANS_STATUS_DATE = "status_date";
 
-    public static final String CREATE_PLANS = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s TEXT)",
-            TBL_PLANS, PLANS_ID, PLANS_CYCLE_SET, PLANS_CYCLE_NUMBER, PLANS_STATUS, PLANS_STATUS_DATE, PLANS_CREATED_AT);
+    public static final String CREATE_PLANS = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
+            TBL_PLANS, AI_ID, PLANS_CYCLE_SET, PLANS_CYCLE_NUMBER, PLANS_STATUS, PLANS_STATUS_DATE, CREATED_AT, UPDATED_AT, DELETED_AT);
 
     public CallsController(Context context) {
         super(context);
@@ -27,12 +25,8 @@ public class CallsController extends DbHelper {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
         String sql = "SELECT * FROM " + TBL_PLANS + " WHERE " + PLANS_CYCLE_SET + " = " + year + " AND " + PLANS_CYCLE_NUMBER + " = " + month;
         Cursor cur = db.rawQuery(sql, null);
-        boolean flag;
 
-        if (cur.moveToNext())
-            flag = true;
-        else
-            flag = false;
+        boolean flag = cur.moveToNext();
 
         cur.close();
         db.close();

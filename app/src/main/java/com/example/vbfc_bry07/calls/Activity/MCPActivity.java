@@ -13,6 +13,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.vbfc_bry07.calls.Adapter.CalendarAdapter;
 import com.example.vbfc_bry07.calls.CalendarCollection;
@@ -164,10 +165,6 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
             if (cal_month.get(Calendar.YEAR) >= 2016 && cal_month.get(Calendar.MONTH) >= 1) {
                 setPreviousMonth();
                 refreshCalendar();
-//                ((CalendarAdapter) parent.getAdapter()).setSelected(gv_calendar.getChildAt(new_pos), new_pos);
-
-                Log.d("prev_new_pos", (6 - position) + "");
-                Log.d("prev_last_pos", CalendarAdapter.day_string.size()+"");
             }
         } else if ((gridvalue < 7) && (position > 28)) {
             setNextMonth();
