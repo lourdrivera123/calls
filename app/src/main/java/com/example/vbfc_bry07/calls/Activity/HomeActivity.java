@@ -99,10 +99,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(this, MCPActivity.class));
                 break;
             case R.id.doctors_information:
-                startActivity(new Intent(this, ListViewActivity.class));
+                startActivity(new Intent(this, DoctorsInfoActivity.class));
                 break;
             case R.id.call_report:
-
                 Toast.makeText(this, "Call Report", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.sales_report:
@@ -120,4 +119,5 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public String getUsername() {
         return sharedpref.getString("Username", "");
     }
+
 }

@@ -1,10 +1,8 @@
 package com.example.vbfc_bry07.calls.Activity;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,11 +11,10 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.vbfc_bry07.calls.Adapter.CalendarAdapter;
 import com.example.vbfc_bry07.calls.CalendarCollection;
-import com.example.vbfc_bry07.calls.Controller.CallsController;
+import com.example.vbfc_bry07.calls.Controller.PlansController;
 import com.example.vbfc_bry07.calls.R;
 
 import java.util.ArrayList;
@@ -36,7 +33,7 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
     Toolbar toolbar;
     LinearLayout root;
 
-    CallsController cc;
+    PlansController cc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +51,7 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
         gv_calendar = (GridView) findViewById(R.id.gv_calendar);
         root = (LinearLayout) findViewById(R.id.root);
 
-        cc = new CallsController(this);
+        cc = new PlansController(this);
 
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;
