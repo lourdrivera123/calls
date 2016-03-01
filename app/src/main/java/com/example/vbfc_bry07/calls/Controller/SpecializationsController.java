@@ -3,7 +3,7 @@ package com.example.vbfc_bry07.calls.Controller;
 import android.content.Context;
 
 public class SpecializationsController extends DbHelper {
-    static String TBL_SPECIALIZATIONS = "Specializations",
+    public static final String TBL_SPECIALIZATIONS = "Specializations",
             Specializations_ID = "Specializations_ID",
             SPECIALIZATION_ID = "specialization_id",
             SPECIALIZATION_CODE = "code",

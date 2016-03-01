@@ -5,12 +5,13 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/doctor"
+        android:id="@+id/doctor_name"
         android:layout_width="match_parent"
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:drawableLeft="@mipmap/doctorsavatar"
         android:text="DOCTOR 1"
-        android:gravity="center_vertical"/>
+        android:gravity="center_vertical"
+        android:textSize="13sp"/>
 
 </LinearLayout>
