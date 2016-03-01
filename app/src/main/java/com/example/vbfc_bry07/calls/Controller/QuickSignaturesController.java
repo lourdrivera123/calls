@@ -10,13 +10,13 @@ public class QuickSignaturesController extends DbHelper {
     DbHelper dbHelper;
 
     static String TBL_QuickSignatures = "QuickSignatures",
-            QuickSignatures_ID = "QuickSignatures_ID",
-            PATH = "PATH",
-            MATCHED = "MATCHED",
-            LATITUDE = "LATITUDE",
-            LONGITUDE = "LONGITUDE",
-            SIGN_DATETIME = "SIGN_DATETIME",
-            RETRY_COUNT = "RETRY_COUNT";
+            QuickSignatures_ID = "quick_signatures_id",
+            PATH = "path",
+            MATCHED = "matched",
+            LATITUDE = "latitude",
+            LONGITUDE = "longtitude",
+            SIGN_DATETIME = "sign_datetime",
+            RETRY_COUNT = "retry_count";
 
     public static final String CREATE_QuickSignatures = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s TEXT, %s INTEGER, %s DOUBLE, %s DOUBLE, %s TEXT, %s LONG, %s TEXT, %s TEXT, %s TEXT)",
             TBL_QuickSignatures, AI_ID, QuickSignatures_ID, PATH, MATCHED, LATITUDE, LONGITUDE, SIGN_DATETIME, RETRY_COUNT, CREATED_AT, UPDATED_AT, DELETED_AT);

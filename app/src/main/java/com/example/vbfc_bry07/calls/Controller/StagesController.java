@@ -10,9 +10,9 @@ public class StagesController extends DbHelper {
     DbHelper dbHelper;
 
     static String TBL_Stages = "Stages",
-            Stages_ID = "Stages_ID",
-            CODE = "CODE",
-            NAME = "NAME";
+            Stages_ID = "stages_id",
+            CODE = "code",
+            NAME = "name";
 
     public static final String CREATE_Stages = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
             TBL_Stages, AI_ID, Stages_ID, CODE, NAME, CREATED_AT, UPDATED_AT, DELETED_AT);

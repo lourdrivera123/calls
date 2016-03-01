@@ -10,7 +10,7 @@ public class CallDetailingAidsController extends DbHelper {
     DbHelper dbHelper;
 
     static String TBL_CallDetailingAids = "CallDetailingAids",
-            CallDetailingAids_ID = "calldetailingads_id",
+            CallDetailingAids_ID = "call_detailing_aids_id",
             CALL_ID_FK = "call_id_fk",
             DETAILING_AID_ID_FK = "detailing_aid_id_fk",
             START_TIME = "start_time",

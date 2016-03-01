@@ -13,7 +13,7 @@ public class PreferencesController extends DbHelper {
     DbHelper dbHelper;
 
     static String TBL_PREFERENCES = "Preferences",
-            Preferences_ID = "Preferences_ID",
+            Preferences_ID = "preferences_id",
             PREFERENCE_KEY = "key",
             PREFERENCE_VALUE = "value",
             PREFERENCE_TYPE = "type";
