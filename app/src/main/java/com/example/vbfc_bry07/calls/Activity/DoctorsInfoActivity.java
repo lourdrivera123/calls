@@ -1,5 +1,7 @@
 package com.example.vbfc_bry07.calls.Activity;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -39,6 +41,7 @@ public class DoctorsInfoActivity extends AppCompatActivity {
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Doctors");
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#A25063")));
 
         DoctorsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
