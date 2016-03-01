@@ -13,7 +13,7 @@ public class CycleDaysController extends DbHelper {
             CycleDays_ID = "cycle_days_id",
             CYCLE_SET_ID_FK = "cycle_set_id_fk",
             CYCLE_NUMBER = "cycle_number",
-            DAY_NUMBER = "day number",
+            DAY_NUMBER = "day_number",
             DATE = "date",
             DAY_TYPE_ID_FK = "day_type_id_fk",
             LABEL = "label";
