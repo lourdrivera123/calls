@@ -9,7 +9,7 @@ public class InstitutionDoctorMapsController extends DbHelper {
 
     DbHelper dbHelper;
 
-    static String TBL_InstitutionDoctorMaps = "InstitutionDoctorMapsController",
+    static String TBL_InstitutionDoctorMaps = "InstitutionDoctorMaps",
             InstitutionDoctorMaps_ID = "institution_doctor_maps_id",
             INSTITUTION_ID_FK = "institution_id_fk",
             DOCTOR_ID_FK = "doctor_id_fk",
