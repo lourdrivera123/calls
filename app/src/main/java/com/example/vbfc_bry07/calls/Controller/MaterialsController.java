@@ -10,9 +10,9 @@ public class MaterialsController extends DbHelper {
     DbHelper dbHelper;
 
     static String TBL_Materials = "Materials",
-            Materials_ID = "Materials_ID",
-            CODE = "CODE",
-            NAME = "NAME";
+            Materials_ID = "materials_id",
+            CODE = "code",
+            NAME = "name";
 
     public static final String CREATE_Materials = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
             TBL_Materials, AI_ID, Materials_ID, CODE, NAME, CREATED_AT, UPDATED_AT, DELETED_AT);
