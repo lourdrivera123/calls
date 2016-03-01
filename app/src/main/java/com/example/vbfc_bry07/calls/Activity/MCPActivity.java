@@ -1,18 +1,25 @@
 package com.example.vbfc_bry07.calls.Activity;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.vbfc_bry07.calls.Adapter.CalendarAdapter;
+import com.example.vbfc_bry07.calls.Adapter.ExpandableListAdapter;
 import com.example.vbfc_bry07.calls.CalendarCollection;
 import com.example.vbfc_bry07.calls.Controller.PlansController;
 import com.example.vbfc_bry07.calls.R;
@@ -20,20 +27,28 @@ import com.example.vbfc_bry07.calls.R;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
 import java.util.TimeZone;
 
-public class MCPActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class MCPActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener, TextWatcher {
     GregorianCalendar cal_month, cal_month_copy;
-    CalendarAdapter cal_adapter;
 
     TextView tv_month, no_plans;
     public static TextView picked_day, picked_date;
     ImageButton prev, next, add_call;
     GridView gv_calendar;
     Toolbar toolbar;
+    EditText search_doctor;
+    ExpandableListView list_of_doctors;
     LinearLayout root;
 
     PlansController cc;
+    CalendarAdapter cal_adapter;
+    ExpandableListAdapter listAdapter;
+
+    List<String> listDataHeader;
+    HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +67,7 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
         root = (LinearLayout) findViewById(R.id.root);
 
         cc = new PlansController(this);
+        prepareListData();
 
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;
@@ -120,7 +136,16 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
                 break;
 
             case R.id.add_call:
+                Dialog dialog = new Dialog(this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.dialog_choose_doctor);
+                dialog.show();
 
+                search_doctor = (EditText) dialog.findViewById(R.id.search_doctor);
+                list_of_doctors = (ExpandableListView) dialog.findViewById(R.id.list_of_doctors);
+
+                list_of_doctors.setAdapter(listAdapter);
+                search_doctor.addTextChangedListener(this);
                 break;
         }
     }
@@ -172,5 +197,73 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
         }
 
         ((CalendarAdapter) parent.getAdapter()).getPositionList(selectedGridDate);
+    }
+
+    private void prepareListData() {
+        listDataHeader = new ArrayList<>();
+        listDataChild = new HashMap<>();
+
+        listDataHeader.add("Davao Doctors Hospital");
+        listDataHeader.add("SPMC");
+        listDataHeader.add("San Pedro Hospital");
+
+        // Adding child data
+        ArrayList<HashMap<String, String>> array = new ArrayList<>();
+        HashMap<String, String> davaoDoc = new HashMap<>();
+        davaoDoc.put("doc_id", "1");
+        davaoDoc.put("doc_name", "Camahalan, Royette");
+        array.add(davaoDoc);
+
+        ArrayList<HashMap<String, String>> array1 = new ArrayList<>();
+        HashMap<String, String> spmc = new HashMap<>();
+        spmc.put("doc_id", "2");
+        spmc.put("doc_name", "Villarel, Mary Joy");
+        array1.add(spmc);
+
+        ArrayList<HashMap<String, String>> array2 = new ArrayList<>();
+        HashMap<String, String> sanpedro = new HashMap<>();
+        sanpedro.put("doc_id", "3");
+        sanpedro.put("doc_name", "Barnes, Jared Madison");
+        array2.add(sanpedro);
+
+        HashMap<String, String> sanpedro2 = new HashMap<>();
+        sanpedro2.put("doc_id", "4");
+        sanpedro2.put("doc_name", "Valencia, Almira");
+        array2.add(sanpedro2);
+
+        listDataChild.put(0, array); // Header, Child data
+        listDataChild.put(1, array1);
+        listDataChild.put(2, array2);
+
+        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        String search = String.valueOf(s);
+        ArrayList<String> names = new ArrayList<>();
+
+        for (int x = 0; x < listDataChild.size(); x++) {
+            ArrayList<HashMap<String, String>> new_array = listDataChild.get(x);
+
+            for (int y = 0; y < new_array.size(); y++) {
+                HashMap<String, String> hash = new_array.get(y);
+                names.add(hash.get("doc_name"));
+            }
+        }
+
+//        for(s : names) {
+//
+//        }
     }
 }

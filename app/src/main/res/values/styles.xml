@@ -13,7 +13,7 @@
     </style>
 
     <style name="Theme.MyTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="colorAccent">@color/color_accent</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     </style>
 </resources>

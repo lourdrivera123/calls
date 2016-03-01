@@ -32,7 +32,7 @@ public class DbHelper extends SQLiteOpenHelper {
         // db.execSQL(DayTypesController.CREATE_DayTypes);
         // db.execSQL(DetailingAidEmailsController.CREATE_DetailingAidEmails);
         // db.execSQL(DetailingAids.CREATE_DetailingAids);
-        // db.execSQL(DoctorClasses.CREATE_DoctorClasses);
+//         db.execSQL(DoctorClasses.CREATE_DoctorClasses);
 
         db.execSQL(InstitutionDoctorMapsController.CREATE_InstitutionDoctorMaps);
         db.execSQL(InstitutionsController.CREATE_Institutions);
@@ -59,7 +59,6 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(SignaturesController.CREATE_Signatures);
         db.execSQL(StagesController.CREATE_Stages);
         db.execSQL(VersionsController.CREATE_Versions);
-
 
         PreferencesController.insertToTablePreferences(db);
     }
