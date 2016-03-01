@@ -2,19 +2,16 @@ package com.example.vbfc_bry07.calls.Controller;
 
 import android.content.Context;
 
-/**
- * Created by vbfc_bry07 on 2/29/2016.
- */
 public class QuickSignaturesController extends DbHelper {
 
     DbHelper dbHelper;
 
     static String TBL_QuickSignatures = "QuickSignatures",
-            QuickSignatures_ID = "quick_signatures_id",
+            QuickSignatures_ID = "quicksignature_id",
             PATH = "path",
             MATCHED = "matched",
             LATITUDE = "latitude",
-            LONGITUDE = "longtitude",
+            LONGITUDE = "longitude",
             SIGN_DATETIME = "sign_datetime",
             RETRY_COUNT = "retry_count";
 

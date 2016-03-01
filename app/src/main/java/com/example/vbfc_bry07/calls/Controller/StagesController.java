@@ -2,9 +2,6 @@ package com.example.vbfc_bry07.calls.Controller;
 
 import android.content.Context;
 
-/**
- * Created by vbfc_bry07 on 2/29/2016.
- */
 public class StagesController extends DbHelper {
 
     DbHelper dbHelper;

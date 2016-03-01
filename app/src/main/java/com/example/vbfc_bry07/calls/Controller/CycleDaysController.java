@@ -2,20 +2,17 @@ package com.example.vbfc_bry07.calls.Controller;
 
 import android.content.Context;
 
-/**
- * Created by vbfc_bry07 on 2/29/2016.
- */
 public class CycleDaysController extends DbHelper {
 
     DbHelper dbHelper;
 
     static String TBL_CycleDays = "CycleDays",
             CycleDays_ID = "cycle_days_id",
-            CYCLE_SET_ID_FK = "cycle_set_id_fk",
+            CYCLE_SET_ID_FK = "cycle_set_id",
             CYCLE_NUMBER = "cycle_number",
             DAY_NUMBER = "day_number",
             DATE = "date",
-            DAY_TYPE_ID_FK = "day_type_id_fk",
+            DAY_TYPE_ID_FK = "day_type_id",
             LABEL = "label";
 
     public static final String CREATE_CycleDays = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s INTEGER, %s INTEGER, %s INTEGER, %s TEXT, %s INTEGER, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",

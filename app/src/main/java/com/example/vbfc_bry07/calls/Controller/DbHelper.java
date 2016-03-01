@@ -60,7 +60,6 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(StagesController.CREATE_Stages);
         db.execSQL(VersionsController.CREATE_Versions);
 
-
         PreferencesController.insertToTablePreferences(db);
     }
 

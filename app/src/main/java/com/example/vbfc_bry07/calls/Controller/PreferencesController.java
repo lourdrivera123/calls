@@ -5,9 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-/**
- * Created by vbfc_bry07 on 2/29/2016.
- */
 public class PreferencesController extends DbHelper {
 
     DbHelper dbHelper;
