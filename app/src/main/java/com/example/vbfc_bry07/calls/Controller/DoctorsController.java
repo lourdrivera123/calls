@@ -1,9 +1,18 @@
 package com.example.vbfc_bry07.calls.Controller;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DoctorsController extends DbHelper {
-    static String TBL_DOCTORS = "Doctors",
+
+    DbHelper dbHelper;
+
+    public static String TBL_DOCTORS = "Doctors",
             DOCTORS_DOC_ID = "doc_id",
             DOCTORS_DOC_CODE = "doc_code",
             DOCTORS_DOC_NAME = "doc_name",
@@ -19,5 +28,38 @@ public class DoctorsController extends DbHelper {
 
     public DoctorsController(Context context) {
         super(context);
+        dbHelper = new DbHelper(context);
+    }
+
+    public ArrayList<HashMap<String,String>> SelectAllDoctors() {
+        ArrayList<HashMap<String, String>> doctors = new ArrayList();
+        String sql = "SELECT S.name, D.* FROM Doctors D " +
+                    "left join Specializations S on S.specialization_id = D.specialization_id " +
+                    "ORDER by D.doc_name ASC";
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+
+        while (cur.moveToNext()) {
+            HashMap<String, String> map = new HashMap();
+            map.put(DOCTORS_DOC_ID, cur.getString(cur.getColumnIndex(DOCTORS_DOC_ID)));
+            map.put(DOCTORS_DOC_CODE, cur.getString(cur.getColumnIndex(DOCTORS_DOC_CODE)));
+            map.put(DOCTORS_DOC_NAME, cur.getString(cur.getColumnIndex(DOCTORS_DOC_NAME)));
+            map.put(DOCTORS_SPECIALIZATION_ID, cur.getString(cur.getColumnIndex(DOCTORS_SPECIALIZATION_ID)));
+            map.put(DOCTORS_BIRTHDAY, cur.getString(cur.getColumnIndex(DOCTORS_BIRTHDAY)));
+            map.put(DOCTORS_SPOUSE, cur.getString(cur.getColumnIndex(DOCTORS_SPOUSE)));
+            map.put(DOCTORS_CONTACT_NUMBER, cur.getString(cur.getColumnIndex(DOCTORS_CONTACT_NUMBER)));
+            map.put(DOCTORS_PRC_LICENSE, cur.getString(cur.getColumnIndex(DOCTORS_PRC_LICENSE)));
+            map.put(DOCTORS_EMAIL_ADDRESS, cur.getString(cur.getColumnIndex(DOCTORS_EMAIL_ADDRESS)));
+
+            map.put(SpecializationsController.SPECIALIZATION_NAME, cur.getString(cur.getColumnIndex(SpecializationsController.SPECIALIZATION_NAME)));
+
+            doctors.add(map);
+        }
+
+        cur.close();
+        db.close();
+
+        return doctors;
+
     }
 }

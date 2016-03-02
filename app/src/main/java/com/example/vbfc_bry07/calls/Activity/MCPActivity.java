@@ -1,13 +1,11 @@
 package com.example.vbfc_bry07.calls.Activity;
 
-import android.app.ActionBar;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,10 +49,10 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
     ListView list_of_calls;
 
     PlansController pc;
+    ExpandableListAdapter listAdapter;
     CalendarAdapter cal_adapter;
     MCPAdapter mcp_adapter;
     InstitutionDoctorMapsController idmc;
-    ExpandableListAdapter listAdapter;
 
     List<String> listDataHeader;
     ArrayList<HashMap<String, String>> institutions, doctors;

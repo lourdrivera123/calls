@@ -20,7 +20,7 @@ public class CallsController extends DbHelper {
             RESCHEDULE_DATE = "reschedule_date",
             SIGNED_DAY_ID = "signed_day_id",
             RETRY_COUNT = "retry_count",
-            JOINT_CALL = "joinr_call",
+            JOINT_CALL = "joint_call",
             QUICK_SIGN = "quick_sign";
 
     public static final String CREATE_Calls = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s INTEGER, %s INTEGER, %s INTEGER, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s DOUBLE, %s DOUBLE, %s INTEGER, %s INTEGER, %s LONG, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s TEXT)",
