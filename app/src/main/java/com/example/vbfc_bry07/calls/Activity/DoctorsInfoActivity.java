@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,13 +23,14 @@ import com.example.vbfc_bry07.calls.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DoctorsInfoActivity extends AppCompatActivity implements View.OnClickListener {
+public class DoctorsInfoActivity extends AppCompatActivity implements View.OnClickListener, SearchView.OnQueryTextListener {
 
     ListView DoctorsListView;
     DbHelper dbHelper;
     DoctorsController DC;
 
     ArrayList<HashMap<String, String>> all_doctors;
+    ListAdapter doctorAdapter;
 
     TextView TxtDoctorName, TxtDoctorSpecialty, TxtDoctorNumber, TxtDoctorClass, TxtDoctorBirthDate;
     String DoctorName, DoctorSpecialty, DoctorNumber, DoctorClass, DoctorBirthDate;
@@ -51,7 +53,7 @@ public class DoctorsInfoActivity extends AppCompatActivity implements View.OnCli
 
         DoctorsListView = (ListView) findViewById(R.id.doctorsList);
         all_doctors = DC.SelectAllDoctors();
-        ListAdapter doctorAdapter = new DoctorListAdapter(this, R.layout.adapter_doctors_list, all_doctors);
+        doctorAdapter = new DoctorListAdapter(this, R.layout.adapter_doctors_list, all_doctors);
         DoctorsListView.setAdapter(doctorAdapter);
 
         assert getSupportActionBar() != null;
@@ -69,12 +71,12 @@ public class DoctorsInfoActivity extends AppCompatActivity implements View.OnCli
                 DoctorBirthDate = all_doctors.get(position).get(DoctorsController.DOCTORS_BIRTHDAY);
                 TxtDoctorName.setText(DoctorName);
                 TxtDoctorSpecialty.setText(DoctorSpecialty);
-                if(DoctorNumber.equals("")) {
+                if (DoctorNumber.equals("")) {
                     TxtDoctorNumber.setText("No mobile # to display");
                 } else {
                     TxtDoctorNumber.setText(DoctorNumber);
                 }
-                if(DoctorNumber.equals("")) {
+                if (DoctorNumber.equals("")) {
                     TxtDoctorBirthDate.setText("No Birthdate to display");
                 } else {
                     TxtDoctorBirthDate.setText(DoctorBirthDate);
@@ -83,6 +85,7 @@ public class DoctorsInfoActivity extends AppCompatActivity implements View.OnCli
         });
 
         BtnSearch.setOnClickListener(this);
+        BtnSearch.setOnQueryTextListener(this);
     }
 
     @Override
@@ -108,5 +111,16 @@ public class DoctorsInfoActivity extends AppCompatActivity implements View.OnCli
                 BtnSearch.onActionViewExpanded();
                 break;
         }
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        doctorAdapter.setFilterText(query);
+        return false;
     }
 }
