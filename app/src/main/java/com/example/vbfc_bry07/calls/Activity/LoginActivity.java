@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.example.vbfc_bry07.calls.Controller.DbHelper;
+import com.example.vbfc_bry07.calls.Controller.PreferencesController;
 import com.example.vbfc_bry07.calls.R;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -22,6 +23,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     SharedPreferences shared;
 
     DbHelper db;
+    PreferencesController PC;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         password_txtfield = (EditText) findViewById(R.id.password_txtfield);
 
         db = new DbHelper(this);
+        PC = new PreferencesController(this);
         shared = getSharedPreferences("ECECalls", Context.MODE_PRIVATE);
 
         BtnLogin.setOnClickListener(this);
@@ -68,7 +71,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 
         if (success == 2) {
-            if (db.checkUser(username, password) > 1) {
+            if (PC.checkUser(username, password) > 1) {
                 SharedPreferences.Editor editor = shared.edit();
                 editor.putString("Username", username);
                 editor.apply();

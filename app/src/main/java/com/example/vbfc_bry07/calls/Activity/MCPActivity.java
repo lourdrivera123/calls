@@ -9,6 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +26,7 @@ import android.widget.TextView;
 import com.example.vbfc_bry07.calls.Adapter.CalendarAdapter;
 import com.example.vbfc_bry07.calls.Adapter.ExpandableListAdapter;
 import com.example.vbfc_bry07.calls.CalendarCollection;
-import com.example.vbfc_bry07.calls.Controller.CallsController;
+import com.example.vbfc_bry07.calls.Controller.PlansController;
 import com.example.vbfc_bry07.calls.R;
 
 import java.util.ArrayList;
@@ -52,6 +54,7 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
 
     List<String> listDataHeader;
     HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild;
+    PlansController cc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +73,7 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
         root = (LinearLayout) findViewById(R.id.root);
 
         prepareListData();
-        cc = new CallsController(this);
+        cc = new PlansController(this);
 
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;

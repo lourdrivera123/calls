@@ -1,36 +1,36 @@
 package com.example.vbfc_bry07.calls.Controller;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
+/**
+ * Created by vbfc_bry07 on 2/29/2016.
+ */
 public class CallsController extends DbHelper {
-    DbHelper dbhelper;
 
-    static String TBL_PLANS = "Plans",
-            PLANS_CYCLE_SET = "cycle_set",
-            PLANS_CYCLE_NUMBER = "cycle_number",
-            PLANS_STATUS = "status",
-            PLANS_STATUS_DATE = "status_date";
+    DbHelper dbHelper;
 
-    public static final String CREATE_PLANS = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
-            TBL_PLANS, AI_ID, PLANS_CYCLE_SET, PLANS_CYCLE_NUMBER, PLANS_STATUS, PLANS_STATUS_DATE, CREATED_AT, UPDATED_AT, DELETED_AT);
+    static String TBL_Calls = "Calls",
+            Calls_ID = "calls_id",
+            INST_DOC_ID_FK = "inst_doc_id_fk",
+            CYCLE_DAY_ID_FK = "cycle_day_id_fk",
+            STATUS_ID_FK = "status_id_fk",
+            PLANNED = "planned",
+            MAKEUP = "makeup",
+            START_DATETIME = "start_datetime",
+            END_DATETIME = "end_datetime",
+            LATITUDE = "latitude",
+            LONGITUDE = "longtitude",
+            RESCHEDULE_DATE = "reschedule_date",
+            SIGNED_DAY_ID = "signed_day_id",
+            RETRY_COUNT = "retry_count",
+            JOINT_CALL = "joinr_call",
+            QUICK_SIGN = "quick_sign";
+
+    public static final String CREATE_Calls = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s INTEGER, %s INTEGER, %s INTEGER, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s DOUBLE, %s DOUBLE, %s INTEGER, %s INTEGER, %s LONG, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s TEXT)",
+            TBL_Calls, AI_ID, Calls_ID, INST_DOC_ID_FK, CYCLE_DAY_ID_FK, STATUS_ID_FK, PLANNED, MAKEUP, START_DATETIME, END_DATETIME, LATITUDE, LONGITUDE, RESCHEDULE_DATE, SIGNED_DAY_ID, RETRY_COUNT, JOINT_CALL, QUICK_SIGN, CREATED_AT, UPDATED_AT, DELETED_AT);
 
     public CallsController(Context context) {
         super(context);
-        dbhelper = new DbHelper(context);
-    }
-
-    public boolean checkIfHasPlan(int month, int year) {
-        SQLiteDatabase db = dbhelper.getWritableDatabase();
-        String sql = "SELECT * FROM " + TBL_PLANS + " WHERE " + PLANS_CYCLE_SET + " = " + year + " AND " + PLANS_CYCLE_NUMBER + " = " + month;
-        Cursor cur = db.rawQuery(sql, null);
-
-        boolean flag = cur.moveToNext();
-
-        cur.close();
-        db.close();
-
-        return flag;
+        dbHelper = new DbHelper(context);
     }
 }

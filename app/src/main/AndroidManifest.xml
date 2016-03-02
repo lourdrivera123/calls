@@ -43,5 +43,9 @@
         <activity
             android:name=".Activity.ListViewActivity"
             android:screenOrientation="landscape" />
+
+        <activity
+            android:name=".Activity.DoctorsInfoActivity"
+            android:screenOrientation="landscape" />
     </application>
 </manifest>

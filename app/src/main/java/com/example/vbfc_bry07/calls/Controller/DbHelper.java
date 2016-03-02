@@ -1,8 +1,6 @@
 package com.example.vbfc_bry07.calls.Controller;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -12,10 +10,6 @@ public class DbHelper extends SQLiteOpenHelper {
             DELETED_AT = "deleted_at",
             AI_ID = "id";
 
-    static String TBL_PREFERENCES = "Preferences",
-            PREFERENCE_KEY = "key",
-            PREFERENCE_VALUE = "value",
-            PREFERENCE_TYPE = "type";
 
     public DbHelper(Context context) {
         super(context, "ECE_calls", null, 1);
@@ -23,15 +17,51 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_PREFERENCES = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT UNIQUE, %s TEXT, %s INTEGER)",
-                TBL_PREFERENCES, AI_ID, PREFERENCE_KEY, PREFERENCE_VALUE, PREFERENCE_TYPE);
-
-        db.execSQL(CREATE_PREFERENCES);
-        db.execSQL(CallsController.CREATE_PLANS);
+        db.execSQL(PlansController.CREATE_PLANS);
         db.execSQL(DoctorsController.CREATE_DOCTORS);
         db.execSQL(SpecializationsController.CREATE_SPECIALIZATIONS);
 
-        insertToTablePreferences(db);
+        db.execSQL(BroadcastsController.CREATE_Broadcasts);
+        db.execSQL(CallDetailingAidsController.CREATE_CallDetailingAids);
+        db.execSQL(CallMaterialsController.CREATE_CallMaterials);
+        db.execSQL(CallNotesController.CREATE_CallNotes);
+        db.execSQL(CallReportsController.CREATE_CallReports);
+        db.execSQL(CallsController.CREATE_Calls);
+        db.execSQL(CycleDaysController.CREATE_CycleDays);
+        // db.execSQL(CycleSetsController.CREATE_CycleSets);
+        // db.execSQL(DayTypesController.CREATE_DayTypes);
+        // db.execSQL(DetailingAidEmailsController.CREATE_DetailingAidEmails);
+        // db.execSQL(DetailingAids.CREATE_DetailingAids);
+        // db.execSQL(DoctorClasses.CREATE_DoctorClasses);
+
+        db.execSQL(InstitutionDoctorMapsController.CREATE_InstitutionDoctorMaps);
+        db.execSQL(InstitutionsController.CREATE_Institutions);
+        db.execSQL(MaterialAllocationsController.CREATE_MaterialAllocation);
+        db.execSQL(MaterialInventoriesController.CREATE_MaterialInventories);
+        db.execSQL(MaterialReplenishmentDetailsController.CREATE_MaterialReplenishmentDetails);
+        db.execSQL(MaterialReplenishmentsController.CREATE_MaterialReplenishments);
+        db.execSQL(MaterialsController.CREATE_Materials);
+        db.execSQL(MaterialsByClassSpecializationMapsController.CREATE_MaterialsByClassSpecializationMaps);
+        db.execSQL(MaterialsByInstitutionDoctorMapsController.CREATE_MaterialsByInstitutionDoctorMaps);
+        db.execSQL(MissedCallsController.CREATE_MissedCalls);
+        db.execSQL(MockPlanDetailsController.CREATE_MockPlanDetails);
+        db.execSQL(MockPlansController.CREATE_MockPlans);
+        db.execSQL(ModulesController.CREATE_Modules);
+        db.execSQL(PlanDetailsController.CREATE_PlanDetails);
+        db.execSQL(PreferencesController.CREATE_PREFERENCES);
+        db.execSQL(ProductsController.CREATE_Products);
+        db.execSQL(QuickSignaturesController.CREATE_QuickSignatures);
+        db.execSQL(ReasonsController.CREATE_Reasons);
+        db.execSQL(RescheduledCallsController.CREATE_RescheduledCalls);
+        db.execSQL(SalesReportDetailsController.CREATE_SalesReportDetails);
+        db.execSQL(SalesReportsController.CREATE_SalesReports);
+        db.execSQL(SettingsController.CREATE_Settings);
+        db.execSQL(SignaturesController.CREATE_Signatures);
+        db.execSQL(StagesController.CREATE_Stages);
+        db.execSQL(VersionsController.CREATE_Versions);
+
+
+        PreferencesController.insertToTablePreferences(db);
     }
 
     @Override
@@ -40,33 +70,5 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(sql);
     }
 
-    //INSERT METHODS
-    public String insertToTablePreferences(SQLiteDatabase db) {
-        ContentValues preferences_value = new ContentValues();
-        preferences_value.put(PREFERENCE_KEY, "USERNAME");
-        preferences_value.put(PREFERENCE_VALUE, "esel");
-        preferences_value.put(PREFERENCE_TYPE, "6");
-        db.insert(TBL_PREFERENCES, null, preferences_value);
 
-        preferences_value.put(PREFERENCE_KEY, "PASSWORD");
-        preferences_value.put(PREFERENCE_VALUE, "esel");
-        preferences_value.put(PREFERENCE_TYPE, "6");
-        db.insert(TBL_PREFERENCES, null, preferences_value);
-
-        return null;
-    }
-
-    //CHECK METHODS
-    public long checkUser(String username, String password) {
-        SQLiteDatabase db = getWritableDatabase();
-        String sql0 = "SELECT * FROM " + TBL_PREFERENCES +
-                " WHERE (" + PREFERENCE_KEY + "='PASSWORD' AND " + PREFERENCE_VALUE + "='" + password + "')" +
-                " OR (" + PREFERENCE_KEY + "='USERNAME' AND " + PREFERENCE_VALUE + "='" + username + "')";
-        Cursor cur = db.rawQuery(sql0, null);
-        long count = cur.getCount();
-
-        db.close();
-        cur.close();
-        return count;
-    }
 }
