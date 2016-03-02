@@ -76,11 +76,7 @@ public class DoctorsInfoActivity extends AppCompatActivity implements TextWatche
                 DoctorNumber = all_doctors.get(position).get(DoctorsController.DOCTORS_CONTACT_NUMBER);
                 DoctorBirthDate = all_doctors.get(position).get(DoctorsController.DOCTORS_BIRTHDAY);
                 TxtDoctorName.setText(DoctorName);
-                if(DoctorSpecialty.equals("")) {
-                    TxtDoctorSpecialty.setText("No Specialty to display");
-                } else {
-                    TxtDoctorSpecialty.setText(DoctorSpecialty);
-                }
+                TxtDoctorSpecialty.setText(DoctorSpecialty);
                 if (DoctorNumber.equals("")) {
                     TxtDoctorNumber.setText("No mobile # to display");
                 } else {
