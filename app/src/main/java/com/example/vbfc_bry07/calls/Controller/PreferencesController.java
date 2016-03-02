@@ -5,15 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-/**
- * Created by vbfc_bry07 on 2/29/2016.
- */
 public class PreferencesController extends DbHelper {
 
     DbHelper dbHelper;
 
     static String TBL_PREFERENCES = "Preferences",
-            Preferences_ID = "Preferences_ID",
+            Preferences_ID = "preferences_id",
             PREFERENCE_KEY = "key",
             PREFERENCE_VALUE = "value",
             PREFERENCE_TYPE = "type";

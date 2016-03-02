@@ -28,11 +28,11 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(CallReportsController.CREATE_CallReports);
         db.execSQL(CallsController.CREATE_Calls);
         db.execSQL(CycleDaysController.CREATE_CycleDays);
-        // db.execSQL(CycleSetsController.CREATE_CycleSets);
-        // db.execSQL(DayTypesController.CREATE_DayTypes);
-        // db.execSQL(DetailingAidEmailsController.CREATE_DetailingAidEmails);
-        // db.execSQL(DetailingAids.CREATE_DetailingAids);
-        // db.execSQL(DoctorClasses.CREATE_DoctorClasses);
+        db.execSQL(CycleSetsController.CREATE_CycleSets);
+        db.execSQL(DayTypesController.CREATE_DayTypes);
+        db.execSQL(DetailingAidEmailsController.CREATE_DetailingAidEmails);
+        db.execSQL(DetailingAidsController.CREATE_DetailingAids);
+        db.execSQL(DoctorClassesController.CREATE_DoctorClasses);
 
         db.execSQL(InstitutionDoctorMapsController.CREATE_InstitutionDoctorMaps);
         db.execSQL(InstitutionsController.CREATE_Institutions);
@@ -59,7 +59,6 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(SignaturesController.CREATE_Signatures);
         db.execSQL(StagesController.CREATE_Stages);
         db.execSQL(VersionsController.CREATE_Versions);
-
 
         PreferencesController.insertToTablePreferences(db);
     }

@@ -2,17 +2,14 @@ package com.example.vbfc_bry07.calls.Controller;
 
 import android.content.Context;
 
-/**
- * Created by vbfc_bry07 on 2/29/2016.
- */
 public class CallDetailingAidsController extends DbHelper {
 
     DbHelper dbHelper;
 
     static String TBL_CallDetailingAids = "CallDetailingAids",
             CallDetailingAids_ID = "calldetailingads_id",
-            CALL_ID_FK = "call_id_fk",
-            DETAILING_AID_ID_FK = "detailing_aid_id_fk",
+            CALL_ID_FK = "call_id",
+            DETAILING_AID_ID_FK = "detailing_aid_id",
             START_TIME = "start_time",
             END_TIME = "end_time";
 

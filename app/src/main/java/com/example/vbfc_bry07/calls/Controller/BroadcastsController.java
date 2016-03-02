@@ -2,9 +2,6 @@ package com.example.vbfc_bry07.calls.Controller;
 
 import android.content.Context;
 
-/**
- * Created by vbfc_bry07 on 2/29/2016.
- */
 public class BroadcastsController extends DbHelper {
 
     DbHelper dbHelper;
@@ -12,7 +9,7 @@ public class BroadcastsController extends DbHelper {
     static String TBL_Broadcasts = "Broadcasts",
             Broadcasts_ID = "broadcasts_id",
             MESSAGE = "message",
-            STATUS_ID_FK = "status_id_fk",
+            STATUS_ID_FK = "status_id",
             END_DATE = "end_date",
             AUTHOR = "author";
 

@@ -7,26 +7,40 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.example.vbfc_bry07.calls.Controller.DoctorsController;
 import com.example.vbfc_bry07.calls.R;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by vbfc_bry07 on 2/29/2016.
  */
-public class DoctorListAdapter extends ArrayAdapter<String> {
-    public DoctorListAdapter(Context context, String[] doctors) {
-        super(context, R.layout.adapter_doctors_list, doctors);
+public class DoctorListAdapter extends ArrayAdapter {
+
+    LayoutInflater inflater;
+    TextView doctor_name;
+
+    ArrayList<HashMap<String, String>> objects;
+
+    public DoctorListAdapter(Context context, int resource, ArrayList<HashMap<String, String>> objects) {
+        super(context, resource, objects);
+        inflater = LayoutInflater.from(context);
+
+        this.objects = objects;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        View customView = inflater.inflate(R.layout.adapter_doctors_list, parent, false);
+        // return super.getView(position, convertView, parent);
+        convertView = inflater.inflate(R.layout.adapter_doctors_list, parent, false);
 
-        String singleDoctorItem = getItem(position);
-        TextView doctor = (TextView) customView.findViewById(R.id.doctor);
+        doctor_name = (TextView) convertView.findViewById(R.id.doctor_name);
 
-        doctor.setText(singleDoctorItem);
 
-        return customView;
+        doctor_name.setText(objects.get(position).get(DoctorsController.DOCTORS_DOC_NAME));
+
+        return convertView;
     }
+
 }

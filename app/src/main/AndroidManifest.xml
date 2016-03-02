@@ -30,7 +30,8 @@
 
         <activity
             android:name=".Activity.ACPActivity"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.MyTheme" />
         <activity
             android:name=".Activity.CycleCalendarActivity"
             android:screenOrientation="landscape" />

@@ -11,6 +11,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,7 +40,6 @@ import java.util.TimeZone;
 
 public class MCPActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener, TextWatcher {
     GregorianCalendar cal_month, cal_month_copy;
-    CalendarAdapter cal_adapter;
 
     TextView tv_month, no_plans;
     public static TextView picked_day, picked_date;
@@ -55,6 +56,11 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
     List<String> listDataHeader;
     HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild;
     PlansController cc;
+    CalendarAdapter cal_adapter;
+    ExpandableListAdapter listAdapter;
+
+    List<String> listDataHeader;
+    HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +80,7 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
 
         prepareListData();
         cc = new PlansController(this);
+        prepareListData();
 
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;
