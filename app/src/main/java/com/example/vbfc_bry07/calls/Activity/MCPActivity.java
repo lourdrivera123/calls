@@ -2,6 +2,13 @@ package com.example.vbfc_bry07.calls.Activity;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -43,6 +50,11 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
     ExpandableListView list_of_doctors;
     LinearLayout root;
 
+    CallsController cc;
+    ExpandableListAdapter listAdapter;
+
+    List<String> listDataHeader;
+    HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild;
     PlansController cc;
     CalendarAdapter cal_adapter;
     ExpandableListAdapter listAdapter;
@@ -66,6 +78,7 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
         gv_calendar = (GridView) findViewById(R.id.gv_calendar);
         root = (LinearLayout) findViewById(R.id.root);
 
+        prepareListData();
         cc = new PlansController(this);
         prepareListData();
 
