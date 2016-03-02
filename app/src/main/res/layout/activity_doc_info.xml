@@ -18,11 +18,14 @@
             android:layout_weight="0.1">
 
 
-            <SearchView
+            <EditText
                 android:id="@+id/BtnSearch"
                 android:layout_width="0dp"
+                android:layout_weight="0.9"
                 android:layout_height="match_parent"
-                android:layout_weight="0.9" />
+                android:layout_marginBottom="-10dp"
+                android:hint="Search Doctors"
+                android:textSize="15sp" />
 
             <ImageView
                 android:layout_width="0dp"
@@ -41,13 +44,26 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.9">
+            android:layout_weight="0.9"
+            android:orientation="vertical">
 
             <ListView
                 android:id="@+id/doctorsList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:divider="@null" />
+
+
+            <TextView
+                android:id="@+id/no_records"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/top"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="No matching records were found"
+                android:textSize="12sp"
+                android:visibility="gone" />
 
         </LinearLayout>
     </LinearLayout>
