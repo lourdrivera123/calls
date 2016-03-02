@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
         HashMap<String, String> map = listDataChild.get(groupPosition).get(childPosititon);
-        return map.get("doc_name");
+        return map.get("doctor_name");
     }
 
     @Override
@@ -54,8 +55,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        ArrayList<HashMap<String, String>> map = listDataChild.get(groupPosition);
-        return map.size();
+        return listDataChild.get(groupPosition) != null ? listDataChild.get(groupPosition).size() : 0;
     }
 
     @Override
@@ -83,10 +83,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
 
         TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
-        TextView count_header = (TextView) convertView.findViewById(R.id.count_header);
 
-        lblListHeader.setText(headerTitle);
-        count_header.setText("(" + getChildrenCount(groupPosition) + ")");
+        String count_title = headerTitle + " (" + getChildrenCount(groupPosition) + ")";
+        lblListHeader.setText(count_title);
 
         return convertView;
     }

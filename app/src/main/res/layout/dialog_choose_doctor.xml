@@ -1,25 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F6F2EC"
-    android:orientation="vertical"
-    android:padding="10dp">
+    android:background="#F6F2EC">
 
-    <EditText
-        android:id="@+id/search_doctor"
+    <LinearLayout
+        android:id="@+id/top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Name"
-        android:textColor="#7C6A6A"
-        android:textSize="12sp" />
+        android:background="#7C6A6A"
+        android:padding="10dp">
+
+        <EditText
+            android:id="@+id/search_doctor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:hint="Search Doctor..."
+            android:textColor="#F6F2EC"
+            android:textColorHint="#F6F2EC"
+            android:textSize="12sp" />
+    </LinearLayout>
 
     <ExpandableListView
         android:id="@+id/list_of_doctors"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/top"
         android:childDivider="@android:color/transparent"
         android:divider="@android:color/transparent"
-        android:dividerHeight="2dp" />
-</LinearLayout>
+        android:dividerHeight="2dp"
+        android:padding="10dp" />
+
+    <TextView
+        android:id="@+id/no_records"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/top"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="No matching records were found"
+        android:textSize="12sp"
+        android:visibility="gone" />
+</RelativeLayout>
