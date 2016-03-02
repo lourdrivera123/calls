@@ -32,17 +32,13 @@
             android:name=".Activity.ACPActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.MyTheme" />
+
         <activity
             android:name=".Activity.CycleCalendarActivity"
             android:screenOrientation="landscape" />
+
         <activity
             android:name=".Activity.SignatureFormActivity"
-            android:screenOrientation="landscape" />
-        <activity
-            android:name=".Activity.CalendarActivity"
-            android:screenOrientation="landscape" />
-        <activity
-            android:name=".Activity.ListViewActivity"
             android:screenOrientation="landscape" />
 
         <activity

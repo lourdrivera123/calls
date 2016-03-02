@@ -1,6 +1,12 @@
 package com.example.vbfc_bry07.calls.Controller;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by vbfc_bry07 on 2/29/2016.
@@ -25,5 +31,59 @@ public class InstitutionDoctorMapsController extends DbHelper {
     public InstitutionDoctorMapsController(Context context) {
         super(context);
         dbHelper = new DbHelper(context);
+    }
+
+    public ArrayList<HashMap<String, String>> getInstitutions() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String sql = "SELECT DISTINCT idm.institution_id, i.inst_name from InstitutionDoctorMaps AS idm INNER JOIN Institutions AS i ON idm.institution_id = i.inst_id";
+        Cursor cur = db.rawQuery(sql, null);
+        ArrayList<HashMap<String, String>> array = new ArrayList<>();
+
+        while (cur.moveToNext()) {
+            HashMap<String, String> map = new HashMap<>();
+            map.put("institution_id", cur.getString(cur.getColumnIndex(INSTITUTION_ID_FK)));
+            map.put("institution_name", cur.getString(cur.getColumnIndex("inst_name")));
+            array.add(map);
+        }
+
+        cur.close();
+        db.close();
+
+        return array;
+    }
+
+    public ArrayList<HashMap<String, String>> getDoctorsWithInstitutions() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String sql = "select idm.doctor_id, idm.institution_id, d.doc_name from InstitutionDoctorMaps as idm INNER JOIN Doctors as d on idm.doctor_id = d.doc_id ORDER BY idm.institution_id";
+        Cursor cur = db.rawQuery(sql, null);
+        ArrayList<HashMap<String, String>> array = new ArrayList<>();
+
+        while (cur.moveToNext()) {
+            HashMap<String, String> map = new HashMap<>();
+            map.put("doctor_id", cur.getString(cur.getColumnIndex(DOCTOR_ID_FK)));
+            map.put("doctor_inst_id", cur.getString(cur.getColumnIndex(INSTITUTION_ID_FK)));
+            map.put("doctor_name", cur.getString(cur.getColumnIndex("doc_name")));
+            array.add(map);
+        }
+
+        cur.close();
+        db.close();
+
+        return array;
+    }
+
+    public String getInstitutionByID(int id) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String sql = "SELECT DISTINCT idm.institution_id, i.inst_name from InstitutionDoctorMaps AS idm INNER JOIN Institutions AS i ON idm.institution_id = i.inst_id WHERE idm.institution_id = " + id;
+        Cursor cur = db.rawQuery(sql, null);
+        String institution = "";
+
+        if (cur.moveToNext())
+            institution = cur.getString(cur.getColumnIndex("inst_name"));
+
+        cur.close();
+        db.close();
+
+        return institution;
     }
 }

@@ -11,7 +11,7 @@
     <item name="darkgray" type="color">#A9A9A9</item>
     <item name="darkergray" type="color">#312e2f</item>
 
-    <color name="color_accent">#A25063</color>
+    <color name="color_accent">#F6F2EC</color>
 
     <color name="primaryBlue">#5CB3FF</color>
 </resources>

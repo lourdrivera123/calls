@@ -2,13 +2,6 @@ package com.example.vbfc_bry07.calls.Activity;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -23,11 +16,15 @@ import android.widget.ExpandableListView;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.vbfc_bry07.calls.Adapter.CalendarAdapter;
 import com.example.vbfc_bry07.calls.Adapter.ExpandableListAdapter;
+import com.example.vbfc_bry07.calls.Adapter.MCPAdapter;
 import com.example.vbfc_bry07.calls.CalendarCollection;
+import com.example.vbfc_bry07.calls.Controller.InstitutionDoctorMapsController;
 import com.example.vbfc_bry07.calls.Controller.PlansController;
 import com.example.vbfc_bry07.calls.R;
 
@@ -38,10 +35,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
-public class MCPActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener, TextWatcher {
+public class MCPActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener, TextWatcher, ExpandableListView.OnChildClickListener {
     GregorianCalendar cal_month, cal_month_copy;
 
-    TextView tv_month, no_plans;
+    TextView tv_month, no_plans, no_records;
     public static TextView picked_day, picked_date;
     ImageButton prev, next, add_call;
     GridView gv_calendar;
@@ -49,18 +46,18 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
     EditText search_doctor;
     ExpandableListView list_of_doctors;
     LinearLayout root;
+    ListView list_of_calls;
 
-    CallsController cc;
+    PlansController pc;
     ExpandableListAdapter listAdapter;
-
-    List<String> listDataHeader;
-    HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild;
-    PlansController cc;
     CalendarAdapter cal_adapter;
-    ExpandableListAdapter listAdapter;
+    MCPAdapter mcp_adapter;
+    InstitutionDoctorMapsController idmc;
 
     List<String> listDataHeader;
-    HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild;
+    ArrayList<HashMap<String, String>> institutions, doctors;
+    HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild, duplicate_list_child;
+    boolean flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,10 +74,10 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
         add_call = (ImageButton) findViewById(R.id.add_call);
         gv_calendar = (GridView) findViewById(R.id.gv_calendar);
         root = (LinearLayout) findViewById(R.id.root);
+        list_of_calls = (ListView) findViewById(R.id.list_of_calls);
 
-        prepareListData();
-        cc = new PlansController(this);
-        prepareListData();
+        pc = new PlansController(this);
+        idmc = new InstitutionDoctorMapsController(this);
 
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;
@@ -108,13 +105,22 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.save_menu, menu);
 
-        if (!cc.checkIfHasPlan(cal_month.get(Calendar.MONTH), cal_month.get(Calendar.YEAR))) {
-            add_call.setVisibility(View.GONE);
-            no_plans.setText("No plotted plans for this month. Tap the \"+\" icon to start plotting.");
-            getMenuInflater().inflate(R.menu.add_menu, menu);
+        if (flag) {
+            getMenuInflater().inflate(R.menu.save_menu, menu);
+            flag = false;
+        } else {
+            if (!pc.checkIfHasPlan(cal_month.get(Calendar.MONTH), cal_month.get(Calendar.YEAR))) {
+                add_call.setVisibility(View.GONE);
+                no_plans.setVisibility(View.VISIBLE);
+                no_plans.setText("No plotted plans for this month. Tap the \"+\" icon to start plotting.");
+                getMenuInflater().inflate(R.menu.add_menu, menu);
+            } else {
+                mcp_adapter = new MCPAdapter(this);
+                list_of_calls.setAdapter(mcp_adapter);
+            }
         }
+
         return true;
     }
 
@@ -127,6 +133,9 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
 
             case R.id.add:
                 add_call.setVisibility(View.VISIBLE);
+                no_plans.setVisibility(View.GONE);
+                flag = true;
+                invalidateOptionsMenu();
                 break;
         }
 
@@ -151,14 +160,17 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
             case R.id.add_call:
                 Dialog dialog = new Dialog(this);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.getWindow().setLayout(600, 600);
                 dialog.setContentView(R.layout.dialog_choose_doctor);
                 dialog.show();
 
                 search_doctor = (EditText) dialog.findViewById(R.id.search_doctor);
                 list_of_doctors = (ExpandableListView) dialog.findViewById(R.id.list_of_doctors);
+                no_records = (TextView) dialog.findViewById(R.id.no_records);
 
-                list_of_doctors.setAdapter(listAdapter);
+                prepareListData();
                 search_doctor.addTextChangedListener(this);
+                list_of_doctors.setOnChildClickListener(this);
                 break;
         }
     }
@@ -213,42 +225,26 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     private void prepareListData() {
+        institutions = idmc.getInstitutions();
+        doctors = idmc.getDoctorsWithInstitutions();
         listDataHeader = new ArrayList<>();
+        duplicate_list_child = new HashMap<>();
         listDataChild = new HashMap<>();
 
-        listDataHeader.add("Davao Doctors Hospital");
-        listDataHeader.add("SPMC");
-        listDataHeader.add("San Pedro Hospital");
+        for (int x = 0; x < institutions.size(); x++) {
+            listDataHeader.add(institutions.get(x).get("institution_name"));
+            ArrayList<HashMap<String, String>> array = new ArrayList<>();
 
-        // Adding child data
-        ArrayList<HashMap<String, String>> array = new ArrayList<>();
-        HashMap<String, String> davaoDoc = new HashMap<>();
-        davaoDoc.put("doc_id", "1");
-        davaoDoc.put("doc_name", "Camahalan, Royette");
-        array.add(davaoDoc);
+            for (int y = 0; y < doctors.size(); y++) {
+                if (doctors.get(y).get("doctor_inst_id").equals(institutions.get(x).get("institution_id")))
+                    array.add(doctors.get(y));
+            }
+            listDataChild.put(x, array);
+        }
 
-        ArrayList<HashMap<String, String>> array1 = new ArrayList<>();
-        HashMap<String, String> spmc = new HashMap<>();
-        spmc.put("doc_id", "2");
-        spmc.put("doc_name", "Villarel, Mary Joy");
-        array1.add(spmc);
-
-        ArrayList<HashMap<String, String>> array2 = new ArrayList<>();
-        HashMap<String, String> sanpedro = new HashMap<>();
-        sanpedro.put("doc_id", "3");
-        sanpedro.put("doc_name", "Barnes, Jared Madison");
-        array2.add(sanpedro);
-
-        HashMap<String, String> sanpedro2 = new HashMap<>();
-        sanpedro2.put("doc_id", "4");
-        sanpedro2.put("doc_name", "Valencia, Almira");
-        array2.add(sanpedro2);
-
-        listDataChild.put(0, array); // Header, Child data
-        listDataChild.put(1, array1);
-        listDataChild.put(2, array2);
-
+        duplicate_list_child.putAll(listDataChild);
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+        list_of_doctors.setAdapter(listAdapter);
     }
 
     @Override
@@ -264,19 +260,52 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
     @Override
     public void afterTextChanged(Editable s) {
         String search = String.valueOf(s);
-        ArrayList<String> names = new ArrayList<>();
+        int counter = 0;
 
-        for (int x = 0; x < listDataChild.size(); x++) {
-            ArrayList<HashMap<String, String>> new_array = listDataChild.get(x);
+        if (!search.equals("")) {
+            HashMap<Integer, ArrayList<HashMap<String, String>>> new_child = new HashMap<>();
+            new_child.putAll(duplicate_list_child);
+            listDataHeader.clear();
+            listDataChild.clear();
 
-            for (int y = 0; y < new_array.size(); y++) {
-                HashMap<String, String> hash = new_array.get(y);
-                names.add(hash.get("doc_name"));
+            for (int x = 0; x < new_child.size(); x++) {
+                ArrayList<HashMap<String, String>> new_array = new_child.get(x);
+                ArrayList<HashMap<String, String>> array_for_child = new ArrayList<>();
+
+                for (int y = 0; y < new_array.size(); y++) {
+                    HashMap<String, String> hash = new_array.get(y);
+
+                    if (hash.get("doctor_name").toLowerCase().contains(search.toLowerCase()))
+                        array_for_child.add(hash);
+                }
+
+                if (array_for_child.size() > 0) {
+                    listDataChild.put(counter, array_for_child);
+                    counter += 1;
+                }
             }
-        }
 
-//        for(s : names) {
-//
-//        }
+            for (int x = 0; x < listDataChild.size(); x++) {
+                int inst_id = Integer.parseInt(listDataChild.get(x).get(0).get("doctor_inst_id"));
+                listDataHeader.add(idmc.getInstitutionByID(inst_id));
+            }
+
+            if (listDataHeader.size() > 0) {
+                no_records.setVisibility(View.GONE);
+                list_of_doctors.setVisibility(View.VISIBLE);
+                listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+                list_of_doctors.setAdapter(listAdapter);
+            } else {
+                no_records.setVisibility(View.VISIBLE);
+                list_of_doctors.setVisibility(View.GONE);
+            }
+        } else
+            prepareListData();
+    }
+
+    @Override
+    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+        Toast.makeText(this, groupPosition + "/" + childPosition, Toast.LENGTH_SHORT).show();
+        return true;
     }
 }
