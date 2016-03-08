@@ -27,6 +27,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(CallNotesController.CREATE_CallNotes);
         db.execSQL(CallReportsController.CREATE_CallReports);
         db.execSQL(CallsController.CREATE_Calls);
+        db.execSQL(CycleDaysController.CREATE_CycleDays);
         db.execSQL(CycleSetsController.CREATE_CycleSets);
         db.execSQL(DayTypesController.CREATE_DayTypes);
         db.execSQL(DetailingAidEmailsController.CREATE_DetailingAidEmails);

@@ -62,4 +62,32 @@ public class DoctorsController extends DbHelper {
         return doctors;
 
     }
+
+    public ArrayList<HashMap<String,String>> SelectAllBirthdaysThisMonthYear() {
+        ArrayList<HashMap<String, String>> doctorsBirthday = new ArrayList();
+        String sql = "SELECT id, doc_id, doc_name, birthday, " +
+                "   strftime('%m', birthday) as month, " +
+                "   strftime('%d', birthday) as day, " +
+                "   strftime('%Y', birthday) as year " +
+                "FROM Doctors " +
+                "where month = strftime('%m', date()) " +
+                "   and year = strftime('%Y', date()) " +
+                "   and day = strftime('%d', date())";
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+
+        while (cur.moveToNext()) {
+            HashMap<String, String> map = new HashMap();
+            map.put(DOCTORS_DOC_NAME, cur.getString(cur.getColumnIndex(DOCTORS_DOC_NAME)));
+            map.put(DOCTORS_BIRTHDAY, cur.getString(cur.getColumnIndex(DOCTORS_BIRTHDAY)));
+
+            doctorsBirthday.add(map);
+        }
+
+        cur.close();
+        db.close();
+
+        return doctorsBirthday;
+
+    }
 }

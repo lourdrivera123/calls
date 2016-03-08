@@ -22,27 +22,30 @@
             android:name=".Activity.HomeActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.MyTheme" />
-
         <activity
             android:name=".Activity.MCPActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.MyTheme" />
-
         <activity
             android:name=".Activity.ACPActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.MyTheme" />
-
         <activity
             android:name=".Activity.CycleCalendarActivity"
             android:screenOrientation="landscape" />
-
         <activity
             android:name=".Activity.SignatureFormActivity"
             android:screenOrientation="landscape" />
-
         <activity
             android:name=".Activity.DoctorsInfoActivity"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activity.MaterialMonetoringActivity"
+            android:screenOrientation="landscape" />
+        <activity android:name=".Activity.SalesReportActivity"
+            android:screenOrientation="landscape" />
+        <activity android:name=".Activity.StatusSummaryActivity"
+            android:screenOrientation="landscape" />
     </application>
+
 </manifest>
