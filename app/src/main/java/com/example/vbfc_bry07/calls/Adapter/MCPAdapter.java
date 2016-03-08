@@ -1,6 +1,7 @@
 package com.example.vbfc_bry07.calls.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

@@ -27,6 +27,10 @@
             android:screenOrientation="landscape"
             android:theme="@style/Theme.MyTheme" />
         <activity
+            android:name=".Activity.DuplicateMCPActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.MyTheme" />
+        <activity
             android:name=".Activity.ACPActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.MyTheme" />
@@ -42,9 +46,11 @@
         <activity
             android:name=".Activity.MaterialMonetoringActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".Activity.SalesReportActivity"
+        <activity
+            android:name=".Activity.SalesReportActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".Activity.StatusSummaryActivity"
+        <activity
+            android:name=".Activity.StatusSummaryActivity"
             android:screenOrientation="landscape" />
     </application>
 

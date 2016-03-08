@@ -36,8 +36,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
-public class MCPActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener, TextWatcher, ExpandableListView.OnChildClickListener {
+public class DuplicateMCPActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener, TextWatcher, ExpandableListView.OnChildClickListener {
     Calendar cal_month;
     Dialog dialog;
 
@@ -131,9 +132,10 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
                 getMenuInflater().inflate(R.menu.add_menu, menu);
             } else {
                 list_of_calls.setVisibility(View.VISIBLE);
-                no_plans.setVisibility(View.GONE);
                 list_of_plans = pdc.getPlanDetailsByPlanID(plan_id);
-                setPerDayPlans(date);
+
+//                mcp_adapter = new MCPAdapter(this, plandetails);
+//                list_of_calls.setAdapter(mcp_adapter);
             }
             cal_adapter = new CalendarAdapter(this, cal_month, list_of_plans);
             gv_calendar.setAdapter(cal_adapter);
@@ -250,18 +252,11 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
                 list_of_plans.add(hash_plans_per_day);
         }
 
-        setPerDayPlans(selectedGridDate);
-
-        hash_plans_per_day = new HashMap<>();
-        global_position = new_pos;
-    }
-
-    private void setPerDayPlans(String date) {
         if (list_of_plans.size() > 0) {
             int count = 0;
 
             for (int x = 0; x < list_of_plans.size(); x++) {
-                ArrayList<HashMap<String, String>> array_per_day = list_of_plans.get(x).get(date);
+                ArrayList<HashMap<String, String>> array_per_day = list_of_plans.get(x).get(selectedGridDate);
 
                 if (array_per_day != null) {
                     for (int y = 0; y < array_per_day.size(); y++) {
@@ -274,8 +269,10 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
                 number_of_calls.setText(count + " call/s for this day");
         }
 
+        hash_plans_per_day = new HashMap<>();
         mcp_adapter = new MCPAdapter(this, new_plan_details);
         list_of_calls.setAdapter(mcp_adapter);
+        global_position = new_pos;
     }
 
     private void prepareListData() {
@@ -361,12 +358,16 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
         HashMap<String, String> map = listDataChild.get(groupPosition).get(childPosition);
         new_plan_details.add(map);
-        hash_plans_per_day.put(date, new_plan_details);
+        hash_plans_per_day.put(getClickedDate(), new_plan_details);
 
-        number_of_calls.setText(hash_plans_per_day.get(date).size() + " call/s for this day");
+        number_of_calls.setText(hash_plans_per_day.get(getClickedDate()).size() + " call/s for this day");
         mcp_adapter.notifyDataSetChanged();
         dialog.dismiss();
         return true;
+    }
+
+    String getClickedDate() {
+        return date;
     }
 
     void checkIfHasUnsaved(final String where) {
@@ -419,9 +420,6 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     public void refreshCalendar() {
-        new_plan_details = new ArrayList<>();
-        mcp_adapter.notifyDataSetChanged();
-        
         invalidateOptionsMenu();
         cal_adapter.refreshDays();
         cal_adapter.notifyDataSetChanged();

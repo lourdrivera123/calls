@@ -112,10 +112,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         float DeclaredMissedCalls = CC.DeclaredMissedCalls(current_cycle_month, current_cycle_year);
         float UnprocessedCalls = CC.UnprocessedCalls(current_cycle_month, current_cycle_year);
         yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls};
-        String labelIC = "Incidental Calls " + (int)IncidentalCalls + "/" + Planned_Calls;
-        String labelRC = "Recovered Calls " + (int)RecoveredCalls + "/" + Planned_Calls;
-        String labelDMC = "Declared Missed Calls " + (int)DeclaredMissedCalls + "/" + Planned_Calls;
-        String labelUC = "Unprocessed Calls " + (int)UnprocessedCalls + "/" + Planned_Calls;
+        String labelIC = "Incidental Calls " + (int) IncidentalCalls + "/" + Planned_Calls;
+        String labelRC = "Recovered Calls " + (int) RecoveredCalls + "/" + Planned_Calls;
+        String labelDMC = "Declared Missed Calls " + (int) DeclaredMissedCalls + "/" + Planned_Calls;
+        String labelUC = "Unprocessed Calls " + (int) UnprocessedCalls + "/" + Planned_Calls;
         xData = new String[]{labelIC, labelRC, labelDMC, labelUC};
 
         // Configure Pie Chart
@@ -137,7 +137,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
                 // display msg when value selected
-                if(e == null){
+                if (e == null) {
                     return;
                 }
                 // Toast.makeText(HomeActivity.this, xData[e.getXIndex()] +  "="  +  e.getVal() + "%", Toast.LENGTH_SHORT).show();
@@ -185,23 +185,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // Add many colors
         ArrayList<Integer> colors = new ArrayList();
 
-        for(int c : ColorTemplate.VORDIPLOM_COLORS) {
+        for (int c : ColorTemplate.VORDIPLOM_COLORS) {
             colors.add(c);
         }
 
-        for(int c : ColorTemplate.JOYFUL_COLORS) {
+        for (int c : ColorTemplate.JOYFUL_COLORS) {
             colors.add(c);
         }
 
-        for(int c : ColorTemplate.COLORFUL_COLORS) {
+        for (int c : ColorTemplate.COLORFUL_COLORS) {
             colors.add(c);
         }
 
-        for(int c : ColorTemplate.LIBERTY_COLORS) {
+        for (int c : ColorTemplate.LIBERTY_COLORS) {
             colors.add(c);
         }
 
-        for(int c : ColorTemplate.PASTEL_COLORS) {
+        for (int c : ColorTemplate.PASTEL_COLORS) {
             colors.add(c);
         }
 

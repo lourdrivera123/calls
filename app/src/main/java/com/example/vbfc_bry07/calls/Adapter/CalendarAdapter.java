@@ -3,14 +3,14 @@ package com.example.vbfc_bry07.calls.Adapter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,13 +25,14 @@ import com.example.vbfc_bry07.calls.R;
 public class CalendarAdapter extends BaseAdapter {
     Context context;
     java.util.Calendar month;
-    public GregorianCalendar pmonth, pmonthmaxset;
+    public Calendar pmonth, pmonthmaxset;
     DateFormat df;
 
     int firstDay, maxWeeknumber, maxP, calMaxP, mnthlength;
     String itemvalue, currentDateString;
 
     public static List<String> day_string;
+    ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> plans;
 
     TextView dayView, with_plan;
     View previousView;
@@ -39,17 +40,14 @@ public class CalendarAdapter extends BaseAdapter {
 
     Helpers helpers;
 
-    public CalendarAdapter(Context context, GregorianCalendar monthCalendar) {
+    public CalendarAdapter(Context context, Calendar monthCalendar, ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> plans_objects) {
         CalendarAdapter.day_string = new ArrayList<>();
-        month = monthCalendar;
-        GregorianCalendar selectedDate = (GregorianCalendar) monthCalendar.clone();
-        selectedDate.setTimeZone(TimeZone.getTimeZone("GMT+8"));
-        month.set(GregorianCalendar.DAY_OF_MONTH, 1);
-
+        this.month = monthCalendar;
         this.context = context;
+        this.plans = plans_objects;
         helpers = new Helpers();
-        df = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-        currentDateString = df.format(selectedDate.getTime());
+        df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        currentDateString = df.format(month.getTime());
         refreshDays();
     }
 
@@ -123,26 +121,26 @@ public class CalendarAdapter extends BaseAdapter {
 
     public void refreshDays() {
         day_string.clear();
-        pmonth = (GregorianCalendar) month.clone();
+        pmonth = (Calendar) month.clone();
         // month start day. ie; sun, mon, etc
-        firstDay = month.get(GregorianCalendar.DAY_OF_WEEK);
+        firstDay = month.get(Calendar.DAY_OF_WEEK);
         // finding number of weeks in current month.
-        maxWeeknumber = month.getActualMaximum(GregorianCalendar.WEEK_OF_MONTH);
+        maxWeeknumber = month.getActualMaximum(Calendar.WEEK_OF_MONTH);
         // allocating maximum row number for the gridview.
         mnthlength = maxWeeknumber * 7;
         maxP = getMaxP(); // previous month maximum day 31,30....
         calMaxP = maxP - (firstDay - 1);// calendar offday starting 24,25 ...
 
         //Calendar instance for getting a complete gridview including the three month's (previous,current,next) dates.
-        pmonthmaxset = (GregorianCalendar) pmonth.clone();
+        pmonthmaxset = (Calendar) pmonth.clone();
 
         //setting the start date as previous month's required date.
-        pmonthmaxset.set(GregorianCalendar.DAY_OF_MONTH, calMaxP + 1);
+        pmonthmaxset.set(Calendar.DAY_OF_MONTH, calMaxP + 1);
 
         //filling calendar gridview.
         for (int n = 0; n < mnthlength; n++) {
             itemvalue = df.format(pmonthmaxset.getTime());
-            pmonthmaxset.add(GregorianCalendar.DATE, 1);
+            pmonthmaxset.add(Calendar.DATE, 1);
             day_string.add(itemvalue);
         }
 
@@ -151,31 +149,29 @@ public class CalendarAdapter extends BaseAdapter {
 
     private int getMaxP() {
         int maxP;
-        if (month.get(GregorianCalendar.MONTH) == month
-                .getActualMinimum(GregorianCalendar.MONTH)) {
-            pmonth.set((month.get(GregorianCalendar.YEAR) - 1),
-                    month.getActualMaximum(GregorianCalendar.MONTH), 1);
+        if (month.get(Calendar.MONTH) == month
+                .getActualMinimum(Calendar.MONTH)) {
+            pmonth.set((month.get(Calendar.YEAR) - 1),
+                    month.getActualMaximum(Calendar.MONTH), 1);
         } else {
-            pmonth.set(GregorianCalendar.MONTH,
-                    month.get(GregorianCalendar.MONTH) - 1);
+            pmonth.set(Calendar.MONTH,
+                    month.get(Calendar.MONTH) - 1);
         }
-        maxP = pmonth.getActualMaximum(GregorianCalendar.DAY_OF_MONTH);
+        maxP = pmonth.getActualMaximum(Calendar.DAY_OF_MONTH);
 
         return maxP;
     }
 
-
     public void setEventView(final int pos) {
-        int len = MCPActivity.list_of_plans.size();
+        int len = plans.size();
         String date_selected = day_string.get(pos);
 
         for (int x = 0; x < len; x++) {
-            HashMap<String, ArrayList<HashMap<String, String>>> map_per_day = MCPActivity.list_of_plans.get(x);
+            HashMap<String, ArrayList<HashMap<String, String>>> map_per_day = plans.get(x);
             String date_on_map = map_per_day.keySet().toString().replace("[", "").replace("]", "");
 
-            if (date_on_map.equals(date_selected)) {
+            if (date_on_map.equals(date_selected))
                 with_plan.setVisibility(View.VISIBLE);
-            }
         }
     }
 }

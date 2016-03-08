@@ -28,39 +28,8 @@ public class PlanDetailsController extends DbHelper {
         dbHelper = new DbHelper(context);
     }
 
-//    public ArrayList<HashMap<String, String>> getPlanDetailsByMonthYear(int plan_id) {
-//        SQLiteDatabase db = dbHelper.getWritableDatabase();
-//        String sql = "SELECT pd.*, i.inst_name, d.doc_id, d.doc_name, d.contact_number, dc.name, dc.max_visit FROM PlanDetails as pd INNER JOIN InstitutionDoctorMaps as idm " +
-//                "on pd.inst_doc_id = idm.IDM_ID INNER JOIN Doctors as d on idm.doctor_id = d.doc_id INNER JOIN Institutions as i " +
-//                "on idm.institution_id = i.inst_id INNER JOIN DoctorClasses as dc on idm.class_id = dc.doctor_classes_id WHERE pd.plan_id = " + plan_id;
-//        Cursor cur = db.rawQuery(sql, null);
-//        ArrayList<HashMap<String, String>> array = new ArrayList<>();
-//
-//        while (cur.moveToNext()) {
-//            String class_code = cur.getString(cur.getColumnIndex("name")) + " (" + cur.getString(cur.getColumnIndex("max_visit")) + "x)";
-//
-//            HashMap<String, String> map = new HashMap<>();
-//            map.put("plan_details_id", cur.getString(cur.getColumnIndex("plan_details_id")));
-//            map.put("cycle_day", cur.getString(cur.getColumnIndex("cycle_day")));
-//            map.put("cycle_label", cur.getString(cur.getColumnIndex("label")));
-//            map.put("doc_id", cur.getString(cur.getColumnIndex("doc_id")));
-//            map.put("doc_name", cur.getString(cur.getColumnIndex("doc_name")));
-//            map.put("contact_number", cur.getString(cur.getColumnIndex("contact_number")));
-//            map.put("class_code", class_code);
-//            map.put("inst_name", cur.getString(cur.getColumnIndex("inst_name")));
-//            map.put("inst_doc_id", cur.getString(cur.getColumnIndex("inst_doc_id")));
-//
-//            array.add(map);
-//        }
-//
-//        cur.close();
-//        db.close();
-//
-//        return array;
-//    }
-
     public ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> getPlanDetailsByPlanID(int plan_id) {
-        String sql1 = "SELECT DISTINCT cycle_day FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p.id WHERE pd.plan_id = 1";
+        String sql1 = "SELECT DISTINCT cycle_day FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p.id WHERE pd.plan_id = " + plan_id;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql1, null);
         ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> array = new ArrayList<>();
