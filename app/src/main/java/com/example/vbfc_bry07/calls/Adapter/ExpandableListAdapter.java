@@ -29,7 +29,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
         HashMap<String, String> map = listDataChild.get(groupPosition).get(childPosititon);
-        return map.get("doctor_name");
+        return map.get("doc_name");
     }
 
     @Override

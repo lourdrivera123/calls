@@ -1,11 +1,15 @@
 package com.example.vbfc_bry07.calls.Activity;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,13 +22,13 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.vbfc_bry07.calls.Adapter.CalendarAdapter;
 import com.example.vbfc_bry07.calls.Adapter.ExpandableListAdapter;
 import com.example.vbfc_bry07.calls.Adapter.MCPAdapter;
-import com.example.vbfc_bry07.calls.CalendarCollection;
+import com.example.vbfc_bry07.calls.Controller.CycleSetsController;
 import com.example.vbfc_bry07.calls.Controller.InstitutionDoctorMapsController;
+import com.example.vbfc_bry07.calls.Controller.PlanDetailsController;
 import com.example.vbfc_bry07.calls.Controller.PlansController;
 import com.example.vbfc_bry07.calls.R;
 
@@ -37,26 +41,37 @@ import java.util.TimeZone;
 
 public class MCPActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener, TextWatcher, ExpandableListView.OnChildClickListener {
     GregorianCalendar cal_month, cal_month_copy;
+    Dialog dialog;
 
     TextView tv_month, no_plans, no_records;
-    public static TextView picked_day, picked_date;
+    static TextView number_of_calls;
     ImageButton prev, next, add_call;
-    GridView gv_calendar;
     Toolbar toolbar;
     EditText search_doctor;
     ExpandableListView list_of_doctors;
     LinearLayout root;
     ListView list_of_calls;
+    GridView gv_calendar;
+    public static TextView picked_day, picked_date;
 
     PlansController pc;
+    PlanDetailsController pdc;
+    CycleSetsController csc;
     ExpandableListAdapter listAdapter;
     CalendarAdapter cal_adapter;
-    MCPAdapter mcp_adapter;
+    static MCPAdapter mcp_adapter;
     InstitutionDoctorMapsController idmc;
 
     List<String> listDataHeader;
-    ArrayList<HashMap<String, String>> institutions, doctors;
     HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild, duplicate_list_child;
+    public static ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> list_of_plans;
+    HashMap<String, ArrayList<HashMap<String, String>>> hash_plans_per_day = new HashMap<>();
+    ArrayList<HashMap<String, String>> institutions;
+    ArrayList<HashMap<String, String>> doctors;
+    static ArrayList<HashMap<String, String>> new_plan_details = new ArrayList<>();
+
+    public static String date;
+    public static int global_position;
     boolean flag = false;
 
     @Override
@@ -69,6 +84,7 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
         no_plans = (TextView) findViewById(R.id.no_plans);
         picked_day = (TextView) findViewById(R.id.picked_day);
         picked_date = (TextView) findViewById(R.id.picked_date);
+        number_of_calls = (TextView) findViewById(R.id.number_of_calls);
         next = (ImageButton) findViewById(R.id.next);
         prev = (ImageButton) findViewById(R.id.prev);
         add_call = (ImageButton) findViewById(R.id.add_call);
@@ -76,7 +92,10 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
         root = (LinearLayout) findViewById(R.id.root);
         list_of_calls = (ListView) findViewById(R.id.list_of_calls);
 
+        list_of_plans = new ArrayList<>();
         pc = new PlansController(this);
+        pdc = new PlanDetailsController(this);
+        csc = new CycleSetsController(this);
         idmc = new InstitutionDoctorMapsController(this);
 
         setSupportActionBar(toolbar);
@@ -87,7 +106,7 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
         cal_month = (GregorianCalendar) GregorianCalendar.getInstance();
         cal_month.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         cal_month_copy = (GregorianCalendar) cal_month.clone();
-        cal_adapter = new CalendarAdapter(this, cal_month, CalendarCollection.date_collection_arr);
+        cal_adapter = new CalendarAdapter(this, cal_month);
         gv_calendar.setAdapter(cal_adapter);
 
         tv_month.setText(android.text.format.DateFormat.format("MMMM yyyy", cal_month));
@@ -97,27 +116,34 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
         gv_calendar.setOnItemClickListener(this);
     }
 
-    void setCalls() {
-        CalendarCollection.date_collection_arr = new ArrayList<>();
-        CalendarCollection.date_collection_arr.add(new CalendarCollection("2016-02-19", "John Birthday"));
-        CalendarCollection.date_collection_arr.add(new CalendarCollection("2016-02-02", "Live Event and Concert of sonu"));
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        list_of_plans = new ArrayList<>();
+        hash_plans_per_day = new HashMap<>();
 
         if (flag) {
             getMenuInflater().inflate(R.menu.save_menu, menu);
             flag = false;
         } else {
-            if (!pc.checkIfHasPlan(cal_month.get(Calendar.MONTH), cal_month.get(Calendar.YEAR))) {
+            int month = cal_month.get(Calendar.MONTH) + 1;
+            int cycle_set_id = csc.getCycleSetID(cal_month.get(Calendar.YEAR));
+
+            int plan_id = pc.checkIfHasPlan(month, cycle_set_id);
+
+            Log.d("plan_id", plan_id + "");
+
+            if (plan_id == 0) {
                 add_call.setVisibility(View.GONE);
                 no_plans.setVisibility(View.VISIBLE);
                 no_plans.setText("No plotted plans for this month. Tap the \"+\" icon to start plotting.");
                 getMenuInflater().inflate(R.menu.add_menu, menu);
             } else {
-                mcp_adapter = new MCPAdapter(this);
-                list_of_calls.setAdapter(mcp_adapter);
+                list_of_calls.setVisibility(View.VISIBLE);
+                list_of_plans = pdc.getPlanDetailsByPlanID(plan_id);
+                cal_adapter.notifyDataSetChanged();
+
+//                mcp_adapter = new MCPAdapter(this, plandetails);
+//                list_of_calls.setAdapter(mcp_adapter);
             }
         }
 
@@ -134,8 +160,35 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
             case R.id.add:
                 add_call.setVisibility(View.VISIBLE);
                 no_plans.setVisibility(View.GONE);
+                list_of_calls.setVisibility(View.VISIBLE);
+
+                new_plan_details = new ArrayList<>();
+
+                mcp_adapter = new MCPAdapter(this, new_plan_details);
+                list_of_calls.setAdapter(mcp_adapter);
+                number_of_calls.setVisibility(View.VISIBLE);
                 flag = true;
                 invalidateOptionsMenu();
+                break;
+
+            case R.id.save:
+                addToListOfPlans();
+
+                if (list_of_plans.size() > 0) {
+                    int year = cal_month.get(Calendar.YEAR);
+                    int month = cal_month.get(Calendar.MONTH) + 1;
+                    long plan_id = pc.insertPlans(year, month);
+
+                    if (plan_id > 0) {
+                        if (pdc.insertPlanDetails(plan_id, list_of_plans)) {
+                            Snackbar.make(root, "Successfully saved", Snackbar.LENGTH_SHORT).show();
+                        } else
+                            Snackbar.make(root, "Error occurred", Snackbar.LENGTH_SHORT).show();
+                    } else if (plan_id == 0)
+                        Snackbar.make(root, "Error occurred", Snackbar.LENGTH_SHORT).show();
+                    else
+                        Snackbar.make(root, "You already have schedule for this month.", Snackbar.LENGTH_SHORT).show();
+                }
                 break;
         }
 
@@ -146,19 +199,16 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.prev:
-                if (cal_month.get(Calendar.YEAR) >= 2016 && cal_month.get(Calendar.MONTH) >= 1) {
-                    setPreviousMonth();
-                    refreshCalendar();
-                }
+                if (cal_month.get(Calendar.YEAR) >= 2016 && cal_month.get(Calendar.MONTH) >= 1)
+                    checkIfHasUnsaved("Previous");
                 break;
 
             case R.id.next:
-                setNextMonth();
-                refreshCalendar();
+                checkIfHasUnsaved("Next");
                 break;
 
             case R.id.add_call:
-                Dialog dialog = new Dialog(this);
+                dialog = new Dialog(this);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.getWindow().setLayout(600, 600);
                 dialog.setContentView(R.layout.dialog_choose_doctor);
@@ -175,34 +225,23 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    protected void setNextMonth() {
-        if (cal_month.get(GregorianCalendar.MONTH) == cal_month.getActualMaximum(GregorianCalendar.MONTH))
-            cal_month.set((cal_month.get(GregorianCalendar.YEAR) + 1), cal_month.getActualMinimum(GregorianCalendar.MONTH), 1);
-        else
-            cal_month.set(GregorianCalendar.MONTH, cal_month.get(GregorianCalendar.MONTH) + 1);
-
-        invalidateOptionsMenu();
-    }
-
-    protected void setPreviousMonth() {
-        if (cal_month.get(GregorianCalendar.MONTH) == cal_month.getActualMinimum(GregorianCalendar.MONTH))
-            cal_month.set((cal_month.get(GregorianCalendar.YEAR) - 1), cal_month.getActualMaximum(GregorianCalendar.MONTH), 1);
-        else
-            cal_month.set(GregorianCalendar.MONTH, cal_month.get(GregorianCalendar.MONTH) - 1);
-        invalidateOptionsMenu();
-    }
-
-    public void refreshCalendar() {
-        cal_adapter.refreshDays();
-        cal_adapter.notifyDataSetChanged();
-        tv_month.setText(android.text.format.DateFormat.format("MMMM yyyy", cal_month));
-    }
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ((CalendarAdapter) parent.getAdapter()).setSelected(view, position);
         String selectedGridDate = CalendarAdapter.day_string.get(position);
-        int new_pos;
+        date = selectedGridDate;
+        int new_pos = 0;
+        number_of_calls.setText("");
+        new_plan_details = new ArrayList<>();
+
+        if (hash_plans_per_day.size() > 0) {
+            if (list_of_plans.size() > 0)
+                addToListOfPlans();
+            else
+                list_of_plans.add(hash_plans_per_day);
+        }
+
+        ((CalendarAdapter) parent.getAdapter()).setEventView(position);
 
         String[] separatedTime = selectedGridDate.split("-");
         String gridvalueString = separatedTime[2].replaceFirst("^0*", "");
@@ -221,7 +260,27 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
             ((CalendarAdapter) parent.getAdapter()).setSelected(gv_calendar.getChildAt(new_pos), new_pos);
         }
 
-        ((CalendarAdapter) parent.getAdapter()).getPositionList(selectedGridDate);
+        if (list_of_plans.size() > 0) {
+            int count = 0;
+
+            for (int x = 0; x < list_of_plans.size(); x++) {
+                ArrayList<HashMap<String, String>> array_per_day = list_of_plans.get(x).get(selectedGridDate);
+
+                if (array_per_day != null) {
+                    for (int y = 0; y < array_per_day.size(); y++) {
+                        new_plan_details.add(array_per_day.get(y));
+                        count += 1;
+                    }
+                }
+            }
+            if (count > 0)
+                number_of_calls.setText(count + " call/s for this day");
+        }
+
+        hash_plans_per_day = new HashMap<>();
+        mcp_adapter = new MCPAdapter(this, new_plan_details);
+        list_of_calls.setAdapter(mcp_adapter);
+        global_position = new_pos;
     }
 
     private void prepareListData() {
@@ -305,7 +364,94 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-        Toast.makeText(this, groupPosition + "/" + childPosition, Toast.LENGTH_SHORT).show();
+        HashMap<String, String> map = listDataChild.get(groupPosition).get(childPosition);
+        new_plan_details.add(map);
+        hash_plans_per_day.put(getClickedDate(), new_plan_details);
+
+        number_of_calls.setText(hash_plans_per_day.get(getClickedDate()).size() + " call/s for this day");
+        mcp_adapter.notifyDataSetChanged();
+        dialog.dismiss();
         return true;
+    }
+
+    String getClickedDate() {
+        return date;
+    }
+
+    void checkIfHasUnsaved(final String where) {
+        final int[] check = {0};
+
+        if (flag) {
+            if (list_of_plans.size() > 0 || hash_plans_per_day.size() > 0) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                alert.setMessage("You have made changes. Are you sure you want to navigate away and lose your changes?");
+                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        check[0] += 1;
+                    }
+                });
+                alert.setNegativeButton("No", null);
+                alert.show();
+            } else
+                check[0] += 1;
+        } else
+            check[0] += 1;
+
+        if (check[0] > 0) {
+            if (where.equals("Next"))
+                setNextMonth();
+            else
+                setPreviousMonth();
+            refreshCalendar();
+        }
+    }
+
+    protected void setNextMonth() {
+        list_of_plans = new ArrayList<>();
+        hash_plans_per_day = new HashMap<>();
+
+        if (cal_month.get(GregorianCalendar.MONTH) == cal_month.getActualMaximum(GregorianCalendar.MONTH))
+            cal_month.set((cal_month.get(GregorianCalendar.YEAR) + 1), cal_month.getActualMinimum(GregorianCalendar.MONTH), 1);
+        else
+            cal_month.set(GregorianCalendar.MONTH, cal_month.get(GregorianCalendar.MONTH) + 1);
+
+        invalidateOptionsMenu();
+    }
+
+    protected void setPreviousMonth() {
+        list_of_plans = new ArrayList<>();
+        hash_plans_per_day = new HashMap<>();
+
+        if (cal_month.get(GregorianCalendar.MONTH) == cal_month.getActualMinimum(GregorianCalendar.MONTH))
+            cal_month.set((cal_month.get(GregorianCalendar.YEAR) - 1), cal_month.getActualMaximum(GregorianCalendar.MONTH), 1);
+        else
+            cal_month.set(GregorianCalendar.MONTH, cal_month.get(GregorianCalendar.MONTH) - 1);
+        invalidateOptionsMenu();
+    }
+
+    public void refreshCalendar() {
+        cal_adapter.refreshDays();
+        cal_adapter.notifyDataSetChanged();
+        tv_month.setText(android.text.format.DateFormat.format("MMMM yyyy", cal_month));
+    }
+
+    void addToListOfPlans() {
+        int count = 0;
+
+        for (int x = 0; x < list_of_plans.size(); x++) {
+            String hash_keyset = hash_plans_per_day.keySet().toString().replace("[", "").replace("]", "");
+
+            if (list_of_plans.get(x).get(hash_keyset) != null) {
+                count += 1;
+                list_of_plans.set(x, hash_plans_per_day);
+                break;
+            }
+        }
+
+        if (hash_plans_per_day.size() > 0) {
+            if (count == 0)
+                list_of_plans.add(hash_plans_per_day);
+        }
     }
 }

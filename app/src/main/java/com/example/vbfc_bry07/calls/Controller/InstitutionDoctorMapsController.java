@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by vbfc_bry07 on 2/29/2016.
- */
 public class InstitutionDoctorMapsController extends DbHelper {
 
     DbHelper dbHelper;
@@ -54,15 +51,23 @@ public class InstitutionDoctorMapsController extends DbHelper {
 
     public ArrayList<HashMap<String, String>> getDoctorsWithInstitutions() {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String sql = "select idm.doctor_id, idm.institution_id, d.doc_name from InstitutionDoctorMaps as idm INNER JOIN Doctors as d on idm.doctor_id = d.doc_id ORDER BY idm.institution_id";
+        String sql = "SELECT idm.IDM_ID, idm.doctor_id, idm.institution_id, i.inst_name, d.doc_name, d.contact_number, dc.name, dc.max_visit from Institutions as i " +
+                "INNER JOIN InstitutionDoctorMaps as idm on i.inst_id = idm.institution_id INNER JOIN Doctors as d on idm.doctor_id = d.doc_id " +
+                "INNER JOIN DoctorClasses as dc on idm.class_id = dc.doctor_classes_id ORDER BY idm.institution_id";
         Cursor cur = db.rawQuery(sql, null);
         ArrayList<HashMap<String, String>> array = new ArrayList<>();
 
         while (cur.moveToNext()) {
+            String class_code = cur.getString(cur.getColumnIndex("name")) + " (" + cur.getString(cur.getColumnIndex("max_visit")) + "x)";
+
             HashMap<String, String> map = new HashMap<>();
             map.put("doctor_id", cur.getString(cur.getColumnIndex(DOCTOR_ID_FK)));
+            map.put("IDM_id", cur.getString(cur.getColumnIndex("IDM_ID")));
             map.put("doctor_inst_id", cur.getString(cur.getColumnIndex(INSTITUTION_ID_FK)));
-            map.put("doctor_name", cur.getString(cur.getColumnIndex("doc_name")));
+            map.put("doc_name", cur.getString(cur.getColumnIndex("doc_name")));
+            map.put("contact_number", cur.getString(cur.getColumnIndex("contact_number")));
+            map.put("inst_name", cur.getString(cur.getColumnIndex("inst_name")));
+            map.put("class_code", class_code);
             array.add(map);
         }
 

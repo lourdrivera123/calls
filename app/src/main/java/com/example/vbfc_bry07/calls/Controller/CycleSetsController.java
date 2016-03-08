@@ -1,6 +1,9 @@
 package com.example.vbfc_bry07.calls.Controller;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 public class CycleSetsController extends DbHelper {
 
@@ -19,5 +22,30 @@ public class CycleSetsController extends DbHelper {
     public CycleSetsController(Context context) {
         super(context);
         dbHelper = new DbHelper(context);
+    }
+
+    public static void insertStartUpYear(SQLiteDatabase db) {
+        ContentValues val = new ContentValues();
+        val.put(CycleSets_ID, 1);
+        val.put(CODE, "CYCLE2016");
+        val.put(YEAR, 2016);
+        val.put(UPLOADER, "DUMMY");
+
+        db.insert(TBL_CycleSets, null, val);
+    }
+
+    public int getCycleSetID(int year) {
+        String sql = "SELECT * FROM " + TBL_CycleSets + " WHERE " + YEAR + " = " + year;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+        int cycle_setID = 0;
+
+        if (cur.moveToNext())
+            cycle_setID = cur.getInt(cur.getColumnIndex(CycleSets_ID));
+
+        cur.close();
+        db.close();
+
+        return cycle_setID;
     }
 }

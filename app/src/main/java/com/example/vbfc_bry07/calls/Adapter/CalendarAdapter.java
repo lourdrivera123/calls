@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -14,10 +15,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.vbfc_bry07.calls.Activity.MCPActivity;
-import com.example.vbfc_bry07.calls.CalendarCollection;
 import com.example.vbfc_bry07.calls.Helpers;
 import com.example.vbfc_bry07.calls.R;
 
@@ -31,15 +32,14 @@ public class CalendarAdapter extends BaseAdapter {
     String itemvalue, currentDateString;
 
     public static List<String> day_string;
-    public ArrayList<CalendarCollection> date_collection_arr;
 
     TextView dayView, with_plan;
     View previousView;
+    LinearLayout parent_layout;
 
     Helpers helpers;
 
-    public CalendarAdapter(Context context, GregorianCalendar monthCalendar, ArrayList<CalendarCollection> date_collection_arr) {
-        this.date_collection_arr = date_collection_arr;
+    public CalendarAdapter(Context context, GregorianCalendar monthCalendar) {
         CalendarAdapter.day_string = new ArrayList<>();
         month = monthCalendar;
         GregorianCalendar selectedDate = (GregorianCalendar) monthCalendar.clone();
@@ -65,7 +65,7 @@ public class CalendarAdapter extends BaseAdapter {
         return 0;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         View v = convertView;
 
         if (convertView == null) {
@@ -75,9 +75,10 @@ public class CalendarAdapter extends BaseAdapter {
 
         dayView = (TextView) v.findViewById(R.id.date);
         with_plan = (TextView) v.findViewById(R.id.with_plan);
+        parent_layout = (LinearLayout) v.findViewById(R.id.parent_layout);
 
         dayView.setTag(position);
-        with_plan.setTag(position);
+        parent_layout.setTag(with_plan);
 
         String[] separatedTime = day_string.get(position).split("-");
         String gridvalue = separatedTime[2].replaceFirst("^0*", "");
@@ -96,6 +97,7 @@ public class CalendarAdapter extends BaseAdapter {
         if (day_string.get(position).equals(currentDateString)) {
             MCPActivity.picked_date.setText(helpers.convertToAlphabetDate(currentDateString));
             MCPActivity.picked_day.setText(helpers.convertToDayOfWeek(currentDateString));
+            MCPActivity.date = currentDateString;
             dayView.setTextColor(Color.parseColor("#A45F6E"));
         }
 
@@ -163,38 +165,16 @@ public class CalendarAdapter extends BaseAdapter {
     }
 
 
-    public void setEventView(int pos) {
-        int len = CalendarCollection.date_collection_arr.size();
+    public void setEventView(final int pos) {
+        int len = MCPActivity.list_of_plans.size();
+        String date_selected = day_string.get(pos);
 
-        for (int i = 0; i < len; i++) {
-            CalendarCollection cal_obj = CalendarCollection.date_collection_arr.get(i);
+        for (int x = 0; x < len; x++) {
+            HashMap<String, ArrayList<HashMap<String, String>>> map_per_day = MCPActivity.list_of_plans.get(x);
+            String date_on_map = map_per_day.keySet().toString().replace("[", "").replace("]", "");
 
-            String date = cal_obj.date;
-            int len1 = day_string.size();
-
-            if (len1 > pos) {
-                if (day_string.get(pos).equals(date)) {
-                    with_plan.setVisibility(View.VISIBLE);
-                    break;
-                } else
-                    with_plan.setVisibility(View.INVISIBLE);
-            }
-        }
-    }
-
-
-    public void getPositionList(String date) {
-        int len = CalendarCollection.date_collection_arr.size();
-
-        for (int i = 0; i < len; i++) {
-            CalendarCollection cal_collection = CalendarCollection.date_collection_arr.get(i);
-            String event_date = cal_collection.date;
-
-//            String event_message = cal_collection.event_message;
-
-            if (date.equals(event_date)) {
-//                Toast.makeText(context, "You have event on this date: " + event_date, Toast.LENGTH_LONG).show();
-                break;
+            if (date_on_map.equals(date_selected)) {
+                with_plan.setVisibility(View.VISIBLE);
             }
         }
     }

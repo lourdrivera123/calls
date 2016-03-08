@@ -9,17 +9,22 @@ import android.widget.TextView;
 
 import com.example.vbfc_bry07.calls.R;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class MCPAdapter extends BaseAdapter {
     TextView doctor_name, doctor_hospital, doctor_number, doctor_class;
+    ArrayList<HashMap<String, String>> objects;
     Context context;
 
-    public MCPAdapter(Context context) {
+    public MCPAdapter(Context context, ArrayList<HashMap<String, String>> objects) {
         this.context = context;
+        this.objects = objects;
     }
 
     @Override
     public int getCount() {
-        return 0;
+        return objects.size();
     }
 
     @Override
@@ -46,6 +51,16 @@ public class MCPAdapter extends BaseAdapter {
         doctor_number = (TextView) v.findViewById(R.id.doctor_number);
         doctor_class = (TextView) v.findViewById(R.id.doctor_class);
 
+        String name = (1 + position) + ". " + objects.get(position).get("doc_name");
+
+        if (objects.get(position).get("contact_number").equals(""))
+            doctor_number.setVisibility(View.GONE);
+        else
+            doctor_number.setText(objects.get(position).get("contact_number"));
+
+        doctor_name.setText(name);
+        doctor_hospital.setText(objects.get(position).get("inst_name"));
+        doctor_class.setText(objects.get(position).get("class_code"));
         return v;
     }
 }

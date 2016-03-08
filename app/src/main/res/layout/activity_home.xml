@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="#F6F2EC"
-                android:textSize="12sp" />
+                android:textSize="13sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -73,7 +73,7 @@
                             android:gravity="center_vertical"
                             android:text="Quick Sign"
                             android:textColor="#F6F2EC"
-                            android:textSize="10sp" />
+                            android:textSize="12sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -98,7 +98,7 @@
                             android:gravity="center_vertical"
                             android:text="Actual Coverage Plan"
                             android:textColor="#F6F2EC"
-                            android:textSize="10sp" />
+                            android:textSize="12sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -123,7 +123,7 @@
                             android:gravity="center_vertical"
                             android:text="Master Coverage Plan"
                             android:textColor="#F6F2EC"
-                            android:textSize="10sp" />
+                            android:textSize="12sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -148,7 +148,7 @@
                             android:gravity="center_vertical"
                             android:text="Doctors Information"
                             android:textColor="#F6F2EC"
-                            android:textSize="10sp" />
+                            android:textSize="12sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -173,7 +173,7 @@
                             android:gravity="center_vertical"
                             android:text="Call Report"
                             android:textColor="#F6F2EC"
-                            android:textSize="10sp" />
+                            android:textSize="12sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -198,7 +198,7 @@
                             android:gravity="center_vertical"
                             android:text="Sales Report"
                             android:textColor="#F6F2EC"
-                            android:textSize="10sp" />
+                            android:textSize="12sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -223,7 +223,7 @@
                             android:gravity="center_vertical"
                             android:text="Material Monitoring"
                             android:textColor="#F6F2EC"
-                            android:textSize="10sp" />
+                            android:textSize="12sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -248,7 +248,7 @@
                             android:gravity="center_vertical"
                             android:text="Status Summary"
                             android:textColor="#F6F2EC"
-                            android:textSize="10sp" />
+                            android:textSize="12sp" />
                     </LinearLayout>
                 </LinearLayout>
             </ScrollView>

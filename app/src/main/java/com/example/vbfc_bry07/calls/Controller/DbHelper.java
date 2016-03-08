@@ -60,6 +60,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(VersionsController.CREATE_Versions);
 
         PreferencesController.insertToTablePreferences(db);
+        CycleSetsController.insertStartUpYear(db);
     }
 
     @Override
