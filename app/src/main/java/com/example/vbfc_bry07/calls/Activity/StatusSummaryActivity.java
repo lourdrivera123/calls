@@ -69,16 +69,16 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
         float UnprocessedCalls = CC.UnprocessedCalls(current_cycle_month, current_cycle_year);
         float SuccessfulCalls = ((Planned_Calls)-(IncidentalCalls + RecoveredCalls + DeclaredMissedCalls + UnprocessedCalls));
         yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls, SuccessfulCalls};
-        String labelIC = "Incidental Calls " + (int)IncidentalCalls + "/" + Planned_Calls;
-        String labelRC = "Recovered Calls " + (int)RecoveredCalls + "/" + Planned_Calls;
-        String labelDMC = "Declared Missed Calls " + (int)DeclaredMissedCalls + "/" + Planned_Calls;
-        String labelUC = "Unprocessed Calls " + (int)UnprocessedCalls + "/" + Planned_Calls;
+        String labelIC = "Incidental Calls " + (int)IncidentalCalls + "/" + (int)Planned_Calls;
+        String labelRC = "Recovered Calls " + (int)RecoveredCalls + "/" + (int)Planned_Calls;
+        String labelDMC = "Declared Missed Calls " + (int)DeclaredMissedCalls + "/" + (int)Planned_Calls;
+        String labelUC = "Unprocessed Calls " + (int)UnprocessedCalls + "/" + (int)Planned_Calls;
         String labelSC = "Succesful Calls " + (int)SuccessfulCalls + "/" + (int)Planned_Calls;
         xData = new String[]{labelIC, labelRC, labelDMC, labelUC, labelSC};
 
         // Configure Pie Chart
         chart.setUsePercentValues(true);
-        chart.setDescription("Planned Calls: " + CC.fetchPlannedCalls(current_cycle_month, current_cycle_year));
+        chart.setDescription("Planned Calls: " + (int)CC.fetchPlannedCalls(current_cycle_month, current_cycle_year));
 
         // Enable hole and configure
         chart.setDrawHoleEnabled(true);
@@ -222,16 +222,16 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
         float UnprocessedCalls = CC.UnprocessedCalls(("'" + selected_cycle_month + "'"), ("'" + year + "'"));
         float SuccessfulCalls = ((Planned_Calls)-(IncidentalCalls + RecoveredCalls + DeclaredMissedCalls + UnprocessedCalls));
         yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls, SuccessfulCalls};
-        String labelIC = "Incidental Calls " + (int)IncidentalCalls + "/" + Planned_Calls;
-        String labelRC = "Recovered Calls " + (int)RecoveredCalls + "/" + Planned_Calls;
-        String labelDMC = "Declared Missed Calls " + (int)DeclaredMissedCalls + "/" + Planned_Calls;
-        String labelUC = "Unprocessed Calls " + (int)UnprocessedCalls + "/" + Planned_Calls;
+        String labelIC = "Incidental Calls " + (int)IncidentalCalls + "/" + (int)Planned_Calls;
+        String labelRC = "Recovered Calls " + (int)RecoveredCalls + "/" + (int)Planned_Calls;
+        String labelDMC = "Declared Missed Calls " + (int)DeclaredMissedCalls + "/" + (int)Planned_Calls;
+        String labelUC = "Unprocessed Calls " + (int)UnprocessedCalls + "/" + (int)Planned_Calls;
         String labelSC = "Succesful Calls " + (int)SuccessfulCalls + "/" + (int)Planned_Calls;
         xData = new String[]{labelIC, labelRC, labelDMC, labelUC, labelSC};
 
         // Configure Pie Chart
         chart.setUsePercentValues(true);
-        chart.setDescription("Planned Calls: " + CC.fetchPlannedCalls(("'"+selected_cycle_month+"'"), ("'"+year+"'")));
+        chart.setDescription("Planned Calls: " + (int) CC.fetchPlannedCalls(("'" + selected_cycle_month + "'"), ("'" + year + "'")));
 
         // Enable hole and configure
         chart.setDrawHoleEnabled(true);
