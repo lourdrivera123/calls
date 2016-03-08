@@ -72,7 +72,8 @@ public class DoctorsController extends DbHelper {
                 "FROM Doctors " +
                 "where month = strftime('%m', date()) " +
                 "   and year = strftime('%Y', date()) " +
-                "   and day = strftime('%d', date())";
+                "   and day = strftime('%d', date())" +
+                "ORDER by doc_name ASC";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
 

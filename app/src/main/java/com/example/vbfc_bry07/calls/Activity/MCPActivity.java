@@ -89,6 +89,7 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
         list_of_calls = (ListView) findViewById(R.id.list_of_calls);
 
         list_of_plans = new ArrayList<>();
+        new_plan_details = new ArrayList<>();
         pc = new PlansController(this);
         pdc = new PlanDetailsController(this);
         csc = new CycleSetsController(this);
@@ -102,6 +103,9 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
         cal_month = Calendar.getInstance();
         cal_adapter = new CalendarAdapter(this, cal_month, list_of_plans);
         gv_calendar.setAdapter(cal_adapter);
+
+        mcp_adapter = new MCPAdapter(this, new_plan_details);
+        list_of_calls.setAdapter(mcp_adapter);
 
         tv_month.setText(android.text.format.DateFormat.format("MMMM yyyy", cal_month));
         prev.setOnClickListener(this);
@@ -421,7 +425,7 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
     public void refreshCalendar() {
         new_plan_details = new ArrayList<>();
         mcp_adapter.notifyDataSetChanged();
-        
+
         invalidateOptionsMenu();
         cal_adapter.refreshDays();
         cal_adapter.notifyDataSetChanged();

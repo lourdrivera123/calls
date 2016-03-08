@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +32,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
@@ -105,22 +105,24 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         username.setText(getUsername());
 
         // data for Pie Chart
-        String Planned_Calls = CC.fetchPlannedCalls(current_cycle_month, current_cycle_year);
+        float Planned_Calls = CC.fetchPlannedCalls(current_cycle_month, current_cycle_year);
 
         final float IncidentalCalls = CC.IncidentalCalls(current_cycle_month, current_cycle_year);
         float RecoveredCalls = CC.RecoveredCalls(current_cycle_month, current_cycle_year);
         float DeclaredMissedCalls = CC.DeclaredMissedCalls(current_cycle_month, current_cycle_year);
         float UnprocessedCalls = CC.UnprocessedCalls(current_cycle_month, current_cycle_year);
-        yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls};
-        String labelIC = "Incidental Calls " + (int) IncidentalCalls + "/" + Planned_Calls;
-        String labelRC = "Recovered Calls " + (int) RecoveredCalls + "/" + Planned_Calls;
-        String labelDMC = "Declared Missed Calls " + (int) DeclaredMissedCalls + "/" + Planned_Calls;
-        String labelUC = "Unprocessed Calls " + (int) UnprocessedCalls + "/" + Planned_Calls;
-        xData = new String[]{labelIC, labelRC, labelDMC, labelUC};
+        float SuccessfulCalls = ((Planned_Calls) - (IncidentalCalls + RecoveredCalls + DeclaredMissedCalls + UnprocessedCalls));
+        yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls, SuccessfulCalls};
+        String labelIC = "Incidental Calls " + (int) IncidentalCalls + "/" + (int) Planned_Calls;
+        String labelRC = "Recovered Calls " + (int) RecoveredCalls + "/" + (int) Planned_Calls;
+        String labelDMC = "Declared Missed Calls " + (int) DeclaredMissedCalls + "/" + (int) Planned_Calls;
+        String labelUC = "Unprocessed Calls " + (int) UnprocessedCalls + "/" + (int) Planned_Calls;
+        String labelSC = "Succesful Calls " + (int) SuccessfulCalls + "/" + (int) Planned_Calls;
+        xData = new String[]{labelIC, labelRC, labelDMC, labelUC, labelSC};
 
         // Configure Pie Chart
         chart.setUsePercentValues(true);
-        chart.setDescription("Planned Calls: " + Planned_Calls);
+        chart.setDescription("Planned Calls: " + (int) Planned_Calls);
 
         // Enable hole and configure
         chart.setDrawHoleEnabled(true);
@@ -165,17 +167,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     private void addData() {
 
-        ArrayList<Entry> yVals1 = new ArrayList<Entry>();
+        ArrayList<Entry> yVals1 = new ArrayList<>();
 
         for (int i = 0; i < yData.length; i++) {
             yVals1.add(new Entry(yData[i], i));
         }
 
-        ArrayList<String> xVals1 = new ArrayList<String>();
+        ArrayList<String> xVals1 = new ArrayList<>();
 
-        for (int i = 0; i < xData.length; i++) {
-            xVals1.add(xData[i]);
-        }
+        Collections.addAll(xVals1, xData);
 
         // Create pie data set
         PieDataSet dataset = new PieDataSet(yVals1, "");
@@ -183,7 +183,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         dataset.setSelectionShift(5);
 
         // Add many colors
-        ArrayList<Integer> colors = new ArrayList();
+        ArrayList<Integer> colors = new ArrayList<>();
 
         for (int c : ColorTemplate.VORDIPLOM_COLORS) {
             colors.add(c);

@@ -36,16 +36,16 @@ public class CallsController extends DbHelper {
         dbHelper = new DbHelper(context);
     }
 
-    public String fetchPlannedCalls(String cycle_month, String cycle_year) {
+    public float fetchPlannedCalls(String cycle_month, String cycle_year) {
         String sql = "Select strftime('%m', start_datetime) as cycle_month, strftime('%Y', start_datetime) as cycle_year, count(*) as planned_calls FROM Calls " +
                 "where cycle_month = " + cycle_month + " and cycle_year = " + cycle_year + " " +
                 "group by cycle_month, cycle_year";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
-        String planned_calls = "0";
+        float planned_calls = 0;
 
         while (cur.moveToNext()) {
-            planned_calls = cur.getString(cur.getColumnIndex("planned_calls"));
+            planned_calls = cur.getFloat(cur.getColumnIndex("planned_calls"));
         }
 
         cur.close();
