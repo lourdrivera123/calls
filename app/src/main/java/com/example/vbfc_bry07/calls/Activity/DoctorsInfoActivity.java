@@ -33,9 +33,7 @@ public class DoctorsInfoActivity extends AppCompatActivity implements TextWatche
 
     ArrayList<HashMap<String, String>> all_doctors;
     ListAdapter doctorAdapter;
-    // HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild;
     ArrayList<HashMap<String, String>> doctors_array = new ArrayList<>();
-    ArrayList<HashMap<String, Object>> searchResults;
 
     TextView TxtDoctorName, TxtDoctorSpecialty, TxtDoctorNumber, TxtDoctorClass, TxtDoctorBirthDate, no_records;
     String DoctorName, DoctorSpecialty, DoctorNumber, DoctorClass, DoctorBirthDate;

@@ -1,6 +1,11 @@
 package com.example.vbfc_bry07.calls.Controller;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CallsController extends DbHelper {
 
@@ -30,4 +35,106 @@ public class CallsController extends DbHelper {
         super(context);
         dbHelper = new DbHelper(context);
     }
+
+    public String fetchPlannedCalls(String cycle_month, String cycle_year) {
+        String sql = "Select strftime('%m', start_datetime) as cycle_month, strftime('%Y', start_datetime) as cycle_year, count(*) as planned_calls FROM Calls " +
+                "where cycle_month = " + cycle_month + " and cycle_year = " + cycle_year + " " +
+                "group by cycle_month, cycle_year";
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+        String planned_calls = "0";
+
+        while (cur.moveToNext()) {
+            planned_calls = cur.getString(cur.getColumnIndex("planned_calls"));
+        }
+
+        cur.close();
+        db.close();
+
+        return planned_calls;
+    }
+
+    public float IncidentalCalls(String cycle_month, String cycle_year) {
+        String sql = "Select strftime('%m', start_datetime) as cycle_month, strftime('%Y', start_datetime) as cycle_year, count(*) as planned_calls FROM Calls " +
+                "where planned = 0 and cycle_month = " + cycle_month + " and cycle_year = " + cycle_year + " " +
+                "group by cycle_month, cycle_year";
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+        float planned_calls = 0;
+
+        while (cur.moveToNext()) {
+            planned_calls = Float.parseFloat(cur.getString(cur.getColumnIndex("planned_calls")));
+        }
+
+        cur.close();
+        db.close();
+
+        return planned_calls;
+    }
+
+    public float RecoveredCalls(String cycle_month, String cycle_year) {
+        String sql = "Select strftime('%m', start_datetime) as cycle_month, strftime('%Y', start_datetime) as cycle_year, count(*) as recovered_calls FROM Calls " +
+                "where makeup = 0 and reschedule_date > 0 and cycle_month = " + cycle_month + " and cycle_year = " + cycle_year + " " +
+                "group by cycle_month, cycle_year";
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+        float recovered_calls = 0;
+
+        while (cur.moveToNext()) {
+            recovered_calls = Float.parseFloat(cur.getString(cur.getColumnIndex("recovered_calls")));
+        }
+
+        cur.close();
+        db.close();
+
+        return recovered_calls;
+    }
+
+    public float UnprocessedCalls(String cycle_month, String cycle_year) {
+        String sql = "SELECT C.id, C.calls_id, C.start_datetime, C.end_datetime, CD.date, count(*) as unprocessed_calls, " +
+                "   strftime('%m', CD.date) as cycle_month, strftime('%Y', CD.date) as cycle_year " +
+                "FROM Calls C " +
+                "   inner join CycleDays CD on C.cycle_day_id = CD.id " +
+                "   inner join MissedCalls MC on MC.call_id_fk != C.calls_id " +
+                "where C.start_datetime = '' " +
+                "   and C.end_datetime = '' " +
+                "   and cycle_month = " + cycle_month + " " +
+                "   and cycle_year = " + cycle_year + " " +
+                "group by CD.date";
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+        float unprocessed_calls = 0;
+
+        while (cur.moveToNext()) {
+            unprocessed_calls = Float.parseFloat(cur.getString(cur.getColumnIndex("unprocessed_calls")));
+        }
+
+        cur.close();
+        db.close();
+
+        return unprocessed_calls;
+    }
+
+    public float DeclaredMissedCalls(String cycle_month, String cycle_year) {
+        String sql = "SELECT count(MC.id) as missed_calls, MC.call_id_fk, CD.date, " +
+                "   strftime('%m', CD.date) as cycle_month, " +
+                "   strftime('%Y', CD.date) as cycle_year " +
+                "FROM MissedCalls MC " +
+                "   inner join Calls C on MC.call_id_fk = C.calls_id " +
+                "   inner join CycleDays CD on C.cycle_day_id = CD.id " +
+                "where cycle_month = " + cycle_month + " and cycle_year = " + cycle_year + " ";
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+        float missed_calls = 0;
+
+        while (cur.moveToNext()) {
+            missed_calls = Float.parseFloat(cur.getString(cur.getColumnIndex("missed_calls")));
+        }
+
+        cur.close();
+        db.close();
+
+        return missed_calls;
+    }
+
 }
