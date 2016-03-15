@@ -13,9 +13,6 @@ import com.example.vbfc_bry07.calls.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * Created by vbfc_bry07 on 08/03/2016.
- */
 public class BirthdayListAdapter extends ArrayAdapter {
 
     LayoutInflater inflater;

@@ -15,12 +15,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:gravity="bottom|right">
+        android:gravity="bottom|end">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/add_note"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:clickable="true"
             android:scaleType="center"
             android:src="@mipmap/add" />

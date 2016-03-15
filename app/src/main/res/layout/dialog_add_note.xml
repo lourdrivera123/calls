@@ -4,10 +4,11 @@
     android:layout_height="match_parent">
 
     <EditText
+        android:id="@+id/note"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="top|left"
-        android:hint="Add note"
+        android:hint="Add note..."
         android:inputType="textMultiLine"
         android:maxLines="5"
         android:minLines="5"

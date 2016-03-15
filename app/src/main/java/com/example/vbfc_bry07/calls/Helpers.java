@@ -1,9 +1,17 @@
 package com.example.vbfc_bry07.calls;
 
+import android.widget.ExpandableListView;
+
+import com.example.vbfc_bry07.calls.Adapter.ExpandableListAdapter;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class Helpers {
 
@@ -40,5 +48,19 @@ public class Helpers {
         }
         assert sdf != null;
         return sdf.format(date);
+    }
+
+    public String getCurrentDate(String type) {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat df;
+
+        if (type.equals("timestamp")) {
+            df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        } else
+            df = new SimpleDateFormat("yyyy-MM-dd");
+
+        df.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+
+        return df.format(cal.getTime());
     }
 }

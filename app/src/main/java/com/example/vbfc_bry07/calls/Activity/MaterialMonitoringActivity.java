@@ -16,7 +16,7 @@ import com.example.vbfc_bry07.calls.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MaterialMonetoringActivity extends AppCompatActivity {
+public class MaterialMonitoringActivity extends AppCompatActivity {
 
     ListView productsListView;
     DbHelper dbHelper;

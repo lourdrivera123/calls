@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     android:orientation="vertical"
     android:screenOrientation="landscape">
 
@@ -10,7 +12,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#A25063"
+        android:background="@color/toolbar"
         android:minHeight="?attr/actionBarSize"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -23,69 +25,106 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:baselineAligned="false"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.3"
-            android:background="#ecf0f1"
+            android:layout_weight="0.35"
+            android:background="@android:color/white"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingBottom="5dp"
-                android:paddingRight="5dp"
-                android:paddingTop="5dp">
+                android:padding="10dp">
 
                 <TextView
                     android:id="@+id/LblDate"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="FEBRUARY 06"
-                    android:textSize="13sp" />
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textColor="@color/header"
+                    android:textSize="15sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:gravity="center|right">
+                    android:layout_height="20dp"
+                    android:gravity="center|right"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/view_acp"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
+                        android:background="@drawable/state_circle"
+                        android:padding="3dp"
                         android:src="@mipmap/ic_edit" />
+
+                    <ImageView
+                        android:id="@+id/add_incidental_call"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/state_circle"
+                        android:padding="1dp"
+                        android:src="@mipmap/ic_add_incidental_call" />
                 </LinearLayout>
             </LinearLayout>
 
-            <ExpandableListView
-                android:id="@+id/HospitalListView"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@drawable/colored_shadow" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:divider="@color/colorPrimary" />
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
+
+                <ExpandableListView
+                    android:id="@+id/HospitalListView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:childDivider="@android:color/transparent"
+                    android:divider="@android:color/transparent"
+                    android:dividerHeight="2dp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/no_calls"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="You have no scheduled calls for today. \nTap the edit icon to switch between dates or add icon to add Incidental call"
+                    android:textSize="12sp"
+                    android:textStyle="italic" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.7"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="0.65"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/header_green"
+                android:background="@color/header"
                 android:orientation="horizontal"
                 android:padding="10dp">
 
                 <TextView
+                    android:id="@+id/doctor_name"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:text="Villanueva, Manuel"
                     android:textColor="@android:color/white"
                     android:textSize="15sp" />
 
@@ -93,14 +132,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:layout_marginLeft="5dp"
-                    android:src="@mipmap/ic_signature" />
+                    android:src="@mipmap/ic_signature"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:background="@color/header_green"
+                android:background="@color/header"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:tabGravity="fill"
                 app:tabMode="fixed"
@@ -112,7 +152,7 @@
                 android:id="@+id/pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/left_shadow_border"
+                android:background="@android:color/white"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
         </LinearLayout>
     </LinearLayout>

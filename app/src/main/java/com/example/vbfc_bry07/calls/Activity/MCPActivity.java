@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 public class MCPActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener, TextWatcher, ExpandableListView.OnChildClickListener {
     Calendar cal_month;
@@ -100,7 +101,9 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Master Coverage Plan");
 
-        cal_month = Calendar.getInstance();
+        TimeZone zone = TimeZone.getTimeZone("GMT+8");
+        cal_month = Calendar.getInstance(zone);
+
         cal_adapter = new CalendarAdapter(this, cal_month, list_of_plans);
         gv_calendar.setAdapter(cal_adapter);
 
@@ -178,13 +181,17 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
                     if (plan_id > 0) {
                         if (pdc.insertPlanDetails(plan_id, list_of_plans)) {
                             Snackbar.make(root, "Successfully saved", Snackbar.LENGTH_SHORT).show();
+
+                            cal_adapter = new CalendarAdapter(this, cal_month, list_of_plans);
+                            gv_calendar.setAdapter(cal_adapter);
                         } else
                             Snackbar.make(root, "Error occurred", Snackbar.LENGTH_SHORT).show();
                     } else if (plan_id == 0)
                         Snackbar.make(root, "Error occurred", Snackbar.LENGTH_SHORT).show();
                     else
                         Snackbar.make(root, "You already have schedule for this month.", Snackbar.LENGTH_SHORT).show();
-                }
+                } else
+                    Snackbar.make(root, "Unable to add schedule with no content", Snackbar.LENGTH_SHORT).show();
                 break;
         }
 
@@ -283,8 +290,8 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     private void prepareListData() {
-        institutions = idmc.getInstitutions();
-        doctors = idmc.getDoctorsWithInstitutions();
+        institutions = idmc.getInstitutions("");
+        doctors = idmc.getDoctorsWithInstitutions("");
         listDataHeader = new ArrayList<>();
         duplicate_list_child = new HashMap<>();
         listDataChild = new HashMap<>();
@@ -333,7 +340,7 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
                 for (int y = 0; y < new_array.size(); y++) {
                     HashMap<String, String> hash = new_array.get(y);
 
-                    if (hash.get("doctor_name").toLowerCase().contains(search.toLowerCase()))
+                    if (hash.get("doc_name").toLowerCase().contains(search.toLowerCase()))
                         array_for_child.add(hash);
                 }
 
@@ -374,7 +381,7 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     void checkIfHasUnsaved(final String where) {
-        final int[] check = {0};
+        int check = 0;
 
         if (flag) {
             if (list_of_plans.size() > 0 || hash_plans_per_day.size() > 0) {
@@ -383,17 +390,21 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
                 alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        check[0] += 1;
+                        if (where.equals("Next"))
+                            setNextMonth();
+                        else
+                            setPreviousMonth();
+                        refreshCalendar();
                     }
                 });
                 alert.setNegativeButton("No", null);
                 alert.show();
             } else
-                check[0] += 1;
+                check += 1;
         } else
-            check[0] += 1;
+            check += 1;
 
-        if (check[0] > 0) {
+        if (check > 0) {
             if (where.equals("Next"))
                 setNextMonth();
             else
@@ -423,8 +434,7 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     public void refreshCalendar() {
-        new_plan_details = new ArrayList<>();
-        mcp_adapter.notifyDataSetChanged();
+        setPerDayPlans(date);
 
         invalidateOptionsMenu();
         cal_adapter.refreshDays();

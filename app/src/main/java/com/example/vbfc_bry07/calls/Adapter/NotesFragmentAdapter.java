@@ -22,7 +22,7 @@ public class NotesFragmentAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return 1;
+        return objects.size();
     }
 
     @Override
@@ -37,8 +37,11 @@ public class NotesFragmentAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null)
-            convertView = LayoutInflater.from(context).inflate(R.layout.adapter_notes_fragment, parent, false);
+
+        if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.adapter_notes_fragment, parent, false);
+        }
 
         return convertView;
     }

@@ -288,21 +288,20 @@
                 android:orientation="horizontal">
 
 
-
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_weight="0.4"
                     android:layout_height="match_parent"
+                    android:layout_weight="0.4"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="5dp"
                         android:gravity="center"
-                        android:textStyle="bold"
+                        android:padding="5dp"
+                        android:text="Broadcast Messages"
                         android:textSize="13sp"
-                        android:text="Broadcast Messages" />
+                        android:textStyle="bold" />
 
                     <ListView
                         android:id="@+id/listBroadcastMessage"
@@ -314,15 +313,14 @@
 
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_weight="0.6"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.6">
 
                     <com.github.mikephil.charting.charts.PieChart
                         android:id="@+id/chart"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
                 </LinearLayout>
-
             </LinearLayout>
 
             <LinearLayout
@@ -333,13 +331,11 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="CYCLE 11 - Last Sync Date: November 27, 2015 20:45:05"
-                    android:textSize="10sp"
-                    android:textAlignment="textEnd"
+                    android:gravity="bottom|right"
                     android:paddingLeft="5dp"
-                    android:gravity="bottom"/>
+                    android:text="CYCLE 11 - Last Sync Date: November 27, 2015 20:45:05"
+                    android:textSize="10sp" />
             </LinearLayout>
         </LinearLayout>
-
     </LinearLayout>
 </LinearLayout>

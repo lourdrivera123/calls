@@ -3,7 +3,6 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primaryGreen"
     android:gravity="center"
     android:orientation="horizontal">
 
@@ -44,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dip"
                 android:layout_below="@+id/login"
-                android:background="@color/primaryGreen" />
+                android:background="@color/toolbar" />
 
             <LinearLayout
                 android:id="@+id/layout_uname"
@@ -103,7 +102,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_marginTop="10dp"
-                android:background="@color/primaryGreen"
+                android:background="@color/header"
                 android:minHeight="30dp"
                 android:text="LOGIN"
                 android:textColor="@android:color/white"

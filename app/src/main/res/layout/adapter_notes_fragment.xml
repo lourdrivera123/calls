@@ -8,20 +8,17 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sample Note..."
-        android:textSize="14sp"
+        android:textSize="13sp"
         android:textStyle="bold" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text="02-03-2016"
         android:textSize="11sp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Post Call"
         android:textSize="11sp" />
 </LinearLayout>

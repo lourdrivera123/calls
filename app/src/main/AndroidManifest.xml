@@ -2,12 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.vbfc_bry07.calls">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".Activity.LoginActivity"
             android:screenOrientation="landscape"
@@ -27,24 +30,22 @@
             android:screenOrientation="landscape"
             android:theme="@style/Theme.MyTheme" />
         <activity
-            android:name=".Activity.DuplicateMCPActivity"
-            android:screenOrientation="landscape"
-            android:theme="@style/Theme.MyTheme" />
-        <activity
             android:name=".Activity.ACPActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.MyTheme" />
+            android:theme="@style/Theme.MyTheme"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Activity.CycleCalendarActivity"
             android:screenOrientation="landscape" />
         <activity
             android:name=".Activity.SignatureFormActivity"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.MyTheme" />
         <activity
             android:name=".Activity.DoctorsInfoActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".Activity.MaterialMonetoringActivity"
+            android:name=".Activity.MaterialMonitoringActivity"
             android:screenOrientation="landscape" />
         <activity
             android:name=".Activity.SalesReportActivity"
@@ -53,5 +54,4 @@
             android:name=".Activity.StatusSummaryActivity"
             android:screenOrientation="landscape" />
     </application>
-
 </manifest>

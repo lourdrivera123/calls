@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#309635</color>
-    <color name="background">#A7E0A5</color>
-    <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="primaryGreen">#1D976C</color>
+    <color name="header">#CC8584</color>
+    <color name="dark_brown">#8B7B7B</color>
+    <color name="toolbar">#A25063</color>
+    <color name="color_accent">#A25063</color>
+    <color name="text_color">#413B41</color>
+    <color name="background">#F6F2EC</color>
 
-    <color name="header_green">#79A888</color>
+    <color name="primaryBlue">#5CB3FF</color>
     <item name="gray" type="color">#808080</item>
     <item name="darkgray" type="color">#A9A9A9</item>
     <item name="darkergray" type="color">#312e2f</item>
-
-    <color name="color_accent">#F6F2EC</color>
-
-    <color name="primaryBlue">#5CB3FF</color>
 </resources>

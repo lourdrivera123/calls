@@ -13,9 +13,6 @@ import com.example.vbfc_bry07.calls.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * Created by vbfc_bry07 on 2/29/2016.
- */
 public class DoctorListAdapter extends ArrayAdapter {
 
     LayoutInflater inflater;
@@ -32,7 +29,6 @@ public class DoctorListAdapter extends ArrayAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // return super.getView(position, convertView, parent);
         convertView = inflater.inflate(R.layout.adapter_doctors_list, parent, false);
 
         doctor_name = (TextView) convertView.findViewById(R.id.doctor_name);
@@ -42,5 +38,4 @@ public class DoctorListAdapter extends ArrayAdapter {
 
         return convertView;
     }
-
 }

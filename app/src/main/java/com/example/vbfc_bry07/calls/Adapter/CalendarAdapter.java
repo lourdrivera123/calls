@@ -6,11 +6,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
+import java.util.TimeZone;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,8 +45,10 @@ public class CalendarAdapter extends BaseAdapter {
         this.context = context;
         this.plans = plans_objects;
         helpers = new Helpers();
-        df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        currentDateString = df.format(month.getTime());
+        df = new SimpleDateFormat("yyyy-MM-dd");
+        df.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+
+        currentDateString = helpers.getCurrentDate("date");
         refreshDays();
     }
 
@@ -122,8 +123,10 @@ public class CalendarAdapter extends BaseAdapter {
     public void refreshDays() {
         day_string.clear();
         pmonth = (Calendar) month.clone();
+
         // month start day. ie; sun, mon, etc
         firstDay = month.get(Calendar.DAY_OF_WEEK);
+
         // finding number of weeks in current month.
         maxWeeknumber = month.getActualMaximum(Calendar.WEEK_OF_MONTH);
         // allocating maximum row number for the gridview.
@@ -133,9 +136,8 @@ public class CalendarAdapter extends BaseAdapter {
 
         //Calendar instance for getting a complete gridview including the three month's (previous,current,next) dates.
         pmonthmaxset = (Calendar) pmonth.clone();
-
         //setting the start date as previous month's required date.
-        pmonthmaxset.set(Calendar.DAY_OF_MONTH, calMaxP + 1);
+        pmonthmaxset.set(Calendar.DAY_OF_MONTH, calMaxP);
 
         //filling calendar gridview.
         for (int n = 0; n < mnthlength; n++) {

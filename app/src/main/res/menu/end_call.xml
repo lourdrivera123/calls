@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/end_call"
+        android:icon="@mipmap/ic_end_call"
+        android:title="End Call"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/brochure"
+        android:icon="@mipmap/ic_brochure"
+        android:title="Brochure"
+        app:showAsAction="always" />
+</menu>

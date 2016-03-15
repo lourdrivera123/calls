@@ -52,7 +52,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     PieChart chart;
 
-
     DbHelper dbHelper;
     CallsController CC;
     DoctorsController DC;
@@ -107,10 +106,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // data for Pie Chart
         float Planned_Calls = CC.fetchPlannedCalls(current_cycle_month, current_cycle_year);
 
-        final float IncidentalCalls = CC.IncidentalCalls(current_cycle_month, current_cycle_year);
+//        final float IncidentalCalls = CC.IncidentalCalls(current_cycle_month, current_cycle_year);
+        final float IncidentalCalls = 0;
         float RecoveredCalls = CC.RecoveredCalls(current_cycle_month, current_cycle_year);
-        float DeclaredMissedCalls = CC.DeclaredMissedCalls(current_cycle_month, current_cycle_year);
-        float UnprocessedCalls = CC.UnprocessedCalls(current_cycle_month, current_cycle_year);
+//        float DeclaredMissedCalls = CC.DeclaredMissedCalls(current_cycle_month, current_cycle_year);
+        float DeclaredMissedCalls = 0;
+//        float UnprocessedCalls = CC.UnprocessedCalls(current_cycle_month, current_cycle_year);
+        float UnprocessedCalls = 0;
         float SuccessfulCalls = ((Planned_Calls) - (IncidentalCalls + RecoveredCalls + DeclaredMissedCalls + UnprocessedCalls));
         yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls, SuccessfulCalls};
         String labelIC = "Incidental Calls " + (int) IncidentalCalls + "/" + (int) Planned_Calls;
@@ -258,7 +260,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.quick_sign:
-                Toast.makeText(this, "Quick Sign", Toast.LENGTH_SHORT).show();
+
                 break;
             case R.id.actual_coverage_plan:
                 startActivity(new Intent(this, ACPActivity.class));
@@ -276,7 +278,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(this, SalesReportActivity.class));
                 break;
             case R.id.material_monitoring:
-                startActivity(new Intent(this, MaterialMonetoringActivity.class));
+                startActivity(new Intent(this, MaterialMonitoringActivity.class));
                 break;
             case R.id.status_summary:
                 startActivity(new Intent(this, StatusSummaryActivity.class));

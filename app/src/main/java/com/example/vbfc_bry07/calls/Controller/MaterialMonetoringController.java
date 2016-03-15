@@ -7,9 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * Created by vbfc_bry07 on 3/3/2016.
- */
 public class MaterialMonetoringController extends DbHelper {
 
     DbHelper dbHelper;
@@ -20,7 +17,7 @@ public class MaterialMonetoringController extends DbHelper {
     }
 
     public ArrayList<HashMap<String,String>> SelectAllProductsPerUser() {
-        ArrayList<HashMap<String, String>> products = new ArrayList();
+        ArrayList<HashMap<String, String>> products = new ArrayList<>();
         String sql = "SELECT " +
                 "    product_name, " +
                 "    sum(case when material_id = 1 then material_count end) Total_Sample, " +
@@ -45,7 +42,7 @@ public class MaterialMonetoringController extends DbHelper {
         Cursor cur = db.rawQuery(sql, null);
 
         while (cur.moveToNext()) {
-            HashMap<String, String> map = new HashMap();
+            HashMap<String, String> map = new HashMap<>();
             // map.put("id", cur.getString(cur.getColumnIndex("id")));
             // map.put("material_inventories_id", cur.getString(cur.getColumnIndex("material_inventories_id")));
             // map.put("cycle_set_id_fk", cur.getString(cur.getColumnIndex("cycle_set_id_fk")));

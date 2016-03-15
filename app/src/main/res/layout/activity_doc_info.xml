@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F6F2EC"
-    android:orientation="horizontal"
-    android:paddingTop="@dimen/activity_vertical_margin">
+    android:baselineAligned="false"
+    android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -12,39 +12,23 @@
         android:layout_weight="0.4"
         android:orientation="vertical">
 
-        <LinearLayout
+        <EditText
+            android:id="@+id/BtnSearch"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.1">
-
-
-            <EditText
-                android:id="@+id/BtnSearch"
-                android:layout_width="0dp"
-                android:layout_weight="0.9"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="-10dp"
-                android:hint="Search Doctors"
-                android:textSize="15sp" />
-
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:src="@mipmap/more"
-                android:layout_weight="0.1"/>
-
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:hint="Search Doctor..."
+            android:padding="10dp"
+            android:textSize="12sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dip"
-            android:layout_marginTop="10dp"
             android:background="#C87C7C" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.9"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <ListView
@@ -77,8 +61,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="10dp"
             android:layout_weight="0.3"
-            android:background="@color/header_green"
+            android:background="@color/header"
             android:gravity="bottom"
             android:orientation="vertical"
             android:padding="15dp">
@@ -87,7 +72,6 @@
                 android:id="@+id/TxtDoctorName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Asma, Zemiel"
                 android:textColor="@android:color/white"
                 android:textSize="13sp" />
 
@@ -95,7 +79,7 @@
                 android:id="@+id/TxtDoctorSpecialty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="General Partitioner"
+                android:text="SPECIALTY GOES HERE"
                 android:textColor="@android:color/white"
                 android:textSize="13sp" />
         </LinearLayout>
@@ -114,8 +98,7 @@
                 android:layout_height="wrap_content"
                 android:drawableLeft="@android:drawable/ic_menu_call"
                 android:gravity="center_vertical"
-                android:text="+639123456789"
-                android:textSize="13sp" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/TxtDoctorClass"
@@ -123,17 +106,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="35dp"
                 android:text="Class B (2x)"
-                android:textSize="13sp" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/TxtDoctorBirthDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:drawableLeft="@android:drawable/ic_menu_my_calendar"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="5dp"
-                android:text="02/23/1995"
-                android:textSize="13sp" />
+                android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 public class PlanDetailsController extends DbHelper {
     DbHelper dbHelper;
+    Helpers helpers;
 
     static String TBL_PlanDetails = "PlanDetails",
             PlanDetails_ID = "plan_details_id",
@@ -26,8 +27,10 @@ public class PlanDetailsController extends DbHelper {
     public PlanDetailsController(Context context) {
         super(context);
         dbHelper = new DbHelper(context);
+        helpers = new Helpers();
     }
 
+    //GET METHODS
     public ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> getPlanDetailsByPlanID(int plan_id) {
         String sql1 = "SELECT DISTINCT cycle_day FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p.id WHERE pd.plan_id = " + plan_id;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -72,6 +75,8 @@ public class PlanDetailsController extends DbHelper {
         return array;
     }
 
+
+    //INSERT METHODS
     public boolean insertPlanDetails(long plan_id, ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> details) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         long id = 0;
@@ -86,6 +91,7 @@ public class PlanDetailsController extends DbHelper {
                 val.put(PLAN_ID_FK, plan_id);
                 val.put(CYCLE_DAY_ID, date);
                 val.put(INST_DOC_ID_FK, calls_per_day.get(y).get("IDM_id"));
+                val.put(CREATED_AT, helpers.getCurrentDate("timestamp"));
 
                 id = db.insert(TBL_PlanDetails, null, val);
             }
