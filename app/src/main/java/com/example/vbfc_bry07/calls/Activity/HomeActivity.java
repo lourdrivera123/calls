@@ -106,13 +106,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // data for Pie Chart
         float Planned_Calls = CC.fetchPlannedCalls(current_cycle_month, current_cycle_year);
 
-//        final float IncidentalCalls = CC.IncidentalCalls(current_cycle_month, current_cycle_year);
-        final float IncidentalCalls = 0;
+        final float IncidentalCalls = CC.IncidentalCalls(current_cycle_month, current_cycle_year);
         float RecoveredCalls = CC.RecoveredCalls(current_cycle_month, current_cycle_year);
-//        float DeclaredMissedCalls = CC.DeclaredMissedCalls(current_cycle_month, current_cycle_year);
-        float DeclaredMissedCalls = 0;
-//        float UnprocessedCalls = CC.UnprocessedCalls(current_cycle_month, current_cycle_year);
-        float UnprocessedCalls = 0;
+        float DeclaredMissedCalls = CC.DeclaredMissedCalls(current_cycle_month, current_cycle_year);
+        float UnprocessedCalls = CC.UnprocessedCalls(current_cycle_month, current_cycle_year);
         float SuccessfulCalls = ((Planned_Calls) - (IncidentalCalls + RecoveredCalls + DeclaredMissedCalls + UnprocessedCalls));
         yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls, SuccessfulCalls};
         String labelIC = "Incidental Calls " + (int) IncidentalCalls + "/" + (int) Planned_Calls;
@@ -128,7 +125,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         // Enable hole and configure
         chart.setDrawHoleEnabled(true);
-        chart.setHoleRadius(20);
+        chart.setHoleRadius(0);
         chart.setTransparentCircleRadius(10);
 
         // Enable rotation of the chart by touch
