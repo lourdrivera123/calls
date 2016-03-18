@@ -4,11 +4,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.vbfc_bry07.calls.Helpers;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class PlanDetailsController extends DbHelper {
     DbHelper dbHelper;
@@ -75,6 +79,32 @@ public class PlanDetailsController extends DbHelper {
         return array;
     }
 
+    public String getDoctorByPlanDetailsID(int plan_details_id, String date) {
+        String sql = "SELECT * FROM PlanDetails as pd INNER JOIN InstitutionDoctorMaps as idm ON pd.inst_doc_id = idm.IDM_ID INNER JOIN Doctors as d ON idm.doctor_id = d.doc_id";
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+        String doctor = null;
+        int count = 0;
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+
+        while (cur.moveToNext()) {
+            if (cur.getInt(cur.getColumnIndex("plan_details_id")) == plan_details_id) {
+                doctor = cur.getString(cur.getColumnIndex("doc_name"));
+                count += 1;
+            }
+
+            String cycle_date = cur.getString(cur.getColumnIndex("cycle_day"));
+
+//            if (fmt.format(cycle_date).equals(fmt.format(date))) {
+            Log.d("get_date", fmt.format(cycle_date));
+//            }
+        }
+
+        cur.close();
+        db.close();
+
+        return doctor;
+    }
 
     //INSERT METHODS
     public boolean insertPlanDetails(long plan_id, ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> details) {

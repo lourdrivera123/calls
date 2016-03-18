@@ -8,13 +8,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
 
+import com.example.vbfc_bry07.calls.Controller.PlanDetailsController;
 import com.example.vbfc_bry07.calls.R;
 
+import java.util.Date;
 import java.util.HashMap;
 
 public class SignatureFormActivity extends AppCompatActivity {
     Toolbar toolbar;
-    TextView timestamp_now;
+    TextView timestamp_now, doctor_name;
+
+    PlanDetailsController pdc;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,13 +33,15 @@ public class SignatureFormActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
 
         timestamp_now = (TextView) findViewById(R.id.timestamp_now);
+        doctor_name = (TextView) findViewById(R.id.doctor_name);
+
+        pdc = new PlanDetailsController(this);
 
         Intent intent = getIntent();
         HashMap<String, String> details = (HashMap<String, String>) intent.getSerializableExtra("call_details");
 
-        Log.d("details", details + "");
-
         timestamp_now.setText(details.get("calls_end"));
+        doctor_name.setText(pdc.getDoctorByPlanDetailsID(Integer.parseInt(details.get("calls_plan_details_id")), details.get("calls_date")));
     }
 
     @Override
