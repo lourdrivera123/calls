@@ -1,31 +1,27 @@
 package com.example.vbfc_bry07.calls.Activity;
 
-import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.vbfc_bry07.calls.Adapter.ACPListAdapter;
 import com.example.vbfc_bry07.calls.Adapter.ACPTabsAdapter;
-import com.example.vbfc_bry07.calls.Adapter.ExpandableListAdapter;
 import com.example.vbfc_bry07.calls.Controller.CallsController;
 import com.example.vbfc_bry07.calls.Controller.InstitutionDoctorMapsController;
 import com.example.vbfc_bry07.calls.Controller.PlanDetailsController;
@@ -37,37 +33,34 @@ import com.example.vbfc_bry07.calls.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
-public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, View.OnClickListener, ExpandableListView.OnChildClickListener, TextWatcher {
+public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, View.OnClickListener, ExpandableListView.OnChildClickListener {
     TextView LblDate, no_calls, doctor_name;
     ImageView view_acp, add_incidental_call;
     TabLayout tab_layout;
     LinearLayout root;
+    ImageView image;
     ViewPager pager;
-    EditText search_doctor;
-    ExpandableListView list_of_doctors;
     Toolbar toolbar;
 
     ExpandableListView HospitalListView;
     PlanDetailsController pdc;
+    CallsController cc;
     InstitutionDoctorMapsController idmc;
     ACPTabsAdapter fragment_adapter;
     ACPListAdapter hospital_adapter;
     Helpers helpers;
-    ExpandableListAdapter search_adapter;
-
-    String current_date;
 
     List<String> listDataHeader;
     HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild;
-    int menu_check = 0;
-    boolean ongoing_call = false;
+    HashMap<String, String> incidental_call = new HashMap<>();
 
-    int plan_details_id = 0;
+    boolean ongoing_call = false;
     String start_dateTime = "";
+    public static String current_date;
+    int plan_details_id = 0, incidental_plandetails_id = 0, menu_check = 0;
+    public static int check_adapter_acp = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,13 +70,14 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
         LblDate = (TextView) findViewById(R.id.LblDate);
         no_calls = (TextView) findViewById(R.id.no_calls);
         doctor_name = (TextView) findViewById(R.id.doctor_name);
-        view_acp = (ImageView) findViewById(R.id.view_acp);
-        add_incidental_call = (ImageView) findViewById(R.id.add_incidental_call);
-        HospitalListView = (ExpandableListView) findViewById(R.id.HospitalListView);
         tab_layout = (TabLayout) findViewById(R.id.tab_layout);
         pager = (ViewPager) findViewById(R.id.pager);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         root = (LinearLayout) findViewById(R.id.root);
+        image = (ImageView) findViewById(R.id.image);
+        view_acp = (ImageView) findViewById(R.id.view_acp);
+        add_incidental_call = (ImageView) findViewById(R.id.add_incidental_call);
+        HospitalListView = (ExpandableListView) findViewById(R.id.HospitalListView);
 
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;
@@ -95,44 +89,68 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
         tab_layout.setOnTabSelectedListener(this);
 
         helpers = new Helpers();
+        cc = new CallsController(this);
         pdc = new PlanDetailsController(this);
         idmc = new InstitutionDoctorMapsController(this);
 
         current_date = helpers.getCurrentDate("date");
-
         LblDate.setText(helpers.convertToAlphabetDate(current_date));
         prepareListData();
 
-        ShowFragment(0);
+        ShowFragment();
         android.app.FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().commit();
 
         view_acp.setOnClickListener(this);
+        HospitalListView.setOnChildClickListener(this);
         add_incidental_call.setOnClickListener(this);
     }
 
-    void ShowFragment(int position) {
-        Fragment fragment = null;
+    @Override
+    protected void onResume() {
+        if (check_adapter_acp == 30) {
+            HospitalListView.setVisibility(View.VISIBLE);
+            no_calls.setVisibility(View.GONE);
+            incidental_plandetails_id = pdc.insertIncidentalCall(ShowListOfDoctorsDialog.child_clicked);
 
-        switch (position) {
-            case 0:
-                fragment = new ProductsFragment();
-                break;
+            if (incidental_plandetails_id == 0)
+                Snackbar.make(root, "You have to plot a plan for this month first", Snackbar.LENGTH_SHORT).show();
+            else {
+                incidental_call = ShowListOfDoctorsDialog.child_clicked;
+                incidental_call.put("plan_details_id", String.valueOf(0));
+                incidental_call.put("temp_plandetails_id", String.valueOf(incidental_plandetails_id));
+                ArrayList<HashMap<String, String>> temp_array = new ArrayList<>();
 
-            case 1:
-                Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
-                break;
+                if (listDataHeader.contains(ShowListOfDoctorsDialog.child_clicked.get("inst_name"))) {
+                    for (int x = 0; x < listDataHeader.size(); x++) {
+                        if (listDataHeader.get(x).equals(incidental_call.get("inst_name"))) {
+                            temp_array = listDataChild.get(x);
+                            temp_array.add(incidental_call);
+                            break;
+                        }
+                    }
 
-            case 2:
-                Toast.makeText(this, "2", Toast.LENGTH_SHORT).show();
-                break;
+                } else {
+                    int index = listDataHeader.size();
+                    listDataHeader.add(ShowListOfDoctorsDialog.child_clicked.get("inst_name"));
+                    temp_array.add(incidental_call);
+                    listDataChild.put(index, temp_array);
+                }
+
+                hospital_adapter = new ACPListAdapter(this, listDataHeader, listDataChild);
+                HospitalListView.setAdapter(hospital_adapter);
+            }
         }
 
-        if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.pager, fragment).commit();
-            fragment_adapter.notifyDataSetChanged();
-        }
+        check_adapter_acp = 0;
+        super.onResume();
+    }
+
+    void ShowFragment() {
+        Fragment fragment = new ProductsFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.pager, fragment).commit();
+        fragment_adapter.notifyDataSetChanged();
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -157,7 +175,7 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                this.finish();
+                onBackPressed();
                 break;
 
             case R.id.start_call:
@@ -175,9 +193,11 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                 calls.put("calls_end", end_dateTime);
                 calls.put("calls_date", helpers.getCurrentDate("date"));
                 calls.put("calls_plan_details_id", String.valueOf(plan_details_id));
+                calls.put("calls_incidentals_pd_id", String.valueOf(incidental_plandetails_id));
 
                 Intent intent = new Intent(this, SignatureFormActivity.class);
                 intent.putExtra("call_details", calls);
+                intent.putExtra("call_products", ProductsFragment.getNotEmptyProducts());
                 startActivity(intent);
                 this.finish();
 
@@ -207,27 +227,28 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                 break;
 
             case R.id.add_incidental_call:
-                Dialog dialog = new Dialog(this);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.getWindow().setLayout(600, 600);
-                dialog.setContentView(R.layout.dialog_choose_doctor);
-                dialog.show();
-
-                search_doctor = (EditText) dialog.findViewById(R.id.search_doctor);
-                list_of_doctors = (ExpandableListView) dialog.findViewById(R.id.list_of_doctors);
-
-                prepareSearchDoctors();
-
-                search_doctor.addTextChangedListener(this);
-                list_of_doctors.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-                    @Override
-                    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-
-                        return true;
-                    }
-                });
+                check_adapter_acp = 20;
+                MCPActivity.check_adapter_mcp = 0;
+                startActivity(new Intent(this, ShowListOfDoctorsDialog.class));
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (ongoing_call) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setMessage("There is an ongoing call, Are you sure you want to leave this page?");
+            alert.setNegativeButton("No", null);
+            alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    ACPActivity.this.finish();
+                }
+            });
+            alert.show();
+        } else
+            super.onBackPressed();
     }
 
     private void prepareListData() {
@@ -252,66 +273,35 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
             no_calls.setVisibility(View.GONE);
             hospital_adapter = new ACPListAdapter(this, listDataHeader, listDataChild);
             HospitalListView.setAdapter(hospital_adapter);
-            HospitalListView.setOnChildClickListener(this);
         } else {
             no_calls.setVisibility(View.VISIBLE);
             HospitalListView.setVisibility(View.GONE);
         }
     }
 
-    void prepareSearchDoctors() {
-        ArrayList<HashMap<String, String>> doctors = idmc.getDoctorsNotIncludedInMCP(current_date);
-        Set<String> uniqueInstitutions = new LinkedHashSet<>();
-        List<String> header = new ArrayList<>();
-        HashMap<Integer, ArrayList<HashMap<String, String>>> child = new HashMap<>();
-
-        for (int x = 0; x < doctors.size(); x++)
-            uniqueInstitutions.add(doctors.get(x).get("inst_name"));
-
-        header.addAll(uniqueInstitutions);
-
-        for (int x = 0; x < header.size(); x++) {
-            ArrayList<HashMap<String, String>> array = new ArrayList<>();
-
-            for (int y = 0; y < doctors.size(); y++) {
-                if (doctors.get(y).get("inst_name").equals(header.get(x)))
-                    array.add(doctors.get(y));
-            }
-            child.put(x, array);
-        }
-
-        search_adapter = new ExpandableListAdapter(this, header, child);
-        list_of_doctors.setAdapter(search_adapter);
-    }
-
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
         String selected_doc = listDataChild.get(groupPosition).get(childPosition).get("doc_name");
         plan_details_id = Integer.parseInt(listDataChild.get(groupPosition).get(childPosition).get("plan_details_id"));
+        incidental_plandetails_id = Integer.parseInt(listDataChild.get(groupPosition).get(childPosition).get("temp_plandetails_id"));
 
         if (ongoing_call)
             Snackbar.make(root, "There is an ongoing call. You are not allowed to do this action", Snackbar.LENGTH_SHORT).show();
         else {
-            menu_check = 20;
+            int hascalled = cc.hasCalled(plan_details_id, incidental_plandetails_id);
+            if (hascalled > 0) {
+                menu_check = 1;
+                image.setVisibility(View.VISIBLE);
+
+                if (hascalled == 2)
+                    image.setImageResource(R.mipmap.signed_not_sync);
+            } else
+                menu_check = 20;
+
             doctor_name.setText(selected_doc);
             invalidateOptionsMenu();
         }
 
         return true;
-    }
-
-    @Override
-
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-
     }
 }

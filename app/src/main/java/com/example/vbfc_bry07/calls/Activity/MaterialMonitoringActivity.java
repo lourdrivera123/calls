@@ -10,7 +10,7 @@ import android.widget.ListView;
 
 import com.example.vbfc_bry07.calls.Adapter.ProductListAdapter;
 import com.example.vbfc_bry07.calls.Controller.DbHelper;
-import com.example.vbfc_bry07.calls.Controller.MaterialMonetoringController;
+import com.example.vbfc_bry07.calls.Controller.MaterialMonitoringController;
 import com.example.vbfc_bry07.calls.R;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class MaterialMonitoringActivity extends AppCompatActivity {
 
     ListView productsListView;
     DbHelper dbHelper;
-    MaterialMonetoringController MMC;
+    MaterialMonitoringController MMC;
 
     ArrayList<HashMap<String, String>> all_products;
     ListAdapter doctorAdapter;
@@ -32,7 +32,7 @@ public class MaterialMonitoringActivity extends AppCompatActivity {
         setContentView(R.layout.activity_material_monetoring);
 
         dbHelper = new DbHelper(this);
-        MMC = new MaterialMonetoringController(this);
+        MMC = new MaterialMonitoringController(this);
 
         productsListView = (ListView) findViewById(R.id.productsListView);
         all_products = MMC.SelectAllProductsPerUser();
@@ -42,7 +42,7 @@ public class MaterialMonitoringActivity extends AppCompatActivity {
 
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Material Monetoring");
+        getSupportActionBar().setTitle("Material Monitoring");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#A25063")));
     }
 

@@ -14,12 +14,12 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.vbfc_bry07.calls.Adapter.BirthdayListAdapter;
 import com.example.vbfc_bry07.calls.Controller.CallsController;
 import com.example.vbfc_bry07.calls.Controller.DbHelper;
 import com.example.vbfc_bry07.calls.Controller.DoctorsController;
+import com.example.vbfc_bry07.calls.Helpers;
 import com.example.vbfc_bry07.calls.R;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -27,8 +27,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
@@ -49,9 +47,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     String current_cycle_year = "strftime('%Y', date())";
 
     SharedPreferences sharedpref;
-
     PieChart chart;
 
+    Helpers helpers;
     DbHelper dbHelper;
     CallsController CC;
     DoctorsController DC;
@@ -67,6 +65,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         dbHelper = new DbHelper(this);
         CC = new CallsController(this);
         DC = new DoctorsController(this);
+        helpers = new Helpers();
 
         quick_sign = (LinearLayout) findViewById(R.id.quick_sign);
         actual_coverage_plan = (LinearLayout) findViewById(R.id.actual_coverage_plan);
@@ -105,18 +104,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         // data for Pie Chart
         float Planned_Calls = CC.fetchPlannedCalls(current_cycle_month, current_cycle_year);
-
-        final float IncidentalCalls = CC.IncidentalCalls(current_cycle_month, current_cycle_year);
+        final float IncidentalCalls = CC.IncidentalCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
         float RecoveredCalls = CC.RecoveredCalls(current_cycle_month, current_cycle_year);
         float DeclaredMissedCalls = CC.DeclaredMissedCalls(current_cycle_month, current_cycle_year);
         float UnprocessedCalls = CC.UnprocessedCalls(current_cycle_month, current_cycle_year);
-        float SuccessfulCalls = ((Planned_Calls) - (IncidentalCalls + RecoveredCalls + DeclaredMissedCalls + UnprocessedCalls));
-        yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls, SuccessfulCalls};
+        float ActualCoveredCalls = ((Planned_Calls) - (IncidentalCalls + RecoveredCalls + DeclaredMissedCalls + UnprocessedCalls));
+        yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls, ActualCoveredCalls};
         String labelIC = "Incidental Calls " + (int) IncidentalCalls + "/" + (int) Planned_Calls;
         String labelRC = "Recovered Calls " + (int) RecoveredCalls + "/" + (int) Planned_Calls;
         String labelDMC = "Declared Missed Calls " + (int) DeclaredMissedCalls + "/" + (int) Planned_Calls;
         String labelUC = "Unprocessed Calls " + (int) UnprocessedCalls + "/" + (int) Planned_Calls;
-        String labelSC = "Succesful Calls " + (int) SuccessfulCalls + "/" + (int) Planned_Calls;
+        String labelSC = "Actual Covered Calls " + (int) ActualCoveredCalls + "/" + (int) Planned_Calls;
         xData = new String[]{labelIC, labelRC, labelDMC, labelUC, labelSC};
 
         // Configure Pie Chart
@@ -131,24 +129,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // Enable rotation of the chart by touch
         chart.setRotationAngle(0);
         chart.setRotationEnabled(true);
-
-        // set a Chart value Listener
-        chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-
-            @Override
-            public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
-                // display msg when value selected
-                if (e == null) {
-                    return;
-                }
-                // Toast.makeText(HomeActivity.this, xData[e.getXIndex()] +  "="  +  e.getVal() + "%", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected() {
-
-            }
-        });
 
         // add data
         addData();
@@ -269,7 +249,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(this, DoctorsInfoActivity.class));
                 break;
             case R.id.call_report:
-                Toast.makeText(this, "Call Report", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.sales_report:
                 startActivity(new Intent(this, SalesReportActivity.class));

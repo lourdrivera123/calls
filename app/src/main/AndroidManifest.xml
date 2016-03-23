@@ -53,5 +53,8 @@
         <activity
             android:name=".Activity.StatusSummaryActivity"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activity.ShowListOfDoctorsDialog"
+            android:theme="@style/myDialog" />
     </application>
 </manifest>

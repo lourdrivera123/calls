@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Calls</string>
+    <string name="external_dir">GetSignature</string>
 </resources>

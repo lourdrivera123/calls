@@ -17,7 +17,7 @@ import java.util.HashMap;
 public class ProductsFragment extends Fragment {
     ListView list_of_products;
 
-    ArrayList<HashMap<String, String>> array_of_products;
+    public static ArrayList<HashMap<String, String>> array_of_products;
 
     ProductsController pc;
 
@@ -33,5 +33,22 @@ public class ProductsFragment extends Fragment {
         list_of_products.setAdapter(new ProductsFragmentAdapter(getActivity(), array_of_products));
 
         return v;
+    }
+
+    public static ArrayList<HashMap<String, String>> getNotEmptyProducts() {
+        ArrayList<HashMap<String, String>> array = new ArrayList<>();
+
+        for (int x = 0; x < array_of_products.size(); x++) {
+            String promats = array_of_products.get(x).get("promaterials");
+            String literature = array_of_products.get(x).get("literature");
+            String sample = array_of_products.get(x).get("sample");
+
+            if (!promats.equals("") || !literature.equals("") || !sample.equals("")) {
+                HashMap<String, String> map = array_of_products.get(x);
+                array.add(map);
+            }
+        }
+
+        return array;
     }
 }

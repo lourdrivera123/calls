@@ -10,10 +10,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.vbfc_bry07.calls.Controller.CallsController;
 import com.example.vbfc_bry07.calls.Controller.DbHelper;
+import com.example.vbfc_bry07.calls.Helpers;
 import com.example.vbfc_bry07.calls.R;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -27,6 +27,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 
 public class StatusSummaryActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
     TextView CycleDate;
@@ -38,6 +39,7 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
 
     DbHelper dbHelper;
     CallsController CC;
+    Helpers helpers;
 
     private float[] yData;
     private String[] xData;
@@ -49,6 +51,7 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
 
         dbHelper = new DbHelper(this);
         CC = new CallsController(this);
+        helpers = new Helpers();
 
         chart = (PieChart) findViewById(R.id.chart);
         CycleDate = (TextView) findViewById(R.id.CycleDate);
@@ -63,22 +66,22 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
         // data for Pie Chart
         float Planned_Calls = CC.fetchPlannedCalls(current_cycle_month, current_cycle_year);
 
-        final float IncidentalCalls = CC.IncidentalCalls(current_cycle_month, current_cycle_year);
+        final float IncidentalCalls = CC.IncidentalCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
         float RecoveredCalls = CC.RecoveredCalls(current_cycle_month, current_cycle_year);
         float DeclaredMissedCalls = CC.DeclaredMissedCalls(current_cycle_month, current_cycle_year);
         float UnprocessedCalls = CC.UnprocessedCalls(current_cycle_month, current_cycle_year);
-        float SuccessfulCalls = ((Planned_Calls)-(IncidentalCalls + RecoveredCalls + DeclaredMissedCalls + UnprocessedCalls));
+        float SuccessfulCalls = ((Planned_Calls) - (IncidentalCalls + RecoveredCalls + DeclaredMissedCalls + UnprocessedCalls));
         yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls, SuccessfulCalls};
-        String labelIC = "Incidental Calls " + (int)IncidentalCalls + "/" + (int)Planned_Calls;
-        String labelRC = "Recovered Calls " + (int)RecoveredCalls + "/" + (int)Planned_Calls;
-        String labelDMC = "Declared Missed Calls " + (int)DeclaredMissedCalls + "/" + (int)Planned_Calls;
-        String labelUC = "Unprocessed Calls " + (int)UnprocessedCalls + "/" + (int)Planned_Calls;
-        String labelSC = "Succesful Calls " + (int)SuccessfulCalls + "/" + (int)Planned_Calls;
+        String labelIC = "Incidental Calls " + (int) IncidentalCalls + "/" + (int) Planned_Calls;
+        String labelRC = "Recovered Calls " + (int) RecoveredCalls + "/" + (int) Planned_Calls;
+        String labelDMC = "Declared Missed Calls " + (int) DeclaredMissedCalls + "/" + (int) Planned_Calls;
+        String labelUC = "Unprocessed Calls " + (int) UnprocessedCalls + "/" + (int) Planned_Calls;
+        String labelSC = "Succesful Calls " + (int) SuccessfulCalls + "/" + (int) Planned_Calls;
         xData = new String[]{labelIC, labelRC, labelDMC, labelUC, labelSC};
 
         // Configure Pie Chart
         chart.setUsePercentValues(true);
-        chart.setDescription("Planned Calls: " + (int)CC.fetchPlannedCalls(current_cycle_month, current_cycle_year));
+        chart.setDescription("Planned Calls: " + (int) CC.fetchPlannedCalls(current_cycle_month, current_cycle_year));
 
         // Enable hole and configure
         chart.setDrawHoleEnabled(true);
@@ -122,18 +125,12 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
     }
 
     private void addData() {
-
-        ArrayList<Entry> yVals1 = new ArrayList<Entry>();
-
-        for (int i = 0; i < yData.length; i++) {
+        ArrayList<Entry> yVals1 = new ArrayList<>();
+        for (int i = 0; i < yData.length; i++)
             yVals1.add(new Entry(yData[i], i));
-        }
 
-        ArrayList<String> xVals1 = new ArrayList<String>();
-
-        for (int i = 0; i < xData.length; i++) {
-            xVals1.add(xData[i]);
-        }
+        ArrayList<String> xVals1 = new ArrayList<>();
+        Collections.addAll(xVals1, xData);
 
         // Create pie data set
         PieDataSet dataset = new PieDataSet(yVals1, "");
@@ -141,27 +138,22 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
         dataset.setSelectionShift(5);
 
         // Add many colors
-        ArrayList<Integer> colors = new ArrayList();
+        ArrayList<Integer> colors = new ArrayList<>();
 
-        for(int c : ColorTemplate.VORDIPLOM_COLORS) {
+        for (int c : ColorTemplate.VORDIPLOM_COLORS)
             colors.add(c);
-        }
 
-        for(int c : ColorTemplate.JOYFUL_COLORS) {
+        for (int c : ColorTemplate.JOYFUL_COLORS)
             colors.add(c);
-        }
 
-        for(int c : ColorTemplate.COLORFUL_COLORS) {
+        for (int c : ColorTemplate.COLORFUL_COLORS)
             colors.add(c);
-        }
 
-        for(int c : ColorTemplate.LIBERTY_COLORS) {
+        for (int c : ColorTemplate.LIBERTY_COLORS)
             colors.add(c);
-        }
 
-        for(int c : ColorTemplate.PASTEL_COLORS) {
+        for (int c : ColorTemplate.PASTEL_COLORS)
             colors.add(c);
-        }
 
         colors.add(ColorTemplate.getHoloBlue());
         dataset.setColors(colors);
@@ -202,31 +194,34 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
         DatePickerDialog dialog = new DatePickerDialog(this, this, year, month, day);
         dialog.show();
     }
+
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        String selected_cycle_month = String.valueOf(monthOfYear);
-        if(monthOfYear < 9 ) {
-            selected_cycle_month = "0" + String.valueOf(monthOfYear+1);
+        String selected_cycle_month;
+
+        if (monthOfYear < 9) {
+            selected_cycle_month = "0" + String.valueOf(monthOfYear + 1);
         } else {
-            selected_cycle_month = String.valueOf(monthOfYear+1);
+            selected_cycle_month = String.valueOf(monthOfYear + 1);
         }
-        CycleDate.setText("Cycle " + (monthOfYear+1) + " of Year " + year);
+
+        CycleDate.setText("Cycle " + (monthOfYear + 1) + " of Year " + year);
 
         /* --------- CHANGE VALUE OF PIE CHART ON CHANGE OF DATE --------- */
         // data for Pie Chart
-        float Planned_Calls = CC.fetchPlannedCalls(("'"+selected_cycle_month+"'"), ("'"+year+"'"));
+        float Planned_Calls = CC.fetchPlannedCalls(("'" + selected_cycle_month + "'"), ("'" + year + "'"));
 
-        final float IncidentalCalls = CC.IncidentalCalls(("'" + selected_cycle_month + "'"), ("'" + year + "'"));
+        final float IncidentalCalls = CC.IncidentalCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
         float RecoveredCalls = CC.RecoveredCalls(("'" + selected_cycle_month + "'"), ("'" + year + "'"));
         float DeclaredMissedCalls = CC.DeclaredMissedCalls(("'" + selected_cycle_month + "'"), ("'" + year + "'"));
         float UnprocessedCalls = CC.UnprocessedCalls(("'" + selected_cycle_month + "'"), ("'" + year + "'"));
-        float SuccessfulCalls = ((Planned_Calls)-(IncidentalCalls + RecoveredCalls + DeclaredMissedCalls + UnprocessedCalls));
+        float SuccessfulCalls = ((Planned_Calls) - (IncidentalCalls + RecoveredCalls + DeclaredMissedCalls + UnprocessedCalls));
         yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls, SuccessfulCalls};
-        String labelIC = "Incidental Calls " + (int)IncidentalCalls + "/" + (int)Planned_Calls;
-        String labelRC = "Recovered Calls " + (int)RecoveredCalls + "/" + (int)Planned_Calls;
-        String labelDMC = "Declared Missed Calls " + (int)DeclaredMissedCalls + "/" + (int)Planned_Calls;
-        String labelUC = "Unprocessed Calls " + (int)UnprocessedCalls + "/" + (int)Planned_Calls;
-        String labelSC = "Succesful Calls " + (int)SuccessfulCalls + "/" + (int)Planned_Calls;
+        String labelIC = "Incidental Calls " + (int) IncidentalCalls + "/" + (int) Planned_Calls;
+        String labelRC = "Recovered Calls " + (int) RecoveredCalls + "/" + (int) Planned_Calls;
+        String labelDMC = "Declared Missed Calls " + (int) DeclaredMissedCalls + "/" + (int) Planned_Calls;
+        String labelUC = "Unprocessed Calls " + (int) UnprocessedCalls + "/" + (int) Planned_Calls;
+        String labelSC = "Succesful Calls " + (int) SuccessfulCalls + "/" + (int) Planned_Calls;
         xData = new String[]{labelIC, labelRC, labelDMC, labelUC, labelSC};
 
         // Configure Pie Chart
@@ -293,8 +288,7 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
                     }
                 }
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
         }
         return dpd;
     }

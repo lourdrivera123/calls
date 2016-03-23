@@ -10,6 +10,7 @@ import java.util.TimeZone;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,19 +124,20 @@ public class CalendarAdapter extends BaseAdapter {
     public void refreshDays() {
         day_string.clear();
         pmonth = (Calendar) month.clone();
+        Calendar frstDay_cal = (Calendar) month.clone();
+        frstDay_cal.set(Calendar.DAY_OF_MONTH, 1);
 
         // month start day. ie; sun, mon, etc
-        firstDay = month.get(Calendar.DAY_OF_WEEK);
-
+        firstDay = frstDay_cal.get(Calendar.DAY_OF_WEEK);
         // finding number of weeks in current month.
         maxWeeknumber = month.getActualMaximum(Calendar.WEEK_OF_MONTH);
         // allocating maximum row number for the gridview.
         mnthlength = maxWeeknumber * 7;
         maxP = getMaxP(); // previous month maximum day 31,30....
-        calMaxP = maxP - (firstDay - 1);// calendar offday starting 24,25 ...
-
+        calMaxP = maxP - (firstDay - 2);// calendar offday starting 24,25 ...
         //Calendar instance for getting a complete gridview including the three month's (previous,current,next) dates.
         pmonthmaxset = (Calendar) pmonth.clone();
+
         //setting the start date as previous month's required date.
         pmonthmaxset.set(Calendar.DAY_OF_MONTH, calMaxP);
 

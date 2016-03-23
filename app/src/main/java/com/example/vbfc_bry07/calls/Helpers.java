@@ -1,15 +1,9 @@
 package com.example.vbfc_bry07.calls;
 
-import android.widget.ExpandableListView;
-
-import com.example.vbfc_bry07.calls.Adapter.ExpandableListAdapter;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -62,5 +56,38 @@ public class Helpers {
         df.setTimeZone(TimeZone.getTimeZone("GMT+8"));
 
         return df.format(cal.getTime());
+    }
+
+    public int convertDateToCycleMonth(String date) {
+        Date date1;
+        Calendar cal = Calendar.getInstance();
+
+        try {
+            SimpleDateFormat idf = new SimpleDateFormat("yyyy-MM-dd");
+            date1 = idf.parse(date);
+            cal.setTime(date1);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return (cal.get(Calendar.MONTH) + 1);
+    }
+
+    public String getTodaysDate() {
+        final Calendar c = Calendar.getInstance();
+        int todaysDate = (c.get(Calendar.YEAR) * 10000) +
+                ((c.get(Calendar.MONTH) + 1) * 100) +
+                (c.get(Calendar.DAY_OF_MONTH));
+
+        return (String.valueOf(todaysDate));
+    }
+
+    public String getCurrentTime() {
+        final Calendar c = Calendar.getInstance();
+        int currentTime = (c.get(Calendar.HOUR_OF_DAY) * 10000) +
+                (c.get(Calendar.MINUTE) * 100) +
+                (c.get(Calendar.SECOND));
+
+        return (String.valueOf(currentTime));
     }
 }

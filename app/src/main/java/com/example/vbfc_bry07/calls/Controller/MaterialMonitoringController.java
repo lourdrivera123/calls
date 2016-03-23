@@ -7,11 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MaterialMonetoringController extends DbHelper {
+public class MaterialMonitoringController extends DbHelper {
 
     DbHelper dbHelper;
 
-    public MaterialMonetoringController(Context context) {
+    public MaterialMonitoringController(Context context) {
         super(context);
         dbHelper = new DbHelper(context);
     }

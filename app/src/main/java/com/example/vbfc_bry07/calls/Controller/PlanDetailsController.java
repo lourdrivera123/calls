@@ -8,11 +8,8 @@ import android.util.Log;
 
 import com.example.vbfc_bry07.calls.Helpers;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 
 public class PlanDetailsController extends DbHelper {
     DbHelper dbHelper;
@@ -22,11 +19,11 @@ public class PlanDetailsController extends DbHelper {
             PlanDetails_ID = "plan_details_id",
             PLAN_ID_FK = "plan_id",
             INST_DOC_ID_FK = "inst_doc_id",
-            CYCLE_DAY_ID = "cycle_day",
+            CYCLE_DAY = "cycle_day",
             CYCLE_DAY_LABEL = "label";
 
-    public static final String CREATE_PlanDetails = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s TEXT, %s INTEGER, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
-            TBL_PlanDetails, AI_ID, PlanDetails_ID, PLAN_ID_FK, INST_DOC_ID_FK, CYCLE_DAY_ID, CYCLE_DAY_LABEL, CREATED_AT, UPDATED_AT, DELETED_AT);
+    public static final String CREATE_PlanDetails = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
+            TBL_PlanDetails, AI_ID, PlanDetails_ID, PLAN_ID_FK, INST_DOC_ID_FK, CYCLE_DAY, CYCLE_DAY_LABEL, CREATED_AT, UPDATED_AT, DELETED_AT);
 
     public PlanDetailsController(Context context) {
         super(context);
@@ -79,31 +76,45 @@ public class PlanDetailsController extends DbHelper {
         return array;
     }
 
-    public String getDoctorByPlanDetailsID(int plan_details_id, String date) {
-        String sql = "SELECT * FROM PlanDetails as pd INNER JOIN InstitutionDoctorMaps as idm ON pd.inst_doc_id = idm.IDM_ID INNER JOIN Doctors as d ON idm.doctor_id = d.doc_id";
+    public int getPlanID(int cycleMonth) {
+        String sql = "SELECT * FROM Plans WHERE cycle_number = " + cycleMonth;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
-        String doctor = null;
-        int count = 0;
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+        int planID = 0;
 
-        while (cur.moveToNext()) {
-            if (cur.getInt(cur.getColumnIndex("plan_details_id")) == plan_details_id) {
-                doctor = cur.getString(cur.getColumnIndex("doc_name"));
-                count += 1;
-            }
+        if (cur.moveToNext())
+            planID = cur.getInt(cur.getColumnIndex("plans_id"));
 
-            String cycle_date = cur.getString(cur.getColumnIndex("cycle_day"));
+        cur.close();
+        db.close();
 
-//            if (fmt.format(cycle_date).equals(fmt.format(date))) {
-            Log.d("get_date", fmt.format(cycle_date));
-//            }
+        return planID;
+    }
+
+    public HashMap<String, String> getCallDetails(int plandetails_id, int temp_plandetails_id) {
+        String sql = null;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        HashMap<String, String> map = new HashMap<>();
+
+        if (plandetails_id > 0) {
+            sql = "SELECT * FROM PlanDetails as pd INNER JOIN InstitutionDoctorMaps as idm ON pd.inst_doc_id = idm.IDM_ID INNER JOIN Doctors as d " +
+                    "ON idm.doctor_id = d.doc_id INNER JOIN DoctorClasses as dc ON idm.class_id = dc.doctor_classes_id WHERE pd.plan_details_id = " + plandetails_id;
+        } else if (temp_plandetails_id > 0) {
+            sql = "SELECT * FROM PlanDetails as pd INNER JOIN InstitutionDoctorMaps as idm ON pd.inst_doc_id = idm.IDM_ID INNER JOIN Doctors as d " +
+                    "ON idm.doctor_id = d.doc_id INNER JOIN DoctorClasses as dc ON idm.class_id = dc.doctor_classes_id WHERE pd.id = " + temp_plandetails_id;
+        }
+
+        Cursor cur = db.rawQuery(sql, null);
+
+        if (cur.moveToNext()) {
+            map.put("doc_name", cur.getString(cur.getColumnIndex("doc_name")));
+            map.put("max_visit", cur.getString(cur.getColumnIndex("max_visit")));
         }
 
         cur.close();
         db.close();
 
-        return doctor;
+        return map;
     }
 
     //INSERT METHODS
@@ -119,7 +130,8 @@ public class PlanDetailsController extends DbHelper {
             for (int y = 0; y < calls_per_day.size(); y++) {
                 ContentValues val = new ContentValues();
                 val.put(PLAN_ID_FK, plan_id);
-                val.put(CYCLE_DAY_ID, date);
+                val.put(PlanDetails_ID, 0);
+                val.put(CYCLE_DAY, date);
                 val.put(INST_DOC_ID_FK, calls_per_day.get(y).get("IDM_id"));
                 val.put(CREATED_AT, helpers.getCurrentDate("timestamp"));
 
@@ -130,5 +142,29 @@ public class PlanDetailsController extends DbHelper {
         db.close();
 
         return id > 0;
+    }
+
+    public int insertIncidentalCall(HashMap<String, String> map) {
+        String date = helpers.getCurrentDate("");
+        int cycleMonth = helpers.convertDateToCycleMonth(date);
+        int planID = getPlanID(cycleMonth);
+        int rowID = 0;
+
+        if (planID > 0) {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+            ContentValues val = new ContentValues();
+            val.put(INST_DOC_ID_FK, map.get("IDM_id"));
+            val.put(PlanDetails_ID, map.get("plan_details_id"));
+            val.put(CYCLE_DAY, date);
+            val.put(CREATED_AT, helpers.getCurrentDate("timestamp"));
+            val.put(PLAN_ID_FK, planID);
+
+            rowID = (int) db.insert(TBL_PlanDetails, null, val);
+
+            db.close();
+        }
+
+        return rowID;
     }
 }

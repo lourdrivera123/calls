@@ -4,16 +4,20 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import com.example.vbfc_bry07.calls.Helpers;
 
 import java.util.HashMap;
 
 public class CallsController extends DbHelper {
-
+    Helpers helpers;
     DbHelper dbHelper;
 
     static String TBL_Calls = "Calls",
             Calls_ID = "calls_id",
             PLANDETAILS_ID = "plan_details_id",
+            TEMP_PLANDETAILS_ID = "temp_planDetails_id",
             STATUS_ID_FK = "status_id",
             MAKEUP = "makeup",
             START_DATETIME = "start_datetime",
@@ -26,15 +30,16 @@ public class CallsController extends DbHelper {
             JOINT_CALL = "joint_call",
             QUICK_SIGN = "quick_sign";
 
-    public static final String CREATE_Calls = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s INTEGER, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s DOUBLE, %s DOUBLE, %s INTEGER, %s TEXT, %s LONG, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s TEXT)",
-            TBL_Calls, AI_ID, Calls_ID, PLANDETAILS_ID, STATUS_ID_FK, MAKEUP, START_DATETIME, END_DATETIME, LATITUDE, LONGITUDE, RESCHEDULE_DATE, SIGNED_DAY_ID, RETRY_COUNT, JOINT_CALL, QUICK_SIGN, CREATED_AT, UPDATED_AT, DELETED_AT);
+    public static final String CREATE_Calls = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s INTEGER, %s INTEGER, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s DOUBLE, %s DOUBLE, %s TEXT, %s TEXT, %s LONG, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s TEXT)",
+            TBL_Calls, AI_ID, Calls_ID, PLANDETAILS_ID, TEMP_PLANDETAILS_ID, STATUS_ID_FK, MAKEUP, START_DATETIME, END_DATETIME, LATITUDE, LONGITUDE, RESCHEDULE_DATE, SIGNED_DAY_ID, RETRY_COUNT, JOINT_CALL, QUICK_SIGN, CREATED_AT, UPDATED_AT, DELETED_AT);
 
     public CallsController(Context context) {
         super(context);
         dbHelper = new DbHelper(context);
+        helpers = new Helpers();
     }
 
-    //GET METHODS
+    ///////////////////////////////////GET METHODS
     public float fetchPlannedCalls(String cycle_month, String cycle_year) {
         String sql = "Select count(id) as planned_calls, " +
                 "    strftime('%m', cycle_day) as cycle_month, " +
@@ -55,16 +60,9 @@ public class CallsController extends DbHelper {
         return planned_calls;
     }
 
-    public float IncidentalCalls(String cycle_month, String cycle_year) {
-        String sql = "Select count(C.id) as incidental_calls, " +
-                "    strftime('%m', PD.cycle_day) as cycle_month, " +
-                "    strftime('%Y', PD.cycle_day) as cycle_year " +
-                "from Calls C " +
-                "   left join PlanDetails PD on C.plan_details_id = PD.plan_id " +
-                "    inner join MissedCalls MC on MC.call_id_fk != C.calls_id " +
-                "where status_id = 1 " +
-                "    and cycle_month = " + cycle_month + " " +
-                "    and cycle_year = " + cycle_year + " ";
+    public float IncidentalCalls(int cycle_month) {
+        String sql = "SELECT COUNT(c.id) as incidental_calls FROM Plans as p INNER JOIN PlanDetails as pd ON p.plans_id = pd.plan_id INNER JOIN Calls as c " +
+                "ON pd.id = c.temp_planDetails_id WHERE cycle_number = " + cycle_month + " AND c.status_id = 1";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
         float incidental_calls = 0;
@@ -152,13 +150,56 @@ public class CallsController extends DbHelper {
         return missed_calls;
     }
 
-    //SAVE METHODS
-//    public boolean saveDoctorCall(HashMap<String, String> data) {
-//        SQLiteDatabase db = dbHelper.getWritableDatabase();
-//
-//        ContentValues val = new ContentValues();
-//        val.put(PLANDETAILS_ID, data.get("calls_plan_details_id"));
-//        val.put(START_DATETIME, data.get("start_time"));
-//        val.put(END_DATETIME, data.get("calls_end"));
-//    }
+    /////////////////////////////////////////////INSERT METHODS//////////////////////////////
+    public long insertCall(HashMap<String, String> map) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues val = new ContentValues();
+
+        val.put(PLANDETAILS_ID, map.get("calls_plan_details_id"));
+        val.put(TEMP_PLANDETAILS_ID, map.get("calls_incidentals_pd_id"));
+        val.put(STATUS_ID_FK, map.get("status_id"));
+        val.put(MAKEUP, 0);
+        val.put(START_DATETIME, map.get("start_time"));
+        val.put(END_DATETIME, map.get("calls_end"));
+        val.put(RESCHEDULE_DATE, "0");
+        val.put(RETRY_COUNT, map.get("calls_retry_count"));
+        val.put(JOINT_CALL, 0);
+        val.put(QUICK_SIGN, 0);
+        val.put(CREATED_AT, helpers.getCurrentDate("timestamp"));
+
+        long rowID = db.insert(TBL_Calls, null, val);
+
+        db.close();
+
+        return rowID;
+    }
+
+    ///////////////////////////////////////CHECK METHODS////////////////////////////////
+    public int hasCalled(int plan_details_ID, int temp_plandetails_id) {
+        String sql = "";
+        int check = 0;
+
+        if (plan_details_ID > 0) {
+            sql = "SELECT * FROM Calls as c WHERE plan_details_id = " + plan_details_ID;
+        } else if (temp_plandetails_id > 0) {
+            sql = "SELECT * FROM Calls as c  WHERE temp_planDetails_id = " + temp_plandetails_id;
+        }
+
+        Log.d("details_sql", sql);
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+
+        if (cur.moveToNext()) {
+//            if (cur.getString(cur.getColumnIndex("calls_id")).(""))
+//                check = 2;
+//            else
+//                check = 1;
+        }
+
+        cur.close();
+        db.close();
+
+        return check;
+    }
 }

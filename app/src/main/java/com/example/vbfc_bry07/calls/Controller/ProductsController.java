@@ -25,7 +25,7 @@ public class ProductsController extends DbHelper {
     }
 
     public ArrayList<HashMap<String, String>> getAllProducts() {
-        String sql = "SELECT * FROM " + TBL_Products;
+        String sql = "SELECT * FROM " + TBL_Products + " ORDER BY " + NAME;
         SQLiteDatabase db = getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
         ArrayList<HashMap<String, String>> array = new ArrayList<>();

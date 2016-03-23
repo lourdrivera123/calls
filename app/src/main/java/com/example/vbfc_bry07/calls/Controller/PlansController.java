@@ -62,7 +62,6 @@ public class PlansController extends DbHelper {
             Date datenow = new Date();
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 
-            val.put(PLANS_ID, 1);
             val.put(PLANS_CYCLE_SET, cycle_set_id);
             val.put(PLANS_CYCLE_NUMBER, month);
             val.put(PLANS_STATUS, 0);

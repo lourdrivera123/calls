@@ -35,7 +35,7 @@ public class InstitutionDoctorMapsController extends DbHelper {
         String sql;
 
         if (!date.equals("")) {
-            sql = "SELECT * FROM PlanDetails as pd INNER JOIN InstitutionDoctorMaps as idm ON pd.inst_doc_id = idm.IDM_ID INNER JOIN " +
+            sql = "SELECT pd.id as temp_plandetails_id, * FROM PlanDetails as pd INNER JOIN InstitutionDoctorMaps as idm ON pd.inst_doc_id = idm.IDM_ID INNER JOIN " +
                     "Doctors as d ON idm.doctor_id = d.doc_id INNER JOIN DoctorClasses as dc ON idm.class_id = dc.doctor_classes_id INNER JOIN " +
                     "Institutions as i on idm.institution_id = i.inst_id WHERE pd.cycle_day = '" + date + "' ORDER BY idm.institution_id";
         } else
@@ -59,8 +59,10 @@ public class InstitutionDoctorMapsController extends DbHelper {
             map.put("contact_number", cur.getString(cur.getColumnIndex("contact_number")));
             map.put("class_code", class_code);
 
-            if (!date.equals(""))
+            if (!date.equals("")) {
                 map.put("plan_details_id", cur.getString(cur.getColumnIndex("plan_details_id")));
+                map.put("temp_plandetails_id", cur.getString(cur.getColumnIndex("temp_plandetails_id")));
+            }
 
             array.add(map);
         }
@@ -128,6 +130,7 @@ public class InstitutionDoctorMapsController extends DbHelper {
             map.put("inst_name", cur.getString(cur.getColumnIndex("inst_name")));
             map.put("doc_name", cur.getString(cur.getColumnIndex("doc_name")));
             map.put("contact_number", cur.getString(cur.getColumnIndex("contact_number")));
+            map.put("plan_details_id", String.valueOf(0));
             array.add(map);
         }
 

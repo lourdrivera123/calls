@@ -27,7 +27,6 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(CallNotesController.CREATE_CallNotes);
         db.execSQL(CallReportsController.CREATE_CallReports);
         db.execSQL(CallsController.CREATE_Calls);
-        db.execSQL(CycleDaysController.CREATE_CycleDays);
         db.execSQL(CycleSetsController.CREATE_CycleSets);
         db.execSQL(DayTypesController.CREATE_DayTypes);
         db.execSQL(DetailingAidEmailsController.CREATE_DetailingAidEmails);
@@ -40,7 +39,6 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(MaterialInventoriesController.CREATE_MaterialInventories);
         db.execSQL(MaterialReplenishmentDetailsController.CREATE_MaterialReplenishmentDetails);
         db.execSQL(MaterialReplenishmentsController.CREATE_MaterialReplenishments);
-        db.execSQL(MaterialsController.CREATE_Materials);
         db.execSQL(MaterialsByClassSpecializationMapsController.CREATE_MaterialsByClassSpecializationMaps);
         db.execSQL(MaterialsByInstitutionDoctorMapsController.CREATE_MaterialsByInstitutionDoctorMaps);
         db.execSQL(MissedCallsController.CREATE_MissedCalls);
@@ -69,6 +67,4 @@ public class DbHelper extends SQLiteOpenHelper {
         String sql = "DROP TABLE IF EXISTS ECE_calls";
         db.execSQL(sql);
     }
-
-
 }
