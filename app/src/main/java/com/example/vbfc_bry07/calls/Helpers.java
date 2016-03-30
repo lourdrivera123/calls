@@ -8,9 +8,12 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 public class Helpers {
+    Calendar cal;
+    SimpleDateFormat date_format;
 
     public Helpers() {
-
+        cal = Calendar.getInstance();
+        date_format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     }
 
     public String convertToAlphabetDate(String input) {
@@ -19,8 +22,7 @@ public class Helpers {
 
         try {
             outputFormat = new SimpleDateFormat("MMM dd", Locale.getDefault());
-            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            date = inputFormat.parse(input);
+            date = date_format.parse(input);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -34,8 +36,7 @@ public class Helpers {
 
         try {
             sdf = new SimpleDateFormat("EEEE", Locale.getDefault());
-            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            date = inputFormat.parse(input);
+            date = date_format.parse(input);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -45,13 +46,12 @@ public class Helpers {
     }
 
     public String getCurrentDate(String type) {
-        Calendar cal = Calendar.getInstance();
         SimpleDateFormat df;
 
         if (type.equals("timestamp")) {
-            df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         } else
-            df = new SimpleDateFormat("yyyy-MM-dd");
+            df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
         df.setTimeZone(TimeZone.getTimeZone("GMT+8"));
 
@@ -60,17 +60,28 @@ public class Helpers {
 
     public int convertDateToCycleMonth(String date) {
         Date date1;
-        Calendar cal = Calendar.getInstance();
 
         try {
-            SimpleDateFormat idf = new SimpleDateFormat("yyyy-MM-dd");
-            date1 = idf.parse(date);
+            date1 = date_format.parse(date);
             cal.setTime(date1);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         return (cal.get(Calendar.MONTH) + 1);
+    }
+
+    public int convertDateToCycleSet(String date) {
+        Date date1;
+
+        try {
+            date1 = date_format.parse(date);
+            cal.setTime(date1);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return (cal.get(Calendar.YEAR));
     }
 
     public String getTodaysDate() {
@@ -83,10 +94,9 @@ public class Helpers {
     }
 
     public String getCurrentTime() {
-        final Calendar c = Calendar.getInstance();
-        int currentTime = (c.get(Calendar.HOUR_OF_DAY) * 10000) +
-                (c.get(Calendar.MINUTE) * 100) +
-                (c.get(Calendar.SECOND));
+        int currentTime = (cal.get(Calendar.HOUR_OF_DAY) * 10000) +
+                (cal.get(Calendar.MINUTE) * 100) +
+                (cal.get(Calendar.SECOND));
 
         return (String.valueOf(currentTime));
     }

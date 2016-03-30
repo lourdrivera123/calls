@@ -91,6 +91,8 @@ public class SignatureFormActivity extends AppCompatActivity {
         signature_layout.addView(signature, ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
         mView = signature_layout;
 
+        Log.d("details", details + "");
+
         doctor_name.setText(details.get("doc_name"));
         timestamp_now.setText(details.get("calls_end"));
     }
@@ -118,11 +120,7 @@ public class SignatureFormActivity extends AppCompatActivity {
                                 Snackbar.make(root, "Error saving materials", Snackbar.LENGTH_SHORT).show();
                         }
 
-                        Bundle b = new Bundle();
-                        b.putString("status", "done");
-                        Intent intent = new Intent();
-                        intent.putExtras(b);
-                        setResult(RESULT_OK, intent);
+                        startActivity(new Intent(this, ACPActivity.class));
                         finish();
                     } else
                         Snackbar.make(root, "Error occurred", Snackbar.LENGTH_SHORT).show();
@@ -136,24 +134,9 @@ public class SignatureFormActivity extends AppCompatActivity {
                 break;
 
             case R.id.cancel:
-                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-                dialog.setMessage("Are you sure you want to cancel this call?");
-                dialog.setNegativeButton("No", null);
-                dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(SignatureFormActivity.this, ACPActivity.class));
-                        SignatureFormActivity.this.finish();
-                    }
-                });
-                dialog.show();
+                this.finish();
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-
     }
 }

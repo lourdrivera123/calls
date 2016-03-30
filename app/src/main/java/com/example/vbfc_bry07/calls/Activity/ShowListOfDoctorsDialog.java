@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -50,12 +51,10 @@ public class ShowListOfDoctorsDialog extends AppCompatActivity implements TextWa
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
     }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-
     }
 
     @Override
@@ -108,9 +107,26 @@ public class ShowListOfDoctorsDialog extends AppCompatActivity implements TextWa
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
         child_clicked = listDataChild.get(groupPosition).get(childPosition);
 
-        if (MCPActivity.check_adapter_mcp == 23 && ACPActivity.check_adapter_acp == 0)
-            MCPActivity.check_adapter_mcp = 10;
-        else if (ACPActivity.check_adapter_acp == 20 && MCPActivity.check_adapter_mcp == 0)
+        if (MCPActivity.check_adapter_mcp == 23 && ACPActivity.check_adapter_acp == 0) {
+            int class_code = Integer.parseInt(child_clicked.get("class_code"));
+            String doctor_id = child_clicked.get("doctor_id");
+            int count = 0;
+
+            for (int x = 0; x < MCPActivity.list_of_plans.size(); x++) {
+                String keyset = MCPActivity.list_of_plans.get(x).keySet().toString().replace("[", "").replace("]", "");
+                ArrayList<HashMap<String, String>> per_day = MCPActivity.list_of_plans.get(x).get(keyset);
+
+                for (int y = 0; y < per_day.size(); y++) {
+                    if (per_day.get(y).get("doctor_id").equals(doctor_id))
+                        count += 1;
+                }
+            }
+
+            if (class_code > count)
+                MCPActivity.check_adapter_mcp = 10;
+            else if (class_code <= count)
+                MCPActivity.check_adapter_mcp = 11;
+        } else if (ACPActivity.check_adapter_acp == 20 && MCPActivity.check_adapter_mcp == 0)
             ACPActivity.check_adapter_acp = 30;
 
         this.finish();
@@ -123,9 +139,10 @@ public class ShowListOfDoctorsDialog extends AppCompatActivity implements TextWa
         duplicate_list_child = new HashMap<>();
         Set<String> uniqueInstitutions = new LinkedHashSet<>();
 
-        if (MCPActivity.check_adapter_mcp == 23 && ACPActivity.check_adapter_acp == 0)
+        if (MCPActivity.check_adapter_mcp == 23 && ACPActivity.check_adapter_acp == 0) {
             doctors = idmc.getDoctorsWithInstitutions("");
-        else if (ACPActivity.check_adapter_acp == 20 && MCPActivity.check_adapter_mcp == 0)
+            doctors.removeAll(MCPActivity.new_plan_details);
+        } else if (ACPActivity.check_adapter_acp == 20 && MCPActivity.check_adapter_mcp == 0)
             doctors = idmc.getDoctorsNotIncludedInMCP(ACPActivity.current_date);
 
         for (int x = 0; x < doctors.size(); x++)

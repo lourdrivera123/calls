@@ -25,6 +25,7 @@ import com.example.vbfc_bry07.calls.Adapter.ACPTabsAdapter;
 import com.example.vbfc_bry07.calls.Controller.CallsController;
 import com.example.vbfc_bry07.calls.Controller.InstitutionDoctorMapsController;
 import com.example.vbfc_bry07.calls.Controller.PlanDetailsController;
+import com.example.vbfc_bry07.calls.Controller.PlansController;
 import com.example.vbfc_bry07.calls.Fragment.CallsFragment;
 import com.example.vbfc_bry07.calls.Fragment.NotesFragment;
 import com.example.vbfc_bry07.calls.Fragment.ProductsFragment;
@@ -44,13 +45,14 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
     ViewPager pager;
     Toolbar toolbar;
 
-    ExpandableListView HospitalListView;
-    PlanDetailsController pdc;
-    CallsController cc;
-    InstitutionDoctorMapsController idmc;
     ACPTabsAdapter fragment_adapter;
     ACPListAdapter hospital_adapter;
+    CallsController cc;
+    ExpandableListView HospitalListView;
     Helpers helpers;
+    InstitutionDoctorMapsController idmc;
+    PlanDetailsController pdc;
+    PlansController pc;
 
     List<String> listDataHeader;
     HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild;
@@ -90,6 +92,7 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
 
         helpers = new Helpers();
         cc = new CallsController(this);
+        pc = new PlansController(this);
         pdc = new PlanDetailsController(this);
         idmc = new InstitutionDoctorMapsController(this);
 
@@ -109,13 +112,16 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
     @Override
     protected void onResume() {
         if (check_adapter_acp == 30) {
-            HospitalListView.setVisibility(View.VISIBLE);
-            no_calls.setVisibility(View.GONE);
             incidental_plandetails_id = pdc.insertIncidentalCall(ShowListOfDoctorsDialog.child_clicked);
 
             if (incidental_plandetails_id == 0)
-                Snackbar.make(root, "You have to plot a plan for this month first", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(root, "You have to plot a plan for this month first", Snackbar.LENGTH_LONG).show();
+            else if (incidental_plandetails_id == -1)
+                Snackbar.make(root, "Current plan hasn't been approved. You are not yet allowed to make any transaction.", Snackbar.LENGTH_LONG).show();
             else {
+                HospitalListView.setVisibility(View.VISIBLE);
+                no_calls.setVisibility(View.GONE);
+
                 incidental_call = ShowListOfDoctorsDialog.child_clicked;
                 incidental_call.put("plan_details_id", String.valueOf(0));
                 incidental_call.put("temp_plandetails_id", String.valueOf(incidental_plandetails_id));
@@ -179,10 +185,17 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                 break;
 
             case R.id.start_call:
-                menu_check = 23;
-                ongoing_call = true;
-                start_dateTime = helpers.getCurrentDate("timestamp");
-                invalidateOptionsMenu();
+                int cycleMonth = helpers.convertDateToCycleMonth(current_date);
+                int cycleSet = helpers.convertDateToCycleSet(current_date);
+
+                if (pc.checkIfPlanIsApproved(cycleSet, cycleMonth)) {
+                    menu_check = 23;
+                    ongoing_call = true;
+                    start_dateTime = helpers.getCurrentDate("timestamp");
+                    invalidateOptionsMenu();
+                } else
+                    Snackbar.make(root, "Current plan hasn't been approved. You are not yet allowed to make any transaction.", Snackbar.LENGTH_LONG).show();
+
                 break;
 
             case R.id.end_call:
@@ -199,7 +212,6 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                 intent.putExtra("call_details", calls);
                 intent.putExtra("call_products", ProductsFragment.getNotEmptyProducts());
                 startActivity(intent);
-                this.finish();
 
                 break;
         }

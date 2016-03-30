@@ -27,6 +27,7 @@ public class PlansController extends DbHelper {
         dbhelper = new DbHelper(context);
     }
 
+    //////////////////////////////CHECK METHODS///////////////////////////
     public int checkIfHasPlan(int month, int cycle_set_id) {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
         String sql = "SELECT * FROM " + TBL_PLANS + " WHERE " + PLANS_CYCLE_SET + " = " + cycle_set_id + " AND " + PLANS_CYCLE_NUMBER + " = " + month;
@@ -42,6 +43,43 @@ public class PlansController extends DbHelper {
         return plan_id;
     }
 
+    public boolean checkIfPlanIsApproved(int cycle_set, int cycle_number) {
+        String sql = "SELECT * FROM Plans WHERE cycle_number = " + cycle_number + " AND cycle_set_id = (SELECT cycle_sets_id FROM CycleSets WHERE year = " + cycle_set + ")";
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+        boolean flag = false;
+
+        if (cur.moveToNext()) {
+            if (cur.getInt(cur.getColumnIndex(PLANS_STATUS)) == 1)
+                flag = true;
+        }
+
+        cur.close();
+        db.close();
+
+        return flag;
+    }
+
+    public int getPlanID(int cycleMonth) {
+        String sql = "SELECT * FROM Plans WHERE cycle_number = " + cycleMonth;
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+        int planID = 0;
+
+        if (cur.moveToNext()) {
+            planID = cur.getInt(cur.getColumnIndex(PLANS_ID));
+
+            if (cur.getInt(cur.getColumnIndex(PLANS_STATUS)) == 0)
+                planID = -1;
+        }
+
+        cur.close();
+        db.close();
+
+        return planID;
+    }
+
+    ///////////////////////////////INSERT METHODS/////////////////////////
     public long insertPlans(int year, int month) {
         ContentValues val = new ContentValues();
         SQLiteDatabase db = getWritableDatabase();

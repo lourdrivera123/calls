@@ -185,8 +185,6 @@ public class CallsController extends DbHelper {
             sql = "SELECT * FROM Calls as c  WHERE temp_planDetails_id = " + temp_plandetails_id;
         }
 
-        Log.d("details_sql", sql);
-
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
 

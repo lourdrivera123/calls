@@ -48,8 +48,6 @@ public class InstitutionDoctorMapsController extends DbHelper {
         ArrayList<HashMap<String, String>> array = new ArrayList<>();
 
         while (cur.moveToNext()) {
-            String class_code = cur.getString(cur.getColumnIndex("name")) + " (" + cur.getString(cur.getColumnIndex("max_visit")) + "x)";
-
             HashMap<String, String> map = new HashMap<>();
             map.put("doctor_id", cur.getString(cur.getColumnIndex("doctor_id")));
             map.put("IDM_id", cur.getString(cur.getColumnIndex("IDM_ID")));
@@ -57,7 +55,8 @@ public class InstitutionDoctorMapsController extends DbHelper {
             map.put("inst_name", cur.getString(cur.getColumnIndex("inst_name")));
             map.put("doc_name", cur.getString(cur.getColumnIndex("doc_name")));
             map.put("contact_number", cur.getString(cur.getColumnIndex("contact_number")));
-            map.put("class_code", class_code);
+            map.put("class_code", cur.getString(cur.getColumnIndex("max_visit")));
+            map.put("class_name", cur.getString(cur.getColumnIndex("name")));
 
             if (!date.equals("")) {
                 map.put("plan_details_id", cur.getString(cur.getColumnIndex("plan_details_id")));

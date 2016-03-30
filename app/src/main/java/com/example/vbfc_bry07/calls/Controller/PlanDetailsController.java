@@ -13,6 +13,7 @@ import java.util.HashMap;
 
 public class PlanDetailsController extends DbHelper {
     DbHelper dbHelper;
+    PlansController pc;
     Helpers helpers;
 
     static String TBL_PlanDetails = "PlanDetails",
@@ -29,6 +30,7 @@ public class PlanDetailsController extends DbHelper {
         super(context);
         dbHelper = new DbHelper(context);
         helpers = new Helpers();
+        pc = new PlansController(context);
     }
 
     //GET METHODS
@@ -49,8 +51,6 @@ public class PlanDetailsController extends DbHelper {
             Cursor cur2 = db.rawQuery(sql2, null);
 
             while (cur2.moveToNext()) {
-                String class_code = cur2.getString(cur2.getColumnIndex("name")) + " (" + cur2.getString(cur2.getColumnIndex("max_visit")) + "x)";
-
                 HashMap<String, String> map = new HashMap<>();
                 map.put("plan_details_id", cur2.getString(cur2.getColumnIndex("plan_details_id")));
                 map.put("cycle_day", cur2.getString(cur2.getColumnIndex("cycle_day")));
@@ -58,7 +58,8 @@ public class PlanDetailsController extends DbHelper {
                 map.put("doc_id", cur2.getString(cur2.getColumnIndex("doc_id")));
                 map.put("doc_name", cur2.getString(cur2.getColumnIndex("doc_name")));
                 map.put("contact_number", cur2.getString(cur2.getColumnIndex("contact_number")));
-                map.put("class_code", class_code);
+                map.put("class_code", cur2.getString(cur2.getColumnIndex("max_visit")));
+                map.put("class_name", cur2.getString(cur2.getColumnIndex("name")));
                 map.put("inst_name", cur2.getString(cur2.getColumnIndex("inst_name")));
                 map.put("inst_doc_id", cur2.getString(cur2.getColumnIndex("inst_doc_id")));
                 array_day.add(map);
@@ -74,21 +75,6 @@ public class PlanDetailsController extends DbHelper {
         db.close();
 
         return array;
-    }
-
-    public int getPlanID(int cycleMonth) {
-        String sql = "SELECT * FROM Plans WHERE cycle_number = " + cycleMonth;
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cur = db.rawQuery(sql, null);
-        int planID = 0;
-
-        if (cur.moveToNext())
-            planID = cur.getInt(cur.getColumnIndex("plans_id"));
-
-        cur.close();
-        db.close();
-
-        return planID;
     }
 
     public HashMap<String, String> getCallDetails(int plandetails_id, int temp_plandetails_id) {
@@ -147,7 +133,7 @@ public class PlanDetailsController extends DbHelper {
     public int insertIncidentalCall(HashMap<String, String> map) {
         String date = helpers.getCurrentDate("");
         int cycleMonth = helpers.convertDateToCycleMonth(date);
-        int planID = getPlanID(cycleMonth);
+        int planID = pc.getPlanID(cycleMonth);
         int rowID = 0;
 
         if (planID > 0) {
@@ -163,7 +149,8 @@ public class PlanDetailsController extends DbHelper {
             rowID = (int) db.insert(TBL_PlanDetails, null, val);
 
             db.close();
-        }
+        } else if (planID == -1)
+            rowID = -1;
 
         return rowID;
     }

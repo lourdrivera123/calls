@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import android.content.Context;
@@ -23,19 +24,19 @@ import com.example.vbfc_bry07.calls.Helpers;
 import com.example.vbfc_bry07.calls.R;
 
 public class CalendarAdapter extends BaseAdapter {
+    DateFormat df;
     Context context;
     java.util.Calendar month;
     public Calendar pmonth, pmonthmaxset;
-    DateFormat df;
 
-    int firstDay, maxWeeknumber, maxP, calMaxP, mnthlength;
     String itemvalue, currentDateString;
+    int firstDay, maxWeeknumber, maxP, calMaxP, mnthlength, public_pos = -1;
 
     public static List<String> day_string;
     ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> plans;
 
-    TextView dayView, with_plan;
     View previousView;
+    TextView dayView, with_plan;
     LinearLayout parent_layout;
 
     Helpers helpers;
@@ -46,7 +47,7 @@ public class CalendarAdapter extends BaseAdapter {
         this.context = context;
         this.plans = plans_objects;
         helpers = new Helpers();
-        df = new SimpleDateFormat("yyyy-MM-dd");
+        df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         df.setTimeZone(TimeZone.getTimeZone("GMT+8"));
 
         currentDateString = helpers.getCurrentDate("date");
@@ -85,23 +86,42 @@ public class CalendarAdapter extends BaseAdapter {
 
         if ((Integer.parseInt(gridvalue) > 1) && (position < firstDay)) {
             dayView.setTextColor(Color.GRAY);
-            dayView.setClickable(false);
-            dayView.setFocusable(false);
+            parent_layout.setEnabled(false);
         } else if ((Integer.parseInt(gridvalue) < 7) && (position > 28)) {
             dayView.setTextColor(Color.GRAY);
-            dayView.setClickable(false);
-            dayView.setFocusable(false);
-        } else
+            parent_layout.setEnabled(false);
+        } else {
             dayView.setTextColor(Color.BLACK);
 
-        if (day_string.get(position).equals(currentDateString)) {
-            MCPActivity.picked_date.setText(helpers.convertToAlphabetDate(currentDateString));
-            MCPActivity.picked_day.setText(helpers.convertToDayOfWeek(currentDateString));
-            MCPActivity.date = currentDateString;
-            dayView.setTextColor(Color.parseColor("#A45F6E"));
+            if (day_string.get(position).equals(currentDateString) && (month.get(Calendar.MONTH) + 1) == helpers.convertDateToCycleMonth(currentDateString)) {
+                MCPActivity.picked_date.setText(helpers.convertToAlphabetDate(currentDateString));
+                MCPActivity.picked_day.setText(helpers.convertToDayOfWeek(currentDateString));
+                MCPActivity.date = currentDateString;
+                dayView.setTextColor(Color.parseColor("#A45F6E"));
+            }
         }
 
         dayView.setText(gridvalue);
+
+        if (position == public_pos) {
+            if (!MCPActivity.isVisible)
+                with_plan.setVisibility(View.INVISIBLE);
+            else
+                with_plan.setVisibility(View.VISIBLE);
+        }
+
+        parent_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MCPActivity.setFirstdaySelected = false;
+                MCPActivity.isVisible = true;
+                setSelected(v, position);
+                public_pos = position;
+                String selectedGridDate = day_string.get(position);
+                MCPActivity.updateDuringOnItemClick(selectedGridDate);
+            }
+        });
+
         setEventView(position);
 
         return v;

@@ -1,7 +1,6 @@
 package com.example.vbfc_bry07.calls.Adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,11 @@ public class MCPAdapter extends BaseAdapter {
     public MCPAdapter(Context context, ArrayList<HashMap<String, String>> objects) {
         this.context = context;
         this.objects = objects;
+    }
+
+    public void remove(int position) {
+        objects.remove(position);
+        this.notifyDataSetChanged();
     }
 
     @Override
@@ -59,9 +63,11 @@ public class MCPAdapter extends BaseAdapter {
         else
             doctor_number.setText(objects.get(position).get("contact_number"));
 
+        String class_code = objects.get(position).get("class_name") + " (" + objects.get(position).get("class_code") + ")";
+
         doctor_name.setText(name);
         doctor_hospital.setText(objects.get(position).get("inst_name"));
-        doctor_class.setText(objects.get(position).get("class_code"));
+        doctor_class.setText(class_code);
         return v;
     }
 }

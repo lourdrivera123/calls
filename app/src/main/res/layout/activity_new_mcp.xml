@@ -216,8 +216,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:textSize="12sp"
-                    android:textStyle="italic"
-                    android:visibility="gone" />
+                    android:textStyle="italic" />
 
                 <ListView
                     android:id="@+id/list_of_calls"
