@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.vbfc_bry07.calls.Activity.SalesReportActivity">
+    tools:context="com.ece.vbfc_bry07.calls.Activity.SalesReportActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

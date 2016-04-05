@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.vbfc_bry07.calls">
+    package="com.ece.vbfc_bry07.calls">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".Activity.LoginActivity"
+            android:name="com.ece.vbfc_bry07.calls.Activity.LoginActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.MyTheme">
             <intent-filter>
@@ -22,39 +22,44 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.HomeActivity"
+            android:name="com.ece.vbfc_bry07.calls.Activity.HomeActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.MyTheme" />
         <activity
-            android:name=".Activity.MCPActivity"
+            android:name="com.ece.vbfc_bry07.calls.Activity.MCPActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.MyTheme" />
         <activity
-            android:name=".Activity.ACPActivity"
+            android:name="com.ece.vbfc_bry07.calls.Activity.ACPActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.MyTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".Activity.CycleCalendarActivity"
+            android:name="com.ece.vbfc_bry07.calls.Activity.CycleCalendarActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".Activity.SignatureFormActivity"
+            android:name="com.ece.vbfc_bry07.calls.Activity.SignatureFormActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.MyTheme" />
         <activity
-            android:name=".Activity.DoctorsInfoActivity"
+            android:name="com.ece.vbfc_bry07.calls.Activity.DoctorsInfoActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".Activity.MaterialMonitoringActivity"
+            android:name="com.ece.vbfc_bry07.calls.Activity.MaterialMonitoringActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".Activity.SalesReportActivity"
+            android:name="com.ece.vbfc_bry07.calls.Activity.SalesReportActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".Activity.StatusSummaryActivity"
+            android:name="com.ece.vbfc_bry07.calls.Activity.StatusSummaryActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".Activity.ShowListOfDoctorsDialog"
+            android:name=".Dialog.ShowListOfDoctorsDialog"
+            android:theme="@style/myDialog" />
+
+        <activity
+            android:name=".Dialog.ViewCycleMonth"
+            android:screenOrientation="landscape"
             android:theme="@style/myDialog" />
     </application>
 </manifest>

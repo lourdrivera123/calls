@@ -76,9 +76,9 @@
                     android:textSize="12sp" />
 
                 <TextView
+                    android:id="@+id/last_visited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Last Visited: February 01, 2016"
                     android:textSize="12sp" />
             </LinearLayout>
         </RelativeLayout>

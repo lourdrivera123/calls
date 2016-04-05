@@ -56,21 +56,21 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:id="@+id/add_incidental_call"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/state_circle"
+                        android:padding="1dp"
+                        android:src="@mipmap/ic_add_incidental_call" />
+
+                    <ImageView
                         android:id="@+id/view_acp"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:background="@drawable/state_circle"
                         android:padding="3dp"
                         android:src="@mipmap/ic_edit" />
-
-                    <ImageView
-                        android:id="@+id/add_incidental_call"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/state_circle"
-                        android:padding="1dp"
-                        android:src="@mipmap/ic_add_incidental_call" />
                 </LinearLayout>
             </LinearLayout>
 
