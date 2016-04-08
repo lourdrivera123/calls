@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">Calls</string>
     <string name="external_dir">GetSignature</string>
+    <string name="broadcast_msgs">Broadcast Messages</string>
+    <string name="status_summary">Status Summary</string>
+    <string name="material_monitoring">Material Monitoring</string>
+    <string name="sales_report">Sales Report</string>
+    <string name="call_report">Call Report</string>
+    <string name="doctor_information">Doctors Information</string>
+    <string name="mcp">Master Coverage Plan</string>
+    <string name="acp">Actual Coverage Plan</string>
+    <string name="quick_sign">Quick Sign</string>
 </resources>

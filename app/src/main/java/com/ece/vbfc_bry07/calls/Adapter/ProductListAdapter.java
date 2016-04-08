@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.ece.vbfc_bry07.calls.R;
@@ -12,27 +13,38 @@ import com.ece.vbfc_bry07.calls.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * Created by vbfc_bry07 on 3/3/2016.
- */
-public class ProductListAdapter extends ArrayAdapter {
-
-    LayoutInflater inflater;
+public class ProductListAdapter extends BaseAdapter {
     TextView TxtProductName, TotalS, TotalL, TotalP, ContentS, ContentL, ContentP;
 
     ArrayList<HashMap<String, String>> objects;
+    Context context;
 
-    public ProductListAdapter(Context context, int resource, ArrayList<HashMap<String, String>> objects) {
-        super(context, resource, objects);
-        inflater = LayoutInflater.from(context);
-
+    public ProductListAdapter(Context context, ArrayList<HashMap<String, String>> objects) {
         this.objects = objects;
+        this.context = context;
+    }
+
+    @Override
+    public int getCount() {
+        return objects.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return null;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // return super.getView(position, convertView, parent);
-        convertView = inflater.inflate(R.layout.adapter_material_monetoring, parent, false);
+        if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.adapter_material_monetoring, parent, false);
+        }
 
         TxtProductName = (TextView) convertView.findViewById(R.id.TxtProductName);
         TotalS = (TextView) convertView.findViewById(R.id.TotalS);
@@ -41,7 +53,6 @@ public class ProductListAdapter extends ArrayAdapter {
         ContentS = (TextView) convertView.findViewById(R.id.ContentS);
         ContentL = (TextView) convertView.findViewById(R.id.ContentL);
         ContentP = (TextView) convertView.findViewById(R.id.ContentP);
-
 
         TxtProductName.setText(objects.get(position).get("product_name"));
         TotalS.setText(objects.get(position).get("Total_Sample"));

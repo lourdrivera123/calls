@@ -101,56 +101,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         status_summary.setOnClickListener(this);
 
         username.setText(getUsername());
-
-        // data for Pie Chart
-        float Planned_Calls = CC.fetchPlannedCalls(current_cycle_month, current_cycle_year);
-        final float IncidentalCalls = CC.IncidentalCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
-        float RecoveredCalls = CC.RecoveredCalls(current_cycle_month, current_cycle_year);
-        float DeclaredMissedCalls = CC.DeclaredMissedCalls(current_cycle_month, current_cycle_year);
-        float UnprocessedCalls = CC.UnprocessedCalls(current_cycle_month, current_cycle_year);
-        float ActualCoveredCalls = ((Planned_Calls) - (IncidentalCalls + RecoveredCalls + DeclaredMissedCalls + UnprocessedCalls));
-        yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls, ActualCoveredCalls};
-        String labelIC = "Incidental Calls " + (int) IncidentalCalls + "/" + (int) Planned_Calls;
-        String labelRC = "Recovered Calls " + (int) RecoveredCalls + "/" + (int) Planned_Calls;
-        String labelDMC = "Declared Missed Calls " + (int) DeclaredMissedCalls + "/" + (int) Planned_Calls;
-        String labelUC = "Unprocessed Calls " + (int) UnprocessedCalls + "/" + (int) Planned_Calls;
-        String labelSC = "Actual Covered Calls " + (int) ActualCoveredCalls + "/" + (int) Planned_Calls;
-        xData = new String[]{labelIC, labelRC, labelDMC, labelUC, labelSC};
-
-        // Configure Pie Chart
-        chart.setUsePercentValues(true);
-        chart.setDescription("Planned Calls: " + (int) Planned_Calls);
-
-        // Enable hole and configure
-        chart.setDrawHoleEnabled(true);
-        chart.setHoleRadius(0);
-        chart.setTransparentCircleRadius(10);
-
-        // Enable rotation of the chart by touch
-        chart.setRotationAngle(0);
-        chart.setRotationEnabled(true);
-
-        // add data
-        addData();
-
-        // Customize legends
-        Legend l = chart.getLegend();
-        l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
-        l.setXEntrySpace(7);
-        l.setYEntrySpace(5);
-        chart.getLegend().setWordWrapEnabled(true);
-
-        // remove labels inside the Pie Chart
-        chart.setDrawSliceText(false);
     }
 
     private void addData() {
-
         ArrayList<Entry> yVals1 = new ArrayList<>();
 
-        for (int i = 0; i < yData.length; i++) {
+        for (int i = 0; i < yData.length; i++)
             yVals1.add(new Entry(yData[i], i));
-        }
 
         ArrayList<String> xVals1 = new ArrayList<>();
 
@@ -164,25 +121,20 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // Add many colors
         ArrayList<Integer> colors = new ArrayList<>();
 
-        for (int c : ColorTemplate.VORDIPLOM_COLORS) {
+        for (int c : ColorTemplate.VORDIPLOM_COLORS)
             colors.add(c);
-        }
 
-        for (int c : ColorTemplate.JOYFUL_COLORS) {
+        for (int c : ColorTemplate.JOYFUL_COLORS)
             colors.add(c);
-        }
 
-        for (int c : ColorTemplate.COLORFUL_COLORS) {
+        for (int c : ColorTemplate.COLORFUL_COLORS)
             colors.add(c);
-        }
 
-        for (int c : ColorTemplate.LIBERTY_COLORS) {
+        for (int c : ColorTemplate.LIBERTY_COLORS)
             colors.add(c);
-        }
 
-        for (int c : ColorTemplate.PASTEL_COLORS) {
+        for (int c : ColorTemplate.PASTEL_COLORS)
             colors.add(c);
-        }
 
         colors.add(ColorTemplate.getHoloBlue());
         dataset.setColors(colors);
@@ -208,6 +160,47 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         if (!sharedpref.contains("Username")) {
             startActivity(new Intent(this, LoginActivity.class));
             this.finish();
+        } else {
+            // data for Pie Chart
+            float Planned_Calls = CC.fetchPlannedCalls(current_cycle_month, current_cycle_year);
+            final float IncidentalCalls = CC.IncidentalCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
+            float RecoveredCalls = CC.RecoveredCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
+            float DeclaredMissedCalls = CC.DeclaredMissedCalls(current_cycle_month, current_cycle_year);
+            float ActualCoveredCalls = CC.ActualCoveredCalls(current_cycle_month);
+            float UnprocessedCalls = Planned_Calls - (ActualCoveredCalls + IncidentalCalls);
+            yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls, ActualCoveredCalls};
+            String labelIC = "Incidental Calls " + (int) IncidentalCalls + "/" + (int) Planned_Calls;
+            String labelRC = "Recovered Calls " + (int) RecoveredCalls + "/" + (int) Planned_Calls;
+            String labelDMC = "Declared Missed Calls " + (int) DeclaredMissedCalls + "/" + (int) Planned_Calls;
+            String labelUC = "Unprocessed Calls " + (int) UnprocessedCalls + "/" + (int) Planned_Calls;
+            String labelSC = "Actual Covered Calls " + (int) ActualCoveredCalls + "/" + (int) Planned_Calls;
+            xData = new String[]{labelIC, labelRC, labelDMC, labelUC, labelSC};
+
+            // Configure Pie Chart
+            chart.setUsePercentValues(true);
+            chart.setDescription("Planned Calls: " + (int) Planned_Calls);
+
+            // Enable hole and configure
+            chart.setDrawHoleEnabled(true);
+            chart.setHoleRadius(0);
+            chart.setTransparentCircleRadius(10);
+
+            // Enable rotation of the chart by touch
+            chart.setRotationAngle(0);
+            chart.setRotationEnabled(true);
+
+            // add data
+            addData();
+
+            // Customize legends
+            Legend l = chart.getLegend();
+            l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
+            l.setXEntrySpace(7);
+            l.setYEntrySpace(5);
+            chart.getLegend().setWordWrapEnabled(true);
+
+            // remove labels inside the Pie Chart
+            chart.setDrawSliceText(false);
         }
 
         super.onResume();

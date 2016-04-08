@@ -29,6 +29,7 @@ import com.ece.vbfc_bry07.calls.Controller.PlanDetailsController;
 import com.ece.vbfc_bry07.calls.Controller.PlansController;
 import com.ece.vbfc_bry07.calls.Dialog.ShowListOfDoctorsDialog;
 import com.ece.vbfc_bry07.calls.Dialog.ViewCycleMonth;
+import com.ece.vbfc_bry07.calls.Dialog.ViewDoctorsHistoryDialog;
 import com.ece.vbfc_bry07.calls.Fragment.CallsFragment;
 import com.ece.vbfc_bry07.calls.Fragment.NotesFragment;
 import com.ece.vbfc_bry07.calls.Fragment.ProductsFragment;
@@ -59,12 +60,12 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
 
     List<String> listDataHeader;
     HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild;
-    HashMap<String, String> incidental_call = new HashMap<>();
+    HashMap<String, String> additional_call = new HashMap<>();
 
     boolean ongoing_call = false;
     String start_dateTime = "";
     public static String current_date;
-    int plan_details_id = 0, incidental_plandetails_id = 0, menu_check = 0, joint_call = 0;
+    int plan_details_id = 0, additional_plandetails_id = 0, menu_check = 0, joint_call = 0;
     public static int check_adapter_acp = 0;
     public static String viewotheracp = "";
     public static Activity acp;
@@ -117,27 +118,40 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
 
     @Override
     protected void onResume() {
-        if (check_adapter_acp == 30) {
-            incidental_plandetails_id = pdc.insertIncidentalCall(ShowListOfDoctorsDialog.child_clicked);
+        image.setVisibility(View.INVISIBLE);
 
-            if (incidental_plandetails_id == 0)
+        if (check_adapter_acp == 30 || check_adapter_acp == 50) {
+            if (check_adapter_acp == 30)
+                additional_plandetails_id = pdc.insertAdditionalCall(ShowListOfDoctorsDialog.child_clicked, 2);
+            else
+                additional_plandetails_id = pdc.insertAdditionalCall(ShowListOfDoctorsDialog.child_clicked, 3);
+
+            if (additional_plandetails_id == 0)
                 Snackbar.make(root, "You have to plot a plan for this month first", Snackbar.LENGTH_LONG).show();
-            else if (incidental_plandetails_id == -1)
+            else if (additional_plandetails_id == -1)
                 Snackbar.make(root, "Current plan hasn't been approved. You are not yet allowed to make any transaction.", Snackbar.LENGTH_LONG).show();
             else {
                 HospitalListView.setVisibility(View.VISIBLE);
                 no_calls.setVisibility(View.GONE);
 
-                incidental_call = ShowListOfDoctorsDialog.child_clicked;
-                incidental_call.put("plan_details_id", String.valueOf(0));
-                incidental_call.put("temp_plandetails_id", String.valueOf(incidental_plandetails_id));
+                if (check_adapter_acp == 50) {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                    alert.setMessage("You have missed a  call from this Doctor on " + helpers.convertToAlphabetDate(ShowListOfDoctorsDialog.missedCall_date, "complete")
+                            + ". This will count as a recovered call");
+                    alert.setPositiveButton("Ok", null);
+                    alert.show();
+                }
+
+                additional_call = ShowListOfDoctorsDialog.child_clicked;
+                additional_call.put("plan_details_id", String.valueOf(0));
+                additional_call.put("temp_plandetails_id", String.valueOf(additional_plandetails_id));
                 ArrayList<HashMap<String, String>> temp_array = new ArrayList<>();
 
                 if (listDataHeader.contains(ShowListOfDoctorsDialog.child_clicked.get("inst_name"))) {
                     for (int x = 0; x < listDataHeader.size(); x++) {
-                        if (listDataHeader.get(x).equals(incidental_call.get("inst_name"))) {
+                        if (listDataHeader.get(x).equals(additional_call.get("inst_name"))) {
                             temp_array = listDataChild.get(x);
-                            temp_array.add(incidental_call);
+                            temp_array.add(additional_call);
                             break;
                         }
                     }
@@ -145,7 +159,7 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                 } else {
                     int index = listDataHeader.size();
                     listDataHeader.add(ShowListOfDoctorsDialog.child_clicked.get("inst_name"));
-                    temp_array.add(incidental_call);
+                    temp_array.add(additional_call);
                     listDataChild.put(index, temp_array);
                 }
 
@@ -159,14 +173,14 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                 add_incidental_call.setVisibility(View.VISIBLE);
             } else {
                 current_date = viewotheracp;
-                menu_check = 1;
                 add_incidental_call.setVisibility(View.INVISIBLE);
+                menu_check = 1;
+                invalidateOptionsMenu();
             }
 
             doctor_name.setText("");
             LblDate.setText(helpers.convertToAlphabetDate(current_date, ""));
             prepareListData();
-            invalidateOptionsMenu();
         }
 
         check_adapter_acp = 0;
@@ -194,6 +208,8 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
             getMenuInflater().inflate(R.menu.start_call_menu, menu);
         else if (menu_check == 23)
             getMenuInflater().inflate(R.menu.end_call, menu);
+        else
+            getMenuInflater().inflate(R.menu.view_doctors_menu, menu);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -221,8 +237,9 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
 
             case R.id.end_call:
                 String end_dateTime = helpers.getCurrentDate("timestamp");
-                String last_visited = cc.getLastVisited(plan_details_id, incidental_plandetails_id).get("last_visited");
-                String count_visits = cc.getLastVisited(plan_details_id, incidental_plandetails_id).get("count_visits");
+                String last_visited = cc.getLastVisited(plan_details_id, additional_plandetails_id).get("last_visited");
+                String count_visits = cc.getLastVisited(plan_details_id, additional_plandetails_id).get("count_visits");
+                int status_id = pdc.checkTypeOfAdditionalCall(additional_plandetails_id);
 
                 HashMap<String, String> calls = new HashMap<>();
                 calls.put("start_time", start_dateTime);
@@ -230,9 +247,10 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                 calls.put("calls_joint_call", String.valueOf(joint_call));
                 calls.put("calls_last_visited", last_visited);
                 calls.put("calls_count_visits", count_visits);
+                calls.put("calls_status", String.valueOf(status_id));
                 calls.put("calls_plan_details_id", String.valueOf(plan_details_id));
-                calls.put("calls_incidentals_pd_id", String.valueOf(incidental_plandetails_id));
-
+                calls.put("calls_incidentals_pd_id", String.valueOf(additional_plandetails_id));
+                
                 Intent intent = new Intent(this, SignatureFormActivity.class);
                 intent.putExtra("call_details", calls);
                 intent.putExtra("call_products", ProductsFragment.getNotEmptyProducts());
@@ -249,6 +267,10 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                     item.setChecked(true);
                 }
 
+                break;
+
+            case R.id.view_doctors:
+                startActivity(new Intent(this, ViewDoctorsHistoryDialog.class));
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -335,24 +357,25 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
         String selected_doc = listDataChild.get(groupPosition).get(childPosition).get("doc_name");
         plan_details_id = Integer.parseInt(listDataChild.get(groupPosition).get(childPosition).get("plan_details_id"));
-        incidental_plandetails_id = Integer.parseInt(listDataChild.get(groupPosition).get(childPosition).get("temp_plandetails_id"));
+        additional_plandetails_id = Integer.parseInt(listDataChild.get(groupPosition).get(childPosition).get("temp_plandetails_id"));
 
         if (ongoing_call)
             Snackbar.make(root, "There is an ongoing call. You are not allowed to do this action", Snackbar.LENGTH_SHORT).show();
         else {
-            if (viewotheracp.equals("")) {
-                int hascalled = cc.hasCalled(plan_details_id, incidental_plandetails_id);
+            int hascalled = cc.hasCalled(plan_details_id, additional_plandetails_id);
 
-                if (hascalled > 0) {
+            if (hascalled > 0) {
+                menu_check = 1;
+                image.setVisibility(View.VISIBLE);
+
+                if (hascalled == 2)
+                    image.setImageResource(R.mipmap.signed_not_sync);
+            } else {
+                image.setVisibility(View.INVISIBLE);
+                menu_check = 20;
+
+                if (!viewotheracp.equals("") && !viewotheracp.equals(helpers.getCurrentDate("date")))
                     menu_check = 1;
-                    image.setVisibility(View.VISIBLE);
-
-                    if (hascalled == 2)
-                        image.setImageResource(R.mipmap.signed_not_sync);
-                } else {
-                    image.setVisibility(View.INVISIBLE);
-                    menu_check = 20;
-                }
             }
 
             doctor_name.setText(selected_doc);

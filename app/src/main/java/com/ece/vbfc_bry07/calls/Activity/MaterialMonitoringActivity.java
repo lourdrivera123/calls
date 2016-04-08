@@ -37,7 +37,7 @@ public class MaterialMonitoringActivity extends AppCompatActivity {
         productsListView = (ListView) findViewById(R.id.productsListView);
         all_products = MMC.SelectAllProductsPerUser();
         products_array.addAll(all_products);
-        doctorAdapter = new ProductListAdapter(this, R.layout.adapter_material_monetoring, all_products);
+        doctorAdapter = new ProductListAdapter(this, all_products);
         productsListView.setAdapter(doctorAdapter);
 
         assert getSupportActionBar() != null;

@@ -67,7 +67,7 @@ public class PlansController extends DbHelper {
         int planID = 0;
 
         if (cur.moveToNext()) {
-            planID = cur.getInt(cur.getColumnIndex(PLANS_ID));
+            planID = cur.getInt(cur.getColumnIndex(AI_ID));
 
             if (cur.getInt(cur.getColumnIndex(PLANS_STATUS)) == 0)
                 planID = -1;

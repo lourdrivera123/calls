@@ -53,13 +53,17 @@
         <activity
             android:name="com.ece.vbfc_bry07.calls.Activity.StatusSummaryActivity"
             android:screenOrientation="landscape" />
+
+        <!--DIALOG-->
         <activity
             android:name=".Dialog.ShowListOfDoctorsDialog"
             android:theme="@style/myDialog" />
-
         <activity
             android:name=".Dialog.ViewCycleMonth"
             android:screenOrientation="landscape"
+            android:theme="@style/myDialog" />
+        <activity
+            android:name=".Dialog.ViewDoctorsHistoryDialog"
             android:theme="@style/myDialog" />
     </application>
 </manifest>

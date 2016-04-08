@@ -65,18 +65,17 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
 
         // data for Pie Chart
         float Planned_Calls = CC.fetchPlannedCalls(current_cycle_month, current_cycle_year);
-
         final float IncidentalCalls = CC.IncidentalCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
-        float RecoveredCalls = CC.RecoveredCalls(current_cycle_month, current_cycle_year);
+        float RecoveredCalls = CC.RecoveredCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
         float DeclaredMissedCalls = CC.DeclaredMissedCalls(current_cycle_month, current_cycle_year);
-        float UnprocessedCalls = CC.UnprocessedCalls(current_cycle_month, current_cycle_year);
-        float SuccessfulCalls = ((Planned_Calls) - (IncidentalCalls + RecoveredCalls + DeclaredMissedCalls + UnprocessedCalls));
-        yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls, SuccessfulCalls};
+        float ActualCoveredCalls = CC.ActualCoveredCalls(current_cycle_month);
+        float UnprocessedCalls = Planned_Calls - (ActualCoveredCalls + IncidentalCalls);
+        yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls, ActualCoveredCalls};
         String labelIC = "Incidental Calls " + (int) IncidentalCalls + "/" + (int) Planned_Calls;
         String labelRC = "Recovered Calls " + (int) RecoveredCalls + "/" + (int) Planned_Calls;
         String labelDMC = "Declared Missed Calls " + (int) DeclaredMissedCalls + "/" + (int) Planned_Calls;
         String labelUC = "Unprocessed Calls " + (int) UnprocessedCalls + "/" + (int) Planned_Calls;
-        String labelSC = "Succesful Calls " + (int) SuccessfulCalls + "/" + (int) Planned_Calls;
+        String labelSC = "Actual Covered Calls " + (int) ActualCoveredCalls + "/" + (int) Planned_Calls;
         xData = new String[]{labelIC, labelRC, labelDMC, labelUC, labelSC};
 
         // Configure Pie Chart
@@ -209,19 +208,18 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
 
         /* --------- CHANGE VALUE OF PIE CHART ON CHANGE OF DATE --------- */
         // data for Pie Chart
-        float Planned_Calls = CC.fetchPlannedCalls(("'" + selected_cycle_month + "'"), ("'" + year + "'"));
-
+        float Planned_Calls = CC.fetchPlannedCalls(current_cycle_month, current_cycle_year);
         final float IncidentalCalls = CC.IncidentalCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
-        float RecoveredCalls = CC.RecoveredCalls(("'" + selected_cycle_month + "'"), ("'" + year + "'"));
-        float DeclaredMissedCalls = CC.DeclaredMissedCalls(("'" + selected_cycle_month + "'"), ("'" + year + "'"));
-        float UnprocessedCalls = CC.UnprocessedCalls(("'" + selected_cycle_month + "'"), ("'" + year + "'"));
-        float SuccessfulCalls = ((Planned_Calls) - (IncidentalCalls + RecoveredCalls + DeclaredMissedCalls + UnprocessedCalls));
-        yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls, SuccessfulCalls};
+        float RecoveredCalls = CC.RecoveredCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
+        float DeclaredMissedCalls = CC.DeclaredMissedCalls(current_cycle_month, current_cycle_year);
+        float ActualCoveredCalls = CC.ActualCoveredCalls(current_cycle_month);
+        float UnprocessedCalls = Planned_Calls - (ActualCoveredCalls + IncidentalCalls);
+        yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls, ActualCoveredCalls};
         String labelIC = "Incidental Calls " + (int) IncidentalCalls + "/" + (int) Planned_Calls;
         String labelRC = "Recovered Calls " + (int) RecoveredCalls + "/" + (int) Planned_Calls;
         String labelDMC = "Declared Missed Calls " + (int) DeclaredMissedCalls + "/" + (int) Planned_Calls;
         String labelUC = "Unprocessed Calls " + (int) UnprocessedCalls + "/" + (int) Planned_Calls;
-        String labelSC = "Succesful Calls " + (int) SuccessfulCalls + "/" + (int) Planned_Calls;
+        String labelSC = "Actual Covered Calls " + (int) ActualCoveredCalls + "/" + (int) Planned_Calls;
         xData = new String[]{labelIC, labelRC, labelDMC, labelUC, labelSC};
 
         // Configure Pie Chart

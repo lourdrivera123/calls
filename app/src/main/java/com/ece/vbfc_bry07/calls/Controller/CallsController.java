@@ -60,8 +60,8 @@ public class CallsController extends DbHelper {
     }
 
     public float IncidentalCalls(int cycle_month) {
-        String sql = "SELECT COUNT(c.id) as incidental_calls FROM Plans as p INNER JOIN PlanDetails as pd ON p.plans_id = pd.plan_id INNER JOIN Calls as c " +
-                "ON pd.id = c.temp_planDetails_id WHERE cycle_number = " + cycle_month + " AND c.status_id = 1";
+        String sql = "SELECT COUNT(c.id) as incidental_calls FROM Plans as p INNER JOIN PlanDetails as pd ON p.id = pd.plan_id INNER JOIN Calls as c " +
+                "ON pd.id = c.temp_planDetails_id WHERE cycle_number = " + cycle_month + " AND c.status_id = 1 AND c.makeup = 0";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
         float incidental_calls = 0;
@@ -76,24 +76,15 @@ public class CallsController extends DbHelper {
         return incidental_calls;
     }
 
-    public float RecoveredCalls(String cycle_month, String cycle_year) {
-        String sql = "Select count(C.id) as recovered_calls, " +
-                "    strftime('%m', PD.cycle_day) as cycle_month, " +
-                "    strftime('%Y', PD.cycle_day) as cycle_year " +
-                "from Calls C " +
-                "    left join PlanDetails PD on C.plan_details_id = PD.plan_id " +
-                "    inner join MissedCalls MC on MC.call_id_fk != C.calls_id " +
-                "where makeup = '0' " +
-                "    and reschedule_date > 0 " +
-                "    and cycle_month = " + cycle_month + " " +
-                "    and cycle_year = " + cycle_year + " ";
+    public float RecoveredCalls(int cycle_month) {
+        String sql = "SELECT COUNT(c.id) as recovered_calls FROM Plans as p INNER JOIN PlanDetails as pd ON p.id = pd.plan_id INNER JOIN Calls as c " +
+                "ON pd.id = c.temp_planDetails_id WHERE cycle_number = " + cycle_month + " AND c.status_id = 1 AND c.makeup = 1";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
         float recovered_calls = 0;
 
-        while (cur.moveToNext()) {
+        while (cur.moveToNext())
             recovered_calls = Float.parseFloat(cur.getString(cur.getColumnIndex("recovered_calls")));
-        }
 
         cur.close();
         db.close();
@@ -101,29 +92,20 @@ public class CallsController extends DbHelper {
         return recovered_calls;
     }
 
-    public float UnprocessedCalls(String cycle_month, String cycle_year) {
-        String sql = "Select count(C.id) as unprocessed_calls, " +
-                "    strftime('%m', PD.cycle_day) as cycle_month, " +
-                "    strftime('%Y', PD.cycle_day) as cycle_year " +
-                "from Calls C " +
-                "    left join PlanDetails PD on C.plan_details_id = PD.plan_id " +
-                "    inner join MissedCalls MC on MC.call_id_fk != C.calls_id " +
-                "where start_datetime = '' " +
-                "    and end_datetime = '' " +
-                "    and cycle_month = " + cycle_month + " " +
-                "    and cycle_year = " + cycle_year + " ";
+    public float ActualCoveredCalls(String cycle_month) {
+        String sql = "SELECT * FROM Calls as c INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id INNER JOIN Plans as p " +
+                "on pd.plan_id = p.id WHERE p.cycle_number = " + cycle_month + "  AND c.status_id = 2 GROUP BY c.id";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
-        float unprocessed_calls = 0;
+        float covered_calls = 0;
 
-        while (cur.moveToNext()) {
-            unprocessed_calls = Float.parseFloat(cur.getString(cur.getColumnIndex("unprocessed_calls")));
-        }
+        while (cur.moveToNext())
+            covered_calls += 1;
 
         cur.close();
         db.close();
 
-        return unprocessed_calls;
+        return covered_calls;
     }
 
     public float DeclaredMissedCalls(String cycle_month, String cycle_year) {
@@ -150,19 +132,17 @@ public class CallsController extends DbHelper {
     }
 
     public HashMap<String, String> getLastVisited(int plandetails_id, int temp_plandetails_id) {
-        String sql = "";
+        String sql;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String last_visited;
         HashMap<String, String> map = new HashMap<>();
         map.put("last_visited", "");
         map.put("count_visits", "");
 
-        if (plandetails_id > 0) {
-            sql = "SELECT c.created_at FROM Calls as c INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id WHERE pd.plan_id = " +
-                    "(SELECT plan_id FROM PlanDetails WHERE plan_details_id = " + plandetails_id + ")";
-        } else if (temp_plandetails_id > 0) {
-            sql = "";
-        }
+        if (plandetails_id > 0)
+            sql = "SELECT c.created_at FROM PlanDetails as pd INNER JOIN Calls as c ON pd.plan_details_id = c.plan_details_id WHERE pd.plan_details_id = " + plandetails_id + " AND c.temp_planDetails_id = 0";
+        else
+            sql = "SELECT c.created_at FROM PlanDetails as pd INNER JOIN Calls as c ON pd.id = c.temp_planDetails_id WHERE pd.id = " + temp_plandetails_id + " AND c.plan_details_id = 0";
 
         Cursor cur = db.rawQuery(sql, null);
 
@@ -183,10 +163,20 @@ public class CallsController extends DbHelper {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues val = new ContentValues();
 
-        val.put(PLANDETAILS_ID, map.get("calls_plan_details_id"));
-        val.put(TEMP_PLANDETAILS_ID, map.get("calls_incidentals_pd_id"));
-        val.put(STATUS_ID_FK, map.get("status_id"));
         val.put(MAKEUP, 0);
+
+        if (Integer.parseInt(map.get("calls_plan_details_id")) > 0) {
+            val.put(TEMP_PLANDETAILS_ID, 0);
+            val.put(PLANDETAILS_ID, map.get("calls_plan_details_id"));
+        } else if (Integer.parseInt(map.get("calls_incidentals_pd_id")) > 0) {
+            val.put(TEMP_PLANDETAILS_ID, map.get("calls_incidentals_pd_id"));
+            val.put(PLANDETAILS_ID, 0);
+
+            if (map.get("calls_status").equals("3"))
+                val.put(MAKEUP, 1);
+        }
+
+        val.put(STATUS_ID_FK, map.get("status_id"));
         val.put(START_DATETIME, map.get("start_time"));
         val.put(END_DATETIME, map.get("calls_end"));
         val.put(RESCHEDULE_DATE, "0");

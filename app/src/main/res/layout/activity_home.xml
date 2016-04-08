@@ -71,7 +71,7 @@
                             android:layout_marginLeft="5dp"
                             android:layout_weight=".8"
                             android:gravity="center_vertical"
-                            android:text="Quick Sign"
+                            android:text="@string/quick_sign"
                             android:textColor="#F6F2EC"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -96,7 +96,7 @@
                             android:layout_marginLeft="5dp"
                             android:layout_weight=".8"
                             android:gravity="center_vertical"
-                            android:text="Actual Coverage Plan"
+                            android:text="@string/acp"
                             android:textColor="#F6F2EC"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -121,7 +121,7 @@
                             android:layout_marginLeft="5dp"
                             android:layout_weight=".8"
                             android:gravity="center_vertical"
-                            android:text="Master Coverage Plan"
+                            android:text="@string/mcp"
                             android:textColor="#F6F2EC"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -146,7 +146,7 @@
                             android:layout_marginLeft="5dp"
                             android:layout_weight=".8"
                             android:gravity="center_vertical"
-                            android:text="Doctors Information"
+                            android:text="@string/doctor_information"
                             android:textColor="#F6F2EC"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -171,7 +171,7 @@
                             android:layout_marginLeft="5dp"
                             android:layout_weight=".8"
                             android:gravity="center_vertical"
-                            android:text="Call Report"
+                            android:text="@string/call_report"
                             android:textColor="#F6F2EC"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -196,7 +196,7 @@
                             android:layout_marginLeft="5dp"
                             android:layout_weight=".8"
                             android:gravity="center_vertical"
-                            android:text="Sales Report"
+                            android:text="@string/sales_report"
                             android:textColor="#F6F2EC"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -221,7 +221,7 @@
                             android:layout_marginLeft="5dp"
                             android:layout_weight=".8"
                             android:gravity="center_vertical"
-                            android:text="Material Monitoring"
+                            android:text="@string/material_monitoring"
                             android:textColor="#F6F2EC"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -246,7 +246,7 @@
                             android:layout_marginLeft="5dp"
                             android:layout_weight=".8"
                             android:gravity="center_vertical"
-                            android:text="Status Summary"
+                            android:text="@string/status_summary"
                             android:textColor="#F6F2EC"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -279,61 +279,41 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.9"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.4"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="5dp"
-                        android:text="Broadcast Messages"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-
-                    <ListView
-                        android:id="@+id/listBroadcastMessage"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:divider="@null"
-                        android:dividerHeight="-20dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.6">
-
-                    <com.github.mikephil.charting.charts.PieChart
-                        android:id="@+id/chart"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.1">
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.4"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="@string/broadcast_msgs"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <ListView
+                    android:id="@+id/listBroadcastMessage"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="bottom|end"
-                    android:text="CYCLE 11 - Last Sync Date: November 27, 2015 20:45:05"
-                    android:textSize="10sp" />
+                    android:divider="@null"
+                    android:dividerHeight="-20dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.6">
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

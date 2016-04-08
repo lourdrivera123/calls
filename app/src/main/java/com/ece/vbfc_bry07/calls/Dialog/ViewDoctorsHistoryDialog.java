@@ -1,19 +1,19 @@
 package com.ece.vbfc_bry07.calls.Dialog;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.Activity.ACPActivity;
-import com.ece.vbfc_bry07.calls.Activity.MCPActivity;
+import com.ece.vbfc_bry07.calls.Adapter.DoctorsHistoryAdapter;
 import com.ece.vbfc_bry07.calls.Adapter.ExpandableListAdapter;
 import com.ece.vbfc_bry07.calls.Controller.InstitutionDoctorMapsController;
 import com.ece.vbfc_bry07.calls.Controller.PlanDetailsController;
@@ -26,37 +26,41 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ShowListOfDoctorsDialog extends AppCompatActivity implements TextWatcher, ExpandableListView.OnChildClickListener {
-    ExpandableListView list_of_doctors;
+public class ViewDoctorsHistoryDialog extends AppCompatActivity implements TextWatcher, ExpandableListView.OnChildClickListener {
+    ListView list_of_history;
     TextView no_records;
+    ExpandableListView list_of_doctors;
     EditText search_doctor;
-    RelativeLayout root;
+
+    Helpers helpers;
+    PlanDetailsController pdc;
+    ExpandableListAdapter listAdapter;
+    DoctorsHistoryAdapter child_adapter;
+    InstitutionDoctorMapsController idmc;
 
     List<String> listDataHeader;
     ArrayList<HashMap<String, String>> doctors;
-    public static HashMap<String, String> child_clicked;
     HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild, duplicate_list_child;
 
-    InstitutionDoctorMapsController idmc;
-    ExpandableListAdapter listAdapter;
-    PlanDetailsController pdc;
-    Helpers helpers;
-
-    public static String missedCall_date;
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialog_choose_doctor);
 
-        list_of_doctors = (ExpandableListView) findViewById(R.id.list_of_doctors);
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int screenWidth = (int) (metrics.widthPixels * 0.70);
+
+        setContentView(R.layout.dialog_view_doctor_history);
+
+        getWindow().setLayout(screenWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        list_of_history = (ListView) findViewById(R.id.list_of_history);
         no_records = (TextView) findViewById(R.id.no_records);
+        list_of_doctors = (ExpandableListView) findViewById(R.id.list_of_doctors);
         search_doctor = (EditText) findViewById(R.id.search_doctor);
-        root = (RelativeLayout) findViewById(R.id.root);
 
+        helpers = new Helpers();
         idmc = new InstitutionDoctorMapsController(this);
         pdc = new PlanDetailsController(this);
-        helpers = new Helpers();
         prepareListData();
 
         search_doctor.addTextChangedListener(this);
@@ -65,10 +69,12 @@ public class ShowListOfDoctorsDialog extends AppCompatActivity implements TextWa
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
     }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
+
     }
 
     @Override
@@ -119,47 +125,12 @@ public class ShowListOfDoctorsDialog extends AppCompatActivity implements TextWa
 
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-        child_clicked = listDataChild.get(groupPosition).get(childPosition);
+        int cycle_month = helpers.convertDateToCycleMonth(helpers.getCurrentDate("date"));
 
-        if (MCPActivity.check_adapter_mcp == 23 && ACPActivity.check_adapter_acp == 0) {
-            int class_code = Integer.parseInt(child_clicked.get("class_code"));
-            String doctor_id = child_clicked.get("doctor_id");
-            int count = 0;
+        Log.d("details_child", listDataChild.get(groupPosition).get(childPosition).get("IDM_id") + "/" + cycle_month);
 
-            for (int x = 0; x < MCPActivity.list_of_plans.size(); x++) {
-                String keyset = MCPActivity.list_of_plans.get(x).keySet().toString().replace("[", "").replace("]", "");
-                ArrayList<HashMap<String, String>> per_day = MCPActivity.list_of_plans.get(x).get(keyset);
-
-                if (per_day != null) {
-                    for (int y = 0; y < per_day.size(); y++) {
-                        if (per_day.get(y).get("doctor_id").equals(doctor_id))
-                            count += 1;
-                    }
-                }
-            }
-
-            if (class_code > count) {
-                MCPActivity.check_adapter_mcp = 10;
-                MCPActivity.isVisible = true;
-            } else if (class_code <= count)
-                MCPActivity.check_adapter_mcp = 11;
-
-            this.finish();
-        } else if (ACPActivity.check_adapter_acp == 20 && MCPActivity.check_adapter_mcp == 0) {
-            boolean exceeds = pdc.IsDoctorExceedsMonthlyCalls(Integer.parseInt(child_clicked.get("doctor_id")));
-
-            if (!exceeds) {
-                missedCall_date = pdc.checkForMissedCall(Integer.parseInt(child_clicked.get("IDM_id")), helpers.convertDateToCycleMonth(ACPActivity.current_date), ACPActivity.current_date);
-
-                if (!missedCall_date.equals(""))
-                    ACPActivity.check_adapter_acp = 50;
-                else
-                    ACPActivity.check_adapter_acp = 30;
-
-                this.finish();
-            } else
-                Snackbar.make(root, "This doctor has reached maximum number of calls for this month", Snackbar.LENGTH_SHORT).show();
-        }
+        child_adapter = new DoctorsHistoryAdapter(this);
+        list_of_history.setAdapter(child_adapter);
 
         return true;
     }
@@ -170,11 +141,7 @@ public class ShowListOfDoctorsDialog extends AppCompatActivity implements TextWa
         duplicate_list_child = new HashMap<>();
         Set<String> uniqueInstitutions = new LinkedHashSet<>();
 
-        if (MCPActivity.check_adapter_mcp == 23 && ACPActivity.check_adapter_acp == 0) {
-            doctors = idmc.getDoctorsWithInstitutions("");
-            doctors.removeAll(MCPActivity.new_plan_details);
-        } else if (ACPActivity.check_adapter_acp == 20 && MCPActivity.check_adapter_mcp == 0)
-            doctors = idmc.getDoctorsNotIncludedInMCP(ACPActivity.current_date);
+        doctors = idmc.getDoctorsWithInstitutions("");
 
         for (int x = 0; x < doctors.size(); x++)
             uniqueInstitutions.add(doctors.get(x).get("inst_name"));

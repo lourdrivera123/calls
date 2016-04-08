@@ -1,21 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <item
         android:id="@+id/view_doctors"
         android:icon="@mipmap/ic_view_doctor"
         android:title="View Doctors"
         app:showAsAction="always" />
-
-    <item
-        android:id="@+id/start_call"
-        android:icon="@mipmap/ic_start_call"
-        android:title="Start"
-        app:showAsAction="always" />
-
-    <item
-        android:id="@+id/joint"
-        android:checkable="true"
-        android:title="Joint" />
 </menu>

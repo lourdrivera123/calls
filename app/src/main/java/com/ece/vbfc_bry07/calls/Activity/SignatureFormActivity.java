@@ -118,6 +118,7 @@ public class SignatureFormActivity extends AppCompatActivity {
                     signature.save(mView);
 
                     details.put("calls_retry_count", String.valueOf(retry_count));
+
                     long callID = cc.insertCall(details);
 
                     if (callID > 0) {
