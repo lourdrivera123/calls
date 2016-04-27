@@ -19,13 +19,12 @@ public class PlanDetailsController extends DbHelper {
     static String TBL_PlanDetails = "PlanDetails",
             PlanDetails_ID = "plan_details_id",
             PLAN_ID_FK = "plan_id",
-            STATUS = "status",
             INST_DOC_ID_FK = "inst_doc_id",
             CYCLE_DAY = "cycle_day",
             CYCLE_DAY_LABEL = "label";
 
-    public static final String CREATE_PlanDetails = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s INTEGER, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
-            TBL_PlanDetails, AI_ID, PlanDetails_ID, PLAN_ID_FK, STATUS, INST_DOC_ID_FK, CYCLE_DAY, CYCLE_DAY_LABEL, CREATED_AT, UPDATED_AT, DELETED_AT);
+    public static final String CREATE_PlanDetails = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
+            TBL_PlanDetails, AI_ID, PlanDetails_ID, PLAN_ID_FK, INST_DOC_ID_FK, CYCLE_DAY, CYCLE_DAY_LABEL, CREATED_AT, UPDATED_AT, DELETED_AT);
 
     public PlanDetailsController(Context context) {
         super(context);
@@ -78,18 +77,41 @@ public class PlanDetailsController extends DbHelper {
         return array;
     }
 
-    public HashMap<String, String> getCallDetails(int plandetails_id, int temp_plandetails_id) {
-        String sql = null;
+    public ArrayList<HashMap<String, ArrayList<String>>> getPlanDetailsByPID(int plan_ID) {
+        String sql1 = "SELECT DISTINCT inst_doc_id FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p.id WHERE plan_id = " + plan_ID;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql1, null);
+        ArrayList<HashMap<String, ArrayList<String>>> array = new ArrayList<>();
+
+        while (cur.moveToNext()) {
+            String sql2 = "SELECT cycle_day FROM PlanDetails as pd INNER JOIN InstitutionDoctorMaps as idm on pd.inst_doc_id = idm.IDM_ID " +
+                    "INNER JOIN Doctors as d on idm.doctor_id = d.doc_id INNER JOIN Institutions as i on idm.institution_id = i.inst_id " +
+                    "INNER JOIN DoctorClasses as dc on idm.class_id = dc.doctor_classes_id where IDM_id = " + cur.getInt(cur.getColumnIndex("inst_doc_id"));
+            Cursor cur2 = db.rawQuery(sql2, null);
+            ArrayList<String> date = new ArrayList<>();
+            HashMap<String, ArrayList<String>> map = new HashMap<>();
+
+            while (cur2.moveToNext()) {
+                date.add(cur2.getString(cur2.getColumnIndex("cycle_day")));
+            }
+
+            map.put(cur.getString(cur.getColumnIndex("inst_doc_id")), date);
+            array.add(map);
+
+            cur2.close();
+        }
+
+        cur.close();
+        db.close();
+
+        return array;
+    }
+
+    public HashMap<String, String> getCallDetails(int IDM_id) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         HashMap<String, String> map = new HashMap<>();
-
-        if (plandetails_id > 0) {
-            sql = "SELECT * FROM PlanDetails as pd INNER JOIN InstitutionDoctorMaps as idm ON pd.inst_doc_id = idm.IDM_ID INNER JOIN Doctors as d " +
-                    "ON idm.doctor_id = d.doc_id INNER JOIN DoctorClasses as dc ON idm.class_id = dc.doctor_classes_id WHERE pd.plan_details_id = " + plandetails_id;
-        } else if (temp_plandetails_id > 0) {
-            sql = "SELECT * FROM PlanDetails as pd INNER JOIN InstitutionDoctorMaps as idm ON pd.inst_doc_id = idm.IDM_ID INNER JOIN Doctors as d " +
-                    "ON idm.doctor_id = d.doc_id INNER JOIN DoctorClasses as dc ON idm.class_id = dc.doctor_classes_id WHERE pd.id = " + temp_plandetails_id;
-        }
+        String sql = "SELECT * FROM InstitutionDoctorMaps as idm INNER JOIN Doctors as d ON idm.doctor_id = d.doc_id INNER JOIN DoctorClasses as dc " +
+                "ON idm.class_id = dc.doctor_classes_id WHERE idm.IDM_id = " + IDM_id;
 
         Cursor cur = db.rawQuery(sql, null);
 
@@ -112,18 +134,19 @@ public class PlanDetailsController extends DbHelper {
 
         while (cur.moveToNext()) {
             String date = cur.getString(cur.getColumnIndex("cycle_day"));
-            String sql2 = "SELECT c.id as call_id, * FROM PlanDetails as pd LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id WHERE pd.cycle_day = '" + date +
-                    "' GROUP BY pd.id";
+            String sql2 = "SELECT c.id as call_id_final, * FROM PlanDetails as pd LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id " +
+                    "LEFT JOIN RescheduledCalls as rc ON c.id = rc.call_id WHERE pd.cycle_day = '" + date + "' OR rc.cycle_day = '" + date + "' GROUP BY pd.id";
             Cursor cur2 = db.rawQuery(sql2, null);
             HashMap<String, String> map = new HashMap<>();
             map.put("date", date);
             int divisor = 0;
             int dividend = 0;
 
+
             while (cur2.moveToNext()) {
                 divisor += 1;
 
-                if (cur2.getString(cur2.getColumnIndex("call_id")) != null)
+                if (cur2.getString(cur2.getColumnIndex("call_id_final")) != null)
                     dividend += 1;
             }
 
@@ -140,23 +163,87 @@ public class PlanDetailsController extends DbHelper {
         return array;
     }
 
+    public ArrayList<HashMap<String, String>> getMonthlyHistoryByIDM_id(int IDM_id, int cycle_month) {
+        String sql = "SELECT c.calls_id as server_id, c.status_id as call_status, * FROM PlanDetails as pd LEFT JOIN Calls as c ON c.plan_details_id = pd.plan_details_id " +
+                "WHERE pd.inst_doc_id = " + IDM_id + " AND plan_id = (SELECT id FROM plans WHERE cycle_number = " + cycle_month + ") AND pd.plan_details_id > 0";
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+        Cursor cur1 = null;
+        ArrayList<HashMap<String, String>> array = new ArrayList<>();
+
+        if (cur.getCount() > 0) {
+            while (cur.moveToNext()) {
+                String day = cur.getString(cur.getColumnIndex("cycle_day"));
+                String sql1 = "SELECT c.calls_id as server_id, c.status_id as call_status, * FROM Calls as c INNER JOIN PlanDetails as pd ON c.temp_planDetails_id = pd.id " +
+                        "WHERE pd.inst_doc_id = " + IDM_id + " AND reschedule_date = '" + day + "'";
+                cur1 = db.rawQuery(sql1, null);
+                String call_status, server_id;
+                HashMap<String, String> map = new HashMap<>();
+                map.put("date", day);
+
+                if (cur1.moveToNext()) {
+                    call_status = cur1.getString(cur1.getColumnIndex("call_status")) == null ? "" : cur1.getString(cur1.getColumnIndex("call_status"));
+                    server_id = cur1.getString(cur1.getColumnIndex("server_id")) == null ? "" : cur1.getString(cur1.getColumnIndex("server_id"));
+                } else {
+                    call_status = cur.getString(cur.getColumnIndex("call_status")) == null ? "" : cur.getString(cur.getColumnIndex("call_status"));
+                    server_id = cur.getString(cur.getColumnIndex("server_id")) == null ? "" : cur.getString(cur.getColumnIndex("server_id"));
+                }
+
+                map.put("status", call_status);
+                map.put("server_id", server_id);
+                array.add(map);
+            }
+        } else { //FOR INCIDENTAL CALLS
+            String sql2 = "SELECT c.calls_id as server_id, c.status_id as call_status, * FROM PlanDetails as pd LEFT JOIN Calls as c ON c.plan_details_id = pd.plan_details_id " +
+                    "WHERE pd.inst_doc_id = " + IDM_id + " AND plan_id = (SELECT id FROM plans WHERE cycle_number = " + cycle_month + ") AND pd.plan_details_id == 0 GROUP BY pd.id";
+            Cursor cur2 = db.rawQuery(sql2, null);
+
+            while (cur2.moveToNext()) {
+                String status_id = cur2.getString(cur2.getColumnIndex("call_status")) == null ? "" : cur2.getString(cur2.getColumnIndex("call_status"));
+                String server_id = cur2.getString(cur2.getColumnIndex("server_id")) == null ? "" : cur2.getString(cur2.getColumnIndex("server_id"));
+                String makeup = cur2.getString(cur2.getColumnIndex("makeup"));
+                String call_status = "";
+
+                if (status_id.equals("2") && makeup.equals("1"))
+                    call_status = "2";
+                else if (status_id.equals("2") && makeup.equals("0"))
+                    call_status = "3";
+
+                HashMap<String, String> map = new HashMap<>();
+                map.put("date", cur2.getString(cur2.getColumnIndex("cycle_day")));
+                map.put("status", call_status);
+                map.put("server_id", server_id);
+                array.add(map);
+            }
+
+            cur2.close();
+        }
+
+        if (cur1 != null)
+            cur1.close();
+
+        cur.close();
+        db.close();
+
+        return array;
+    }
+
     /////////////////////////////INSERT METHODS
-    public boolean insertPlanDetails(long plan_id, ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> details) {
+    public boolean insertPlanDetails(long plan_id, ArrayList<HashMap<String, ArrayList<String>>> planDetails) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         long id = 0;
 
-        for (int x = 0; x < details.size(); x++) {
-            HashMap<String, ArrayList<HashMap<String, String>>> per_day = details.get(x);
-            String date = per_day.keySet().toString().replace("[", "").replace("]", "");
-            ArrayList<HashMap<String, String>> calls_per_day = per_day.get(date);
+        for (int x = 0; x < planDetails.size(); x++) {
+            HashMap<String, ArrayList<String>> IDM_id_with_date = planDetails.get(x);
+            String IDM_id = IDM_id_with_date.keySet().toString().replace("[", "").replace("]", "");
+            ArrayList<String> date = IDM_id_with_date.get(IDM_id);
 
-            for (int y = 0; y < calls_per_day.size(); y++) {
+            for (int y = 0; y < date.size(); y++) {
                 ContentValues val = new ContentValues();
                 val.put(PLAN_ID_FK, plan_id);
                 val.put(PlanDetails_ID, 0);
-                val.put(CYCLE_DAY, date);
-                val.put(STATUS, 0);
-                val.put(INST_DOC_ID_FK, calls_per_day.get(y).get("IDM_id"));
+                val.put(CYCLE_DAY, date.get(y));
+                val.put(INST_DOC_ID_FK, IDM_id);
                 val.put(CREATED_AT, helpers.getCurrentDate("timestamp"));
 
                 id = db.insert(TBL_PlanDetails, null, val);
@@ -168,86 +255,34 @@ public class PlanDetailsController extends DbHelper {
         return id > 0;
     }
 
-    public int insertAdditionalCall(HashMap<String, String> map, int status_id) {
-        String date = helpers.getCurrentDate("");
-        int cycleMonth = helpers.convertDateToCycleMonth(date);
-        int planID = pc.getPlanID(cycleMonth);
+    public long insertAdditionalCall(HashMap<String, String> map) {
+        int planID = pc.getPlanID(helpers.convertDateToCycleMonth(helpers.getCurrentDate("date")), "");
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues val = new ContentValues();
+
+        val.put(PlanDetails_ID, 0);
+        val.put(PLAN_ID_FK, planID);
+        val.put(INST_DOC_ID_FK, map.get("IDM_id"));
+        val.put(CYCLE_DAY, helpers.getCurrentDate("date"));
+        val.put(CREATED_AT, helpers.getCurrentDate("timestamp"));
+
+        long temp_planDetails_id = db.insert(TBL_PlanDetails, null, val);
+
+        db.close();
+
+        return temp_planDetails_id;
+    }
+
+    ///////////////////////////////CHECK METHODS
+    public int checkPlanDetails(int cycleMonth) {
+        int planID = pc.getPlanID(cycleMonth, "PlanDetails");
         int rowID = 0;
 
         if (planID > 0) {
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-            ContentValues val = new ContentValues();
-            val.put(INST_DOC_ID_FK, map.get("IDM_id"));
-            val.put(PlanDetails_ID, map.get("plan_details_id"));
-            val.put(CYCLE_DAY, date);
-            val.put(CREATED_AT, helpers.getCurrentDate("timestamp"));
-            val.put(PLAN_ID_FK, planID);
-            val.put(STATUS, status_id);
-
-            rowID = (int) db.insert(TBL_PlanDetails, null, val);
-
-            db.close();
+            rowID = 1;
         } else if (planID == -1)
             rowID = -1;
 
         return rowID;
-    }
-
-    ///////////////////////////////CHECK METHODS
-    public boolean IsDoctorExceedsMonthlyCalls(int inst_doc_id) {
-        String sql = "SELECT COUNT(pd.id) as count, dc.max_visit FROM PlanDetails as pd INNER JOIN InstitutionDoctorMaps as idm ON " +
-                "pd.inst_doc_id = idm.IDM_ID INNER JOIN DoctorClasses as dc ON idm.class_id = dc.doctor_classes_id WHERE inst_doc_id = " + inst_doc_id;
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cur = db.rawQuery(sql, null);
-        boolean flag = false;
-
-        if (cur.moveToNext()) {
-            int actual_count = cur.getInt(cur.getColumnIndex("count"));
-            int max_visit = cur.getString(cur.getColumnIndex("max_visit")) == null ? 0 : cur.getInt(cur.getColumnIndex("max_visit"));
-
-            if (max_visit > 0) {
-                if (actual_count >= max_visit)
-                    flag = true;
-            }
-        }
-
-        cur.close();
-        db.close();
-
-        return flag;
-    }
-
-    public String checkForMissedCall(int IDM_id, int cycle_month, String date_now) {
-        String sql = "SELECT c.id as call_id, * FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p.id LEFT JOIN Calls as c " +
-                "ON pd.plan_details_id = c.plan_details_id WHERE pd.inst_doc_id = " + IDM_id + " AND p.cycle_number = " + cycle_month + " AND pd.cycle_day < '" + date_now + "' ORDER BY pd.cycle_day ASC";
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cur = db.rawQuery(sql, null);
-        String missedcall_date = "";
-
-        if (cur.moveToNext()) {
-            if (cur.getString(cur.getColumnIndex("call_id")) == null)
-                missedcall_date = cur.getString(cur.getColumnIndex("cycle_day"));
-        }
-
-        cur.close();
-        db.close();
-
-        return missedcall_date;
-    }
-
-    public int checkTypeOfAdditionalCall(int temp_planDetails_id) {
-        String sql = "SELECT * FROM PlanDetails as pd WHERE id = " + temp_planDetails_id;
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cur = db.rawQuery(sql, null);
-        int status_id = 1;
-
-        if (cur.moveToNext())
-            status_id = cur.getInt(cur.getColumnIndex(STATUS));
-
-        cur.close();
-
-        db.close();
-        return status_id;
     }
 }

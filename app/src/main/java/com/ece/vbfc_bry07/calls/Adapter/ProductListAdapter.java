@@ -1,6 +1,7 @@
 package com.ece.vbfc_bry07.calls.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +17,13 @@ import java.util.HashMap;
 public class ProductListAdapter extends BaseAdapter {
     TextView TxtProductName, TotalS, TotalL, TotalP, ContentS, ContentL, ContentP;
 
-    ArrayList<HashMap<String, String>> objects;
+    ArrayList<HashMap<String, String>> objects, call_materials;
     Context context;
 
-    public ProductListAdapter(Context context, ArrayList<HashMap<String, String>> objects) {
+    public ProductListAdapter(Context context, ArrayList<HashMap<String, String>> objects, ArrayList<HashMap<String, String>> call_materials) {
         this.objects = objects;
         this.context = context;
+        this.call_materials = call_materials;
     }
 
     @Override
@@ -55,12 +57,19 @@ public class ProductListAdapter extends BaseAdapter {
         ContentP = (TextView) convertView.findViewById(R.id.ContentP);
 
         TxtProductName.setText(objects.get(position).get("product_name"));
-        TotalS.setText(objects.get(position).get("Total_Sample"));
-        TotalL.setText(objects.get(position).get("Total_Literature"));
-        TotalP.setText(objects.get(position).get("Total_Promomaterials"));
-        ContentS.setText(objects.get(position).get("Content_Sample"));
-        ContentL.setText(objects.get(position).get("Content_Literature"));
-        ContentP.setText(objects.get(position).get("Content_Promomaterials"));
+
+        for (int x = 0; x < call_materials.size(); x++) {
+            if (call_materials.get(x).get("product_id").equals(objects.get(position).get("product_id"))) {
+                TotalS.setText(call_materials.get(x).get("sample"));
+                TotalL.setText(call_materials.get(x).get("literature"));
+                TotalP.setText(call_materials.get(x).get("promaterials"));
+                break;
+            }
+        }
+
+//        ContentS.setText(objects.get(position).get("Content_Sample"));
+//        ContentL.setText(objects.get(position).get("Content_Literature"));
+//        ContentP.setText(objects.get(position).get("Content_Promomaterials"));
 
         return convertView;
     }

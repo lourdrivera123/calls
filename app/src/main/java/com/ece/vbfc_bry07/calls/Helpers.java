@@ -1,5 +1,6 @@
 package com.ece.vbfc_bry07.calls;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -61,6 +62,16 @@ public class Helpers {
         return df.format(cal.getTime());
     }
 
+    public String getFirstDateOfMonth(int month) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.MONTH, month);
+        df.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+
+        return df.format(cal.getTime());
+    }
+
     public int convertDateToCycleMonth(String date) {
         Date date1;
         Calendar cal = Calendar.getInstance();
@@ -89,6 +100,18 @@ public class Helpers {
         }
 
         return (cal.get(Calendar.YEAR));
+    }
+
+    public Date convertStringToDate(String input) {
+        Date date = null;
+
+        try {
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            date = format.parse(input);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 
     public String getTodaysDate() {

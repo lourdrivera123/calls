@@ -1,5 +1,6 @@
 package com.ece.vbfc_bry07.calls.Dialog;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -13,8 +14,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.ece.vbfc_bry07.calls.Activity.ACPActivity;
 import com.ece.vbfc_bry07.calls.Adapter.DoctorsHistoryAdapter;
 import com.ece.vbfc_bry07.calls.Adapter.ExpandableListAdapter;
+import com.ece.vbfc_bry07.calls.Controller.DoctorClassesController;
 import com.ece.vbfc_bry07.calls.Controller.InstitutionDoctorMapsController;
 import com.ece.vbfc_bry07.calls.Controller.PlanDetailsController;
 import com.ece.vbfc_bry07.calls.Helpers;
@@ -26,20 +29,25 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ViewDoctorsHistoryDialog extends AppCompatActivity implements TextWatcher, ExpandableListView.OnChildClickListener {
-    ListView list_of_history;
-    TextView no_records;
-    ExpandableListView list_of_doctors;
+public class ViewDoctorsHistoryDialog extends AppCompatActivity implements TextWatcher, ExpandableListView.OnChildClickListener, View.OnClickListener {
+    View _lastColored;
     EditText search_doctor;
+    ListView list_of_history;
+    ExpandableListView list_of_doctors;
+    TextView no_records, add_incidental_call;
 
     Helpers helpers;
     PlanDetailsController pdc;
+    DoctorClassesController dcc;
     ExpandableListAdapter listAdapter;
     DoctorsHistoryAdapter child_adapter;
     InstitutionDoctorMapsController idmc;
+    public static ViewDoctorsHistoryDialog activity;
 
     List<String> listDataHeader;
     ArrayList<HashMap<String, String>> doctors;
+    static ArrayList<HashMap<String, String>> history;
+    public static HashMap<String, String> child_clicked;
     HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild, duplicate_list_child;
 
     @Override
@@ -47,24 +55,28 @@ public class ViewDoctorsHistoryDialog extends AppCompatActivity implements TextW
         super.onCreate(savedInstanceState);
 
         DisplayMetrics metrics = getResources().getDisplayMetrics();
-        int screenWidth = (int) (metrics.widthPixels * 0.70);
+        int screenWidth = (int) (metrics.widthPixels * 0.80);
 
         setContentView(R.layout.dialog_view_doctor_history);
-
         getWindow().setLayout(screenWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        list_of_history = (ListView) findViewById(R.id.list_of_history);
         no_records = (TextView) findViewById(R.id.no_records);
-        list_of_doctors = (ExpandableListView) findViewById(R.id.list_of_doctors);
         search_doctor = (EditText) findViewById(R.id.search_doctor);
+        list_of_history = (ListView) findViewById(R.id.list_of_history);
+        add_incidental_call = (TextView) findViewById(R.id.add_incidental_call);
+        list_of_doctors = (ExpandableListView) findViewById(R.id.list_of_doctors);
 
+        activity = this;
         helpers = new Helpers();
-        idmc = new InstitutionDoctorMapsController(this);
         pdc = new PlanDetailsController(this);
+        dcc = new DoctorClassesController(this);
+        idmc = new InstitutionDoctorMapsController(this);
+
         prepareListData();
 
         search_doctor.addTextChangedListener(this);
         list_of_doctors.setOnChildClickListener(this);
+        add_incidental_call.setOnClickListener(this);
     }
 
     @Override
@@ -125,12 +137,36 @@ public class ViewDoctorsHistoryDialog extends AppCompatActivity implements TextW
 
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+        if (_lastColored != null) {
+            _lastColored.setBackgroundColor(Color.TRANSPARENT);
+            _lastColored.invalidate();
+        }
+
+        _lastColored = v;
+        v.setBackgroundColor(Color.parseColor("#80A9A9A9"));
+
         int cycle_month = helpers.convertDateToCycleMonth(helpers.getCurrentDate("date"));
+        int IDM_id = Integer.parseInt(listDataChild.get(groupPosition).get(childPosition).get("IDM_id"));
+        child_clicked = listDataChild.get(groupPosition).get(childPosition);
+        child_clicked.put("temp_plandetails_id", "0");
 
-        Log.d("details_child", listDataChild.get(groupPosition).get(childPosition).get("IDM_id") + "/" + cycle_month);
+        history = pdc.getMonthlyHistoryByIDM_id(IDM_id, cycle_month);
 
-        child_adapter = new DoctorsHistoryAdapter(this);
-        list_of_history.setAdapter(child_adapter);
+        if (history.size() > 0) {
+            int max_visit = dcc.getMaxVisit(IDM_id);
+
+            if (max_visit > history.size()) {
+                add_incidental_call.setVisibility(View.VISIBLE);
+            } else if (max_visit == history.size())
+                add_incidental_call.setVisibility(View.GONE);
+
+            list_of_history.setVisibility(View.VISIBLE);
+            child_adapter = new DoctorsHistoryAdapter(this, history);
+            list_of_history.setAdapter(child_adapter);
+        } else {
+            add_incidental_call.setVisibility(View.VISIBLE);
+            list_of_history.setVisibility(View.GONE);
+        }
 
         return true;
     }
@@ -140,8 +176,7 @@ public class ViewDoctorsHistoryDialog extends AppCompatActivity implements TextW
         listDataHeader = new ArrayList<>();
         duplicate_list_child = new HashMap<>();
         Set<String> uniqueInstitutions = new LinkedHashSet<>();
-
-        doctors = idmc.getDoctorsWithInstitutions("");
+        doctors = idmc.getDoctorsNotIncludedInMCP(ACPActivity.current_date);
 
         for (int x = 0; x < doctors.size(); x++)
             uniqueInstitutions.add(doctors.get(x).get("inst_name"));
@@ -161,5 +196,15 @@ public class ViewDoctorsHistoryDialog extends AppCompatActivity implements TextW
         duplicate_list_child.putAll(listDataChild);
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
         list_of_doctors.setAdapter(listAdapter);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.add_incidental_call:
+                ACPActivity.check_adapter_acp = 30;
+                this.finish();
+                break;
+        }
     }
 }

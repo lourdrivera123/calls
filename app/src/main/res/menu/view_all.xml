@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/view_doctors"
-        android:icon="@mipmap/ic_view_doctor"
-        android:title="View Doctors"
+        android:id="@+id/view_all"
+        android:icon="@mipmap/ic_view_all"
+        android:title="View All"
         app:showAsAction="always" />
 </menu>

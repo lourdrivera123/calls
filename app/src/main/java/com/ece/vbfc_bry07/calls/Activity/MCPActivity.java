@@ -1,91 +1,101 @@
 package com.ece.vbfc_bry07.calls.Activity;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.ContextMenu;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.Adapter.CalendarAdapter;
+import com.ece.vbfc_bry07.calls.Adapter.ExpandableListAdapter;
 import com.ece.vbfc_bry07.calls.Adapter.MCPAdapter;
-import com.ece.vbfc_bry07.calls.Controller.CycleSetsController;
+import com.ece.vbfc_bry07.calls.Adapter.MCPCalendarAdapter;
 import com.ece.vbfc_bry07.calls.Controller.InstitutionDoctorMapsController;
 import com.ece.vbfc_bry07.calls.Controller.PlanDetailsController;
 import com.ece.vbfc_bry07.calls.Controller.PlansController;
-import com.ece.vbfc_bry07.calls.Dialog.ShowListOfDoctorsDialog;
+import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
 
-public class MCPActivity extends AppCompatActivity implements View.OnClickListener {
-    static Calendar cal_month;
-    static Context context;
-
-    ImageButton prev, next, add_call;
+public class MCPActivity extends AppCompatActivity implements ExpandableListView.OnChildClickListener, TextWatcher, View.OnClickListener {
     Toolbar toolbar;
-    LinearLayout root;
     GridView gv_calendar;
-    static ListView list_of_calls;
-    public static TextView picked_day, picked_date, number_of_calls, tv_month, no_plans;
+    ImageButton prev, next;
+    static ListView calls_per_day;
+    EditText search_doctor;
+    static TextView tv_month, number_of_calls;
+    ExpandableListView list_of_doctors;
+    static LinearLayout doc_details, root;
+    public static TextView picked_date, picked_day;
+    public static LinearLayout change_view, all_doctors;
+    TextView no_records, no_plans, class_code, specialization;
 
+    static Calendar cal_month;
+    View _lastColored;
+
+    static boolean flag;
+    public static int isVisible;
+
+    static Helpers helpers;
     PlansController pc;
+    static MCPActivity context;
     PlanDetailsController pdc;
-    CycleSetsController csc;
-    static CalendarAdapter cal_adapter;
-    static MCPAdapter mcp_adapter;
+    static MCPAdapter plans_adapter;
     InstitutionDoctorMapsController idmc;
+    ExpandableListAdapter doctor_adapter;
+    static MCPCalendarAdapter cal_adapter;
 
-    public static ArrayList<HashMap<String, String>> new_plan_details = new ArrayList<>();
-    public static ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> list_of_plans;
-    static HashMap<String, ArrayList<HashMap<String, String>>> hash_plans_per_day = new HashMap<>();
-
-    boolean flag = false;
-    public static String date;
-    public static boolean setFirstdaySelected = false, isVisible = false;
-    public static int check_adapter_mcp = 0, check_count;
+    List<String> listDataHeader;
+    public static HashMap<String, String> child_clicked;
+    public static ArrayList<HashMap<String, ArrayList<String>>> list_of_plans;
+    public static ArrayList<String> list_of_dates;
+    HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild, duplicate_list_child;
+    public static ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> list_of_plans_per_day;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_mcp);
+        setContentView(R.layout.activity_mcp);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         tv_month = (TextView) findViewById(R.id.tv_month);
         no_plans = (TextView) findViewById(R.id.no_plans);
         picked_day = (TextView) findViewById(R.id.picked_day);
         picked_date = (TextView) findViewById(R.id.picked_date);
+        no_records = (TextView) findViewById(R.id.no_records);
+        specialization = (TextView) findViewById(R.id.specialization);
+        class_code = (TextView) findViewById(R.id.class_code);
         number_of_calls = (TextView) findViewById(R.id.number_of_calls);
         next = (ImageButton) findViewById(R.id.next);
         prev = (ImageButton) findViewById(R.id.prev);
-        add_call = (ImageButton) findViewById(R.id.add_call);
+        calls_per_day = (ListView) findViewById(R.id.calls_per_day);
+        search_doctor = (EditText) findViewById(R.id.search_doctor);
         gv_calendar = (GridView) findViewById(R.id.gv_calendar);
         root = (LinearLayout) findViewById(R.id.root);
-        list_of_calls = (ListView) findViewById(R.id.list_of_calls);
-
-        check_count = 0;
-        context = this;
-        list_of_plans = new ArrayList<>();
-        new_plan_details = new ArrayList<>();
-        pc = new PlansController(this);
-        pdc = new PlanDetailsController(this);
-        csc = new CycleSetsController(this);
-        idmc = new InstitutionDoctorMapsController(this);
+        all_doctors = (LinearLayout) findViewById(R.id.all_doctors);
+        change_view = (LinearLayout) findViewById(R.id.change_view);
+        doc_details = (LinearLayout) findViewById(R.id.doc_details);
+        list_of_doctors = (ExpandableListView) findViewById(R.id.list_of_doctors);
 
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;
@@ -95,103 +105,97 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
         TimeZone zone = TimeZone.getTimeZone("GMT+8");
         cal_month = Calendar.getInstance(zone);
 
-        cal_adapter = new CalendarAdapter(this, cal_month, list_of_plans);
+        flag = false;
+        isVisible = 0;
+        context = this;
+        list_of_plans = new ArrayList<>();
+        list_of_dates = new ArrayList<>();
+
+        helpers = new Helpers();
+        pc = new PlansController(this);
+        pdc = new PlanDetailsController(this);
+        idmc = new InstitutionDoctorMapsController(this);
+
+        cal_adapter = new MCPCalendarAdapter(this, cal_month);
         gv_calendar.setAdapter(cal_adapter);
 
-        mcp_adapter = new MCPAdapter(this, new_plan_details);
-        list_of_calls.setAdapter(mcp_adapter);
-
         tv_month.setText(android.text.format.DateFormat.format("MMMM yyyy", cal_month));
-        prev.setOnClickListener(this);
+        list_of_doctors.setOnChildClickListener(this);
+        search_doctor.addTextChangedListener(this);
         next.setOnClickListener(this);
-        add_call.setOnClickListener(this);
-        list_of_calls.setOnCreateContextMenuListener(this);
+        prev.setOnClickListener(this);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        list_of_plans = new ArrayList<>();
-        hash_plans_per_day = new HashMap<>();
-
-        if (flag) { //on going na plotting
+        if (flag) {
             getMenuInflater().inflate(R.menu.save_menu, menu);
-            flag = false;
         } else {
             int month = cal_month.get(Calendar.MONTH) + 1;
-            int cycle_set_id = csc.getCycleSetID(cal_month.get(Calendar.YEAR));
-
-            int plan_id = pc.checkIfHasPlan(month, cycle_set_id);
+            int plan_id = pc.checkIfHasPlan(month);
 
             if (plan_id == 0) {
-                add_call.setVisibility(View.GONE);
+                all_doctors.setVisibility(View.GONE);
+                change_view.setVisibility(View.GONE);
+                doc_details.setVisibility(View.GONE);
                 no_plans.setVisibility(View.VISIBLE);
-                no_plans.setText("No plotted plans for this month. Tap the \"+\" icon to start plotting.");
                 getMenuInflater().inflate(R.menu.add_menu, menu);
+                no_plans.setText("No plotted plan for this month. Tap the \"+\" icon to start plotting.");
             } else {
-                list_of_calls.setVisibility(View.VISIBLE);
+                getMenuInflater().inflate(R.menu.view_all, menu);
+                all_doctors.setVisibility(View.VISIBLE);
+                change_view.setVisibility(View.GONE);
                 no_plans.setVisibility(View.GONE);
-                list_of_plans = pdc.getPlanDetailsByPlanID(plan_id);
-                setPerDayPlans(date);
+                prepareListData();
+                list_of_plans = pdc.getPlanDetailsByPID(plan_id);
             }
-            cal_adapter = new CalendarAdapter(this, cal_month, list_of_plans);
+
+            cal_adapter = new MCPCalendarAdapter(this, cal_month);
             gv_calendar.setAdapter(cal_adapter);
         }
 
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int year = cal_month.get(Calendar.YEAR);
+        int month = cal_month.get(Calendar.MONTH) + 1;
+
         switch (item.getItemId()) {
             case android.R.id.home:
-                checkIfHasUnsaved("");
+                this.finish();
                 break;
 
             case R.id.add:
-                if (picked_date.getText().toString().equals("")) {
-                    Snackbar.make(root, "Pick a date to start plotting", Snackbar.LENGTH_SHORT).show();
-                } else {
-                    add_call.setVisibility(View.VISIBLE);
-                    no_plans.setVisibility(View.GONE);
-                    list_of_calls.setVisibility(View.VISIBLE);
-
-                    new_plan_details = new ArrayList<>();
-
-                    mcp_adapter = new MCPAdapter(this, new_plan_details);
-                    list_of_calls.setAdapter(mcp_adapter);
-                    flag = true;
-                    invalidateOptionsMenu();
-                }
-
+                no_plans.setVisibility(View.GONE);
+                all_doctors.setVisibility(View.VISIBLE);
+                prepareListData();
+                flag = true;
+                invalidateOptionsMenu();
                 break;
 
             case R.id.save:
-                addToListOfPlans();
-
                 if (list_of_plans.size() > 0) {
-                    int year = cal_month.get(Calendar.YEAR);
-                    int month = cal_month.get(Calendar.MONTH) + 1;
                     long plan_id = pc.insertPlans(year, month);
 
                     if (plan_id > 0) {
                         if (pdc.insertPlanDetails(plan_id, list_of_plans)) {
                             Snackbar.make(root, "Successfully saved", Snackbar.LENGTH_SHORT).show();
                             flag = false;
-                            cal_adapter = new CalendarAdapter(this, cal_month, list_of_plans);
+                            cal_adapter = new MCPCalendarAdapter(this, cal_month);
                             gv_calendar.setAdapter(cal_adapter);
+                            invalidateOptionsMenu();
                         } else
                             Snackbar.make(root, "Error occurred", Snackbar.LENGTH_SHORT).show();
                     } else if (plan_id == 0)
                         Snackbar.make(root, "Error occurred", Snackbar.LENGTH_SHORT).show();
-                    else
-                        Snackbar.make(root, "You already have schedule for this month.", Snackbar.LENGTH_SHORT).show();
                 } else
                     Snackbar.make(root, "Unable to add schedule with no content", Snackbar.LENGTH_SHORT).show();
+
                 break;
 
             case R.id.cancel:
-                addToListOfPlans();
-
                 if (list_of_plans.size() > 0) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(this);
                     alert.setMessage("You have made changes. Are you sure you want to navigate away and lose your changes?");
@@ -205,159 +209,212 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
                     alert.show();
                 } else
                     this.finish();
+
+                break;
+
+            case R.id.view_all:
+                if (all_doctors.getVisibility() == View.VISIBLE) {
+                    change_view.setVisibility(View.VISIBLE);
+                    all_doctors.setVisibility(View.GONE);
+                    doc_details.setVisibility(View.GONE);
+                    int planID = pc.getPlanID(month, "");
+                    String first_date = helpers.getFirstDateOfMonth(month - 1);
+
+                    picked_date.setText(helpers.convertToAlphabetDate(first_date, ""));
+                    picked_day.setText(helpers.convertToDayOfWeek(first_date));
+                    list_of_plans_per_day = pdc.getPlanDetailsByPlanID(planID);
+
+                    changeArrayContent(first_date);
+                    cal_adapter.notifyDataSetChanged();
+                } else {
+                    change_view.setVisibility(View.GONE);
+                    all_doctors.setVisibility(View.VISIBLE);
+                }
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if (flag)
-            getMenuInflater().inflate(R.menu.delete_context, menu);
+    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+        doc_details.setVisibility(View.VISIBLE);
+        child_clicked = listDataChild.get(groupPosition).get(childPosition);
+        String IDM_id = child_clicked.get("IDM_id");
+        list_of_dates = new ArrayList<>();
+        isVisible = 0;
+        cal_adapter.notifyDataSetChanged();
 
-        super.onCreateContextMenu(menu, v, menuInfo);
-    }
+        class_code.setText("CLASS: " + child_clicked.get("class_name") + " (" + child_clicked.get("class_code") + "x)");
+        specialization.setText("SPECIALIZATION: " + child_clicked.get("specialization"));
 
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        int position = info.position;
-        String doc_id_toBeRemoved = new_plan_details.get(position).get("doctor_id");
-        String hash_keyset = "";
+        if (_lastColored != null) {
+            _lastColored.setBackgroundColor(Color.TRANSPARENT);
+            _lastColored.invalidate();
+        }
 
-        if (hash_plans_per_day.size() > 0)
-            hash_keyset = hash_plans_per_day.keySet().toString().replace("[", "").replace("]", "");
+        _lastColored = v;
+        v.setBackgroundColor(Color.parseColor("#e8dece"));
 
-        for (int x = 0; x < new_plan_details.size(); x++) {
-            if (new_plan_details.get(x).get("doctor_id").equals(doc_id_toBeRemoved)) {
-                if (!hash_keyset.equals("")) {
-                    hash_plans_per_day.get(hash_keyset).remove(x);
-                    mcp_adapter.notifyDataSetChanged();
-                } else {
-                    for (int y = 0; y < list_of_plans.size(); y++) {
-                        if (list_of_plans.get(y).get(date) != null) {
-                            ArrayList<HashMap<String, String>> array = list_of_plans.get(y).get(date);
+        for (int x = 0; x < list_of_plans.size(); x++) {
+            String keyset = list_of_plans.get(x).keySet().toString().replace("[", "").replace("]", "");
 
-                            for (int z = 0; z < array.size(); z++) {
-                                if (array.get(z).get("doctor_id").equals(doc_id_toBeRemoved)) {
-                                    list_of_plans.get(y).get(date).remove(z);
-
-                                    if (array.size() == 0)
-                                        list_of_plans.remove(y);
-
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    mcp_adapter.remove(position);
-                }
+            if (keyset.equals(IDM_id)) {
+                list_of_dates.addAll(list_of_plans.get(x).get(keyset));
+                cal_adapter.notifyDataSetChanged();
                 break;
             }
         }
 
-        if (new_plan_details.size() > 0) {
-            number_of_calls.setText(new_plan_details.size() + " call/s for this day");
-        } else {
-            number_of_calls.setText("");
-            cal_adapter.notifyDataSetChanged();
-            isVisible = false;
+        return false;
+    }
+
+    private void prepareListData() {
+        listDataChild = new HashMap<>();
+        listDataHeader = new ArrayList<>();
+        duplicate_list_child = new HashMap<>();
+        Set<String> uniqueInstitutions = new LinkedHashSet<>();
+        ArrayList<HashMap<String, String>> doctors = idmc.getDoctorsWithInstitutions("");
+
+        for (int x = 0; x < doctors.size(); x++)
+            uniqueInstitutions.add(doctors.get(x).get("inst_name"));
+
+        listDataHeader.addAll(uniqueInstitutions);
+
+        for (int x = 0; x < listDataHeader.size(); x++) {
+            ArrayList<HashMap<String, String>> array = new ArrayList<>();
+
+            for (int y = 0; y < doctors.size(); y++) {
+                if (doctors.get(y).get("inst_name").equals(listDataHeader.get(x)))
+                    array.add(doctors.get(y));
+            }
+            listDataChild.put(x, array);
         }
-        return super.onContextItemSelected(item);
+
+        duplicate_list_child.putAll(listDataChild);
+        doctor_adapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+        list_of_doctors.setAdapter(doctor_adapter);
+    }
+
+    public static void duringOnClick(String selected_date) {
+        if (flag && MCPActivity.doc_details.getVisibility() == View.VISIBLE) {
+            String IDM_id = child_clicked.get("IDM_id");
+            HashMap<String, ArrayList<String>> map = new HashMap<>();
+            ArrayList<String> date = new ArrayList<>();
+            date.add(selected_date);
+            map.put(IDM_id, date);
+
+            if (list_of_plans.size() > 0) {
+                for (int x = 0; x < list_of_plans.size(); x++) {
+                    String keyset = list_of_plans.get(x).keySet().toString().replace("[", "").replace("]", "");
+
+                    if (keyset.equals(IDM_id)) {
+                        if (list_of_plans.get(x).get(IDM_id).size() < Integer.parseInt(child_clicked.get("class_code"))) {
+                            if (!list_of_plans.get(x).get(IDM_id).contains(selected_date)) {
+                                list_of_plans.get(x).get(IDM_id).add(selected_date);
+                                isVisible = 1;
+                            }
+                        } else {
+                            if (!list_of_plans.get(x).get(IDM_id).contains(selected_date))
+                                Snackbar.make(root, "Doctor exceeds the maximum number of call for this month", Snackbar.LENGTH_SHORT).show();
+                            isVisible = 2;
+                        }
+
+                        break;
+                    } else {
+                        if (x == list_of_plans.size() - 1) {
+                            list_of_plans.add(map);
+                            isVisible = 1;
+                        }
+                    }
+                }
+            } else {
+                MCPActivity.list_of_plans.add(map);
+                isVisible = 1;
+            }
+
+            cal_adapter.notifyDataSetChanged();
+        } else if (change_view.getVisibility() == View.VISIBLE)
+            changeArrayContent(selected_date);
     }
 
     @Override
-    protected void onResume() {
-        if (check_adapter_mcp == 10) {
-            new_plan_details.add(ShowListOfDoctorsDialog.child_clicked);
-            hash_plans_per_day.put(date, new_plan_details);
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            int number = hash_plans_per_day.get(date).size();
+    }
 
-            if (number > 0) {
-                no_plans.setVisibility(View.GONE);
-                number_of_calls.setText(number + " call/s for this day");
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        String search = String.valueOf(s);
+        int counter = 0;
+
+        if (!search.equals("")) {
+            HashMap<Integer, ArrayList<HashMap<String, String>>> new_child = new HashMap<>();
+            new_child.putAll(duplicate_list_child);
+            listDataHeader.clear();
+            listDataChild.clear();
+
+            for (int x = 0; x < new_child.size(); x++) {
+                ArrayList<HashMap<String, String>> new_array = new_child.get(x);
+                ArrayList<HashMap<String, String>> array_for_child = new ArrayList<>();
+
+                for (int y = 0; y < new_array.size(); y++) {
+                    HashMap<String, String> hash = new_array.get(y);
+
+                    if (hash.get("doc_name").toLowerCase().contains(search.toLowerCase()))
+                        array_for_child.add(hash);
+                }
+
+                if (array_for_child.size() > 0) {
+                    listDataChild.put(counter, array_for_child);
+                    counter += 1;
+                }
             }
 
-            mcp_adapter.notifyDataSetChanged();
-            cal_adapter.notifyDataSetChanged();
-        } else if (check_adapter_mcp == 11)
-            Snackbar.make(root, "Doctor exceeds the maximum number of call for this month", Snackbar.LENGTH_SHORT).show();
+            for (int x = 0; x < listDataChild.size(); x++) {
+                int inst_id = Integer.parseInt(listDataChild.get(x).get(0).get("doctor_inst_id"));
+                listDataHeader.add(idmc.getInstitutionByID(inst_id));
+            }
 
-        check_adapter_mcp = 0;
-        super.onResume();
+            if (listDataHeader.size() > 0) {
+                no_records.setVisibility(View.GONE);
+                list_of_doctors.setVisibility(View.VISIBLE);
+                doctor_adapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+                list_of_doctors.setAdapter(doctor_adapter);
+            } else {
+                no_records.setVisibility(View.VISIBLE);
+                list_of_doctors.setVisibility(View.GONE);
+            }
+        } else
+            prepareListData();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.next:
+                checkIfHasUnsaved("Next");
+                invalidateOptionsMenu();
+                break;
+
             case R.id.prev:
                 if (cal_month.get(Calendar.YEAR) >= 2016 && cal_month.get(Calendar.MONTH) >= 1) {
                     checkIfHasUnsaved("Previous");
                     invalidateOptionsMenu();
                 }
                 break;
-
-            case R.id.next:
-                checkIfHasUnsaved("Next");
-                invalidateOptionsMenu();
-                break;
-
-            case R.id.add_call:
-                flag = true;
-                check_adapter_mcp = 23;
-                ACPActivity.check_adapter_acp = 0;
-                startActivity(new Intent(this, ShowListOfDoctorsDialog.class));
-                break;
         }
-    }
-
-    public static void updateDuringOnItemClick(String selectedDate) {
-        number_of_calls.setText("");
-        new_plan_details = new ArrayList<>();
-        date = selectedDate;
-
-        if (hash_plans_per_day.size() > 0) {
-            if (list_of_plans.size() > 0)
-                addToListOfPlans();
-            else
-                list_of_plans.add(hash_plans_per_day);
-        }
-
-        setPerDayPlans(selectedDate);
-        hash_plans_per_day = new HashMap<>();
-    }
-
-    static void setPerDayPlans(String date) {
-        if (list_of_plans.size() > 0) {
-            int count = 0;
-
-            for (int x = 0; x < list_of_plans.size(); x++) {
-                ArrayList<HashMap<String, String>> array_per_day = list_of_plans.get(x).get(date);
-
-                if (array_per_day != null) {
-                    for (int y = 0; y < array_per_day.size(); y++) {
-                        new_plan_details.add(array_per_day.get(y));
-                        count += 1;
-                    }
-                }
-            }
-
-            if (count > 0)
-                number_of_calls.setText(count + " call/s for this day");
-        }
-
-        mcp_adapter = new MCPAdapter(context, new_plan_details);
-        list_of_calls.setAdapter(mcp_adapter);
     }
 
     void checkIfHasUnsaved(final String where) {
         int check = 0;
 
         if (flag) {
-            if (list_of_plans.size() > 0 || hash_plans_per_day.size() > 0) {
+            if (list_of_plans.size() > 0) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(this);
                 alert.setMessage("You have made changes. Are you sure you want to navigate away and lose your changes?");
                 alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -366,9 +423,11 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
                         switch (where) {
                             case "Next":
                                 setNextMonth();
+                                flag = false;
                                 break;
                             case "Previous":
                                 setPreviousMonth();
+                                flag = false;
                                 break;
                             case "":
                                 MCPActivity.this.finish();
@@ -380,8 +439,10 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
                 });
                 alert.setNegativeButton("No", null);
                 alert.show();
-            } else
+            } else {
                 check += 1;
+                flag = false;
+            }
         } else
             check += 1;
 
@@ -422,37 +483,29 @@ public class MCPActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     static void refreshCalendar() {
-        setFirstdaySelected = true;
-        picked_date.setText("");
-        picked_day.setText("");
-        number_of_calls.setText("");
-
-        new_plan_details = new ArrayList<>();
         list_of_plans = new ArrayList<>();
-        hash_plans_per_day = new HashMap<>();
 
         cal_adapter.refreshDays();
-        mcp_adapter.notifyDataSetChanged();
 
         tv_month.setText(android.text.format.DateFormat.format("MMMM yyyy", cal_month));
     }
 
-    static void addToListOfPlans() {
-        int count = 0;
+    static void changeArrayContent(String date) {
+        ArrayList<HashMap<String, String>> plan_details = new ArrayList<>();
+        number_of_calls.setText("");
 
-        for (int x = 0; x < list_of_plans.size(); x++) {
-            String hash_keyset = hash_plans_per_day.keySet().toString().replace("[", "").replace("]", "");
+        for (int x = 0; x < list_of_plans_per_day.size(); x++) {
+            String keyset = list_of_plans_per_day.get(x).keySet().toString().replace("[", "").replace("]", "");
 
-            if (list_of_plans.get(x).get(hash_keyset) != null) {
-                count += 1;
-                list_of_plans.set(x, hash_plans_per_day);
+            if (keyset.equals(date)) {
+                plan_details = list_of_plans_per_day.get(x).get(keyset);
+                number_of_calls.setText(plan_details.size() + " call/s for this day");
                 break;
             }
         }
 
-        if (hash_plans_per_day.size() > 0) {
-            if (count == 0)
-                list_of_plans.add(hash_plans_per_day);
-        }
+
+        plans_adapter = new MCPAdapter(context, plan_details);
+        calls_per_day.setAdapter(plans_adapter);
     }
 }

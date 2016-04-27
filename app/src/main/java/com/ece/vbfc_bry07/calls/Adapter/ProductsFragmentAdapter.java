@@ -55,7 +55,7 @@ public class ProductsFragmentAdapter extends BaseAdapter {
 
             holder = new ViewHolder();
 
-            holder.product_name = (TextView) convertView.findViewById(R.id.product_name);
+            holder.product_name = (TextView) convertView.findViewById(R.id.name);
             holder.sample = (EditText) convertView.findViewById(R.id.sample);
             holder.literature = (EditText) convertView.findViewById(R.id.literature);
             holder.promaterials = (EditText) convertView.findViewById(R.id.promaterials);

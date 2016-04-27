@@ -5,9 +5,12 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -24,7 +27,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener {
 
     Helpers helpers;
 
-    ArrayList<HashMap<String, String>> array_of_notes = new ArrayList<>();
+    public static ArrayList<HashMap<String, String>> array_of_notes = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,6 +40,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener {
 
         list_of_notes.setAdapter(new NotesFragmentAdapter(getActivity(), array_of_notes));
         add_note.setOnClickListener(this);
+        list_of_notes.setOnCreateContextMenuListener(this);
 
         return v;
     }
@@ -55,10 +59,35 @@ public class NotesFragment extends Fragment implements View.OnClickListener {
                         EditText note = (EditText) view.findViewById(R.id.note);
                         String date = helpers.getCurrentDate("timestamp");
                         String get_note = note.getText().toString();
+
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put("date", date);
+                        map.put("note", get_note);
+                        array_of_notes.add(map);
+                        list_of_notes.setAdapter(new NotesFragmentAdapter(getActivity(), array_of_notes));
                     }
                 });
                 dialog.show();
                 break;
         }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        getActivity().getMenuInflater().inflate(R.menu.delete_context, menu);
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int position = info.position;
+
+        if (item.getItemId() == R.id.delete) {
+            array_of_notes.remove(position);
+            list_of_notes.setAdapter(new NotesFragmentAdapter(getActivity(), array_of_notes));
+        }
+
+        return super.onContextItemSelected(item);
     }
 }

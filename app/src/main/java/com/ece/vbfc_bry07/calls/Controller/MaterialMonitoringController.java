@@ -16,45 +16,16 @@ public class MaterialMonitoringController extends DbHelper {
         dbHelper = new DbHelper(context);
     }
 
-    public ArrayList<HashMap<String,String>> SelectAllProductsPerUser() {
+    public ArrayList<HashMap<String, String>> SelectAllProductsPerUser() {
         ArrayList<HashMap<String, String>> products = new ArrayList<>();
-        String sql = "SELECT " +
-                "    product_name, " +
-                "    sum(case when material_id = 1 then material_count end) Total_Sample, " +
-                "    sum(case when material_id = 2 then material_count end) Total_Literature, " +
-                "    sum(case when material_id = 3 then material_count end) Total_Promomaterials, " +
-                "    sum(case when material_id = 1 then beginning_balance end) Content_Sample, " +
-                "    sum(case when material_id = 2 then beginning_balance end) Content_Literature, " +
-                "    sum(case when material_id = 3 then beginning_balance end) Content_Promomaterials " +
-                "FROM " +
-                "    (SELECT" +
-                "        MI.id, MI.material_inventories_id, MI.cycle_set_id_fk, " +
-                "        MI.cycle_number, P.name as product_name, M.id as material_id, M.name as material_name, " +
-                "        sum(MI.material_count) as material_count, sum(MI.beginning_balance) as beginning_balance " +
-                "    FROM MaterialInventories MI " +
-                "    left join CycleSets CS on CS.id = MI.cycle_set_id_fk " +
-                "    left join Products P on P.id = MI.product_id_fk " +
-                "    left join Materials M on M.id = MI.material_id_fk " +
-                "    group by product_name, material_id) " +
-                "group by product_name " +
-                "order by product_name";
+        String sql = "SELECT * FROM Products";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
 
         while (cur.moveToNext()) {
             HashMap<String, String> map = new HashMap<>();
-            // map.put("id", cur.getString(cur.getColumnIndex("id")));
-            // map.put("material_inventories_id", cur.getString(cur.getColumnIndex("material_inventories_id")));
-            // map.put("cycle_set_id_fk", cur.getString(cur.getColumnIndex("cycle_set_id_fk")));
-            // map.put("cycle_number", cur.getString(cur.getColumnIndex("cycle_number")));
-            map.put("product_name", cur.getString(cur.getColumnIndex("product_name")));
-            map.put("Total_Sample", cur.getString(cur.getColumnIndex("Total_Sample")));
-            map.put("Total_Literature", cur.getString(cur.getColumnIndex("Total_Literature")));
-            map.put("Total_Promomaterials", cur.getString(cur.getColumnIndex("Total_Promomaterials")));
-            map.put("Content_Sample", cur.getString(cur.getColumnIndex("Content_Sample")));
-            map.put("Content_Literature", cur.getString(cur.getColumnIndex("Content_Literature")));
-            map.put("Content_Promomaterials", cur.getString(cur.getColumnIndex("Content_Promomaterials")));
-
+            map.put("product_name", cur.getString(cur.getColumnIndex("name")));
+            map.put("product_id", cur.getString(cur.getColumnIndex("products_id")));
             products.add(map);
         }
 
@@ -63,5 +34,28 @@ public class MaterialMonitoringController extends DbHelper {
 
         return products;
 
+    }
+
+    public ArrayList<HashMap<String, String>> getCallMaterialsByMonth(int cycleMonth) {
+        String sql = "SELECT cm.product_id, sum(sample) as sample, sum(literature) as literature, sum(promaterials) as promaterials  FROM Calls as c " +
+                "INNER JOIN PlanDetails as pd ON pd.plan_details_id = c.plan_details_id INNER JOIN Plans as p ON p.id = pd.plan_id " +
+                "INNER JOIN CallMaterials as cm ON c.id = cm.call_id WHERE c.temp_planDetails_id = pd.id OR c.plan_details_id > 0 AND p.cycle_number = " + cycleMonth + " GROUP BY cm.product_id";
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+        ArrayList<HashMap<String, String>> array = new ArrayList<>();
+
+        while (cur.moveToNext()) {
+            HashMap<String, String> map = new HashMap<>();
+            map.put("product_id", cur.getString(cur.getColumnIndex("product_id")));
+            map.put("sample", cur.getString(cur.getColumnIndex("sample")));
+            map.put("literature", cur.getString(cur.getColumnIndex("literature")));
+            map.put("promaterials", cur.getString(cur.getColumnIndex("promaterials")));
+            array.add(map);
+        }
+
+        cur.close();
+        db.close();
+
+        return array;
     }
 }

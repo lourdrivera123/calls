@@ -1,6 +1,9 @@
 package com.ece.vbfc_bry07.calls.Activity;
 
 import android.graphics.Color;
+
+import java.util.HashMap;
+
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,33 +14,37 @@ import android.widget.ListView;
 import com.ece.vbfc_bry07.calls.Adapter.ProductListAdapter;
 import com.ece.vbfc_bry07.calls.Controller.DbHelper;
 import com.ece.vbfc_bry07.calls.Controller.MaterialMonitoringController;
+import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MaterialMonitoringActivity extends AppCompatActivity {
-
     ListView productsListView;
     DbHelper dbHelper;
-    MaterialMonitoringController MMC;
+    MaterialMonitoringController mmc;
 
-    ArrayList<HashMap<String, String>> all_products;
+    Helpers helpers;
     ListAdapter doctorAdapter;
-    ArrayList<HashMap<String, String>> products_array = new ArrayList<>();
+
+    ArrayList<HashMap<String, String>> all_products, call__materials;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_material_monetoring);
-
-        dbHelper = new DbHelper(this);
-        MMC = new MaterialMonitoringController(this);
+        setContentView(R.layout.activity_material_monitoring);
 
         productsListView = (ListView) findViewById(R.id.productsListView);
-        all_products = MMC.SelectAllProductsPerUser();
-        products_array.addAll(all_products);
-        doctorAdapter = new ProductListAdapter(this, all_products);
+
+        helpers = new Helpers();
+        dbHelper = new DbHelper(this);
+        mmc = new MaterialMonitoringController(this);
+
+        all_products = mmc.SelectAllProductsPerUser();
+        call__materials = mmc.getCallMaterialsByMonth(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
+
+        doctorAdapter = new ProductListAdapter(this, all_products, call__materials);
         productsListView.setAdapter(doctorAdapter);
 
         assert getSupportActionBar() != null;

@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
@@ -33,7 +32,6 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
     TextView CycleDate;
 
     String current_cycle_month = "strftime('%m', date())";
-    String current_cycle_year = "strftime('%Y', date())";
 
     PieChart chart;
 
@@ -64,23 +62,23 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
         this.CycleDate.setOnClickListener(this);
 
         // data for Pie Chart
-        float Planned_Calls = CC.fetchPlannedCalls(current_cycle_month, current_cycle_year);
-        final float IncidentalCalls = CC.IncidentalCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
-        float RecoveredCalls = CC.RecoveredCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
-        float DeclaredMissedCalls = CC.DeclaredMissedCalls(current_cycle_month, current_cycle_year);
-        float ActualCoveredCalls = CC.ActualCoveredCalls(current_cycle_month);
-        float UnprocessedCalls = Planned_Calls - (ActualCoveredCalls + IncidentalCalls);
+        int Planned_Calls = CC.fetchPlannedCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
+        int IncidentalCalls = CC.IncidentalCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
+        int RecoveredCalls = CC.RecoveredCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
+        int DeclaredMissedCalls = CC.DeclaredMissedCalls(current_cycle_month);
+        int ActualCoveredCalls = CC.ActualCoveredCalls(current_cycle_month);
+        int UnprocessedCalls = Planned_Calls - (ActualCoveredCalls + IncidentalCalls);
         yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls, ActualCoveredCalls};
-        String labelIC = "Incidental Calls " + (int) IncidentalCalls + "/" + (int) Planned_Calls;
-        String labelRC = "Recovered Calls " + (int) RecoveredCalls + "/" + (int) Planned_Calls;
-        String labelDMC = "Declared Missed Calls " + (int) DeclaredMissedCalls + "/" + (int) Planned_Calls;
-        String labelUC = "Unprocessed Calls " + (int) UnprocessedCalls + "/" + (int) Planned_Calls;
-        String labelSC = "Actual Covered Calls " + (int) ActualCoveredCalls + "/" + (int) Planned_Calls;
+        String labelIC = "Incidental Calls " + IncidentalCalls + "/" + Planned_Calls;
+        String labelRC = "Recovered Calls " + RecoveredCalls + "/" + Planned_Calls;
+        String labelDMC = "Declared Missed Calls " + DeclaredMissedCalls + "/" + Planned_Calls;
+        String labelUC = "Unprocessed Calls " + UnprocessedCalls + "/" + Planned_Calls;
+        String labelSC = "Actual Covered Calls " + ActualCoveredCalls + "/" + Planned_Calls;
         xData = new String[]{labelIC, labelRC, labelDMC, labelUC, labelSC};
 
         // Configure Pie Chart
         chart.setUsePercentValues(true);
-        chart.setDescription("Planned Calls: " + (int) CC.fetchPlannedCalls(current_cycle_month, current_cycle_year));
+        chart.setDescription("Planned Calls: " + Planned_Calls);
 
         // Enable hole and configure
         chart.setDrawHoleEnabled(true);
@@ -90,24 +88,6 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
         // Enable rotation of the chart by touch
         chart.setRotationAngle(0);
         chart.setRotationEnabled(true);
-
-        // set a Chart value Listener
-        chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-
-            @Override
-            public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
-                // display msg when value selected
-                if (e == null) {
-                    return;
-                }
-                // Toast.makeText(StatusSummaryActivity.this, xData[e.getXIndex()] + "=" + e.getVal() + "%", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected() {
-
-            }
-        });
 
         // add data
         addData();
@@ -120,7 +100,6 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
 
         // remove labels inside the Pie Chart
         chart.setDrawSliceText(false);
-
     }
 
     private void addData() {
@@ -208,23 +187,23 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
 
         /* --------- CHANGE VALUE OF PIE CHART ON CHANGE OF DATE --------- */
         // data for Pie Chart
-        float Planned_Calls = CC.fetchPlannedCalls(current_cycle_month, current_cycle_year);
-        final float IncidentalCalls = CC.IncidentalCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
-        float RecoveredCalls = CC.RecoveredCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
-        float DeclaredMissedCalls = CC.DeclaredMissedCalls(current_cycle_month, current_cycle_year);
-        float ActualCoveredCalls = CC.ActualCoveredCalls(current_cycle_month);
-        float UnprocessedCalls = Planned_Calls - (ActualCoveredCalls + IncidentalCalls);
+        int Planned_Calls = CC.fetchPlannedCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
+        int IncidentalCalls = CC.IncidentalCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
+        int RecoveredCalls = CC.RecoveredCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
+        int DeclaredMissedCalls = CC.DeclaredMissedCalls(current_cycle_month);
+        int ActualCoveredCalls = CC.ActualCoveredCalls(current_cycle_month);
+        int UnprocessedCalls = Planned_Calls - (ActualCoveredCalls + IncidentalCalls);
         yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls, ActualCoveredCalls};
-        String labelIC = "Incidental Calls " + (int) IncidentalCalls + "/" + (int) Planned_Calls;
-        String labelRC = "Recovered Calls " + (int) RecoveredCalls + "/" + (int) Planned_Calls;
-        String labelDMC = "Declared Missed Calls " + (int) DeclaredMissedCalls + "/" + (int) Planned_Calls;
-        String labelUC = "Unprocessed Calls " + (int) UnprocessedCalls + "/" + (int) Planned_Calls;
-        String labelSC = "Actual Covered Calls " + (int) ActualCoveredCalls + "/" + (int) Planned_Calls;
+        String labelIC = "Incidental Calls " + IncidentalCalls + "/" + Planned_Calls;
+        String labelRC = "Recovered Calls " + RecoveredCalls + "/" + Planned_Calls;
+        String labelDMC = "Declared Missed Calls " + DeclaredMissedCalls + "/" + Planned_Calls;
+        String labelUC = "Unprocessed Calls " + UnprocessedCalls + "/" + Planned_Calls;
+        String labelSC = "Actual Covered Calls " + ActualCoveredCalls + "/" + Planned_Calls;
         xData = new String[]{labelIC, labelRC, labelDMC, labelUC, labelSC};
 
         // Configure Pie Chart
         chart.setUsePercentValues(true);
-        chart.setDescription("Planned Calls: " + (int) CC.fetchPlannedCalls(("'" + selected_cycle_month + "'"), ("'" + year + "'")));
+        chart.setDescription("Planned Calls: " + Planned_Calls);
 
         // Enable hole and configure
         chart.setDrawHoleEnabled(true);
@@ -265,29 +244,5 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
         // remove labels inside the Pie Chart
         chart.setDrawSliceText(false);
         /* ---------                END                          --------- */
-    }
-
-    private DatePickerDialog createDialogWithoutDateField() {
-        DatePickerDialog dpd = new DatePickerDialog(this, null, 2014, 1, 24);
-        try {
-            java.lang.reflect.Field[] datePickerDialogFields = dpd.getClass().getDeclaredFields();
-            for (java.lang.reflect.Field datePickerDialogField : datePickerDialogFields) {
-                if (datePickerDialogField.getName().equals("mDatePicker")) {
-                    datePickerDialogField.setAccessible(true);
-                    DatePicker datePicker = (DatePicker) datePickerDialogField.get(dpd);
-                    java.lang.reflect.Field[] datePickerFields = datePickerDialogField.getType().getDeclaredFields();
-                    for (java.lang.reflect.Field datePickerField : datePickerFields) {
-                        Log.i("test", datePickerField.getName());
-                        if ("mDaySpinner".equals(datePickerField.getName())) {
-                            datePickerField.setAccessible(true);
-                            Object dayPicker = datePickerField.get(datePicker);
-                            ((View) dayPicker).setVisibility(View.GONE);
-                        }
-                    }
-                }
-            }
-        } catch (Exception ex) {
-        }
-        return dpd;
     }
 }

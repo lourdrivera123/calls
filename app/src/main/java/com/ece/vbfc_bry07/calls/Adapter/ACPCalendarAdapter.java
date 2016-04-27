@@ -107,6 +107,7 @@ public class ACPCalendarAdapter extends BaseAdapter {
             for (int x = 0; x < list_of_calls.size(); x++) {
                 if (list_of_calls.get(x).get("date").equals(day_string.get(position))) {
                     with_plan.setVisibility(View.VISIBLE);
+                    parent_layout.setEnabled(true);
                     count.setVisibility(View.VISIBLE);
                     count.setText(list_of_calls.get(x).get("dividend") + " / " + list_of_calls.get(x).get("divisor"));
                 }
@@ -118,11 +119,21 @@ public class ACPCalendarAdapter extends BaseAdapter {
         parent_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int check = 0;
+
                 for (int x = 0; x < list_of_calls.size(); x++) {
                     if (list_of_calls.get(x).get("date").equals(day_string.get(position))) {
                         ACPActivity.viewotheracp = day_string.get(position);
+                        check += 1;
                         activity.finish();
                         break;
+                    }
+                }
+
+                if (check == 0) {
+                    if (day_string.get(position).equals(helpers.getCurrentDate("date"))) {
+                        ACPActivity.viewotheracp = day_string.get(position);
+                        activity.finish();
                     }
                 }
             }

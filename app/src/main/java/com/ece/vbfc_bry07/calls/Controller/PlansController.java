@@ -28,9 +28,9 @@ public class PlansController extends DbHelper {
     }
 
     //////////////////////////////CHECK METHODS///////////////////////////
-    public int checkIfHasPlan(int month, int cycle_set_id) {
+    public int checkIfHasPlan(int month) {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
-        String sql = "SELECT * FROM " + TBL_PLANS + " WHERE " + PLANS_CYCLE_SET + " = " + cycle_set_id + " AND " + PLANS_CYCLE_NUMBER + " = " + month;
+        String sql = "SELECT * FROM " + TBL_PLANS + " WHERE " + PLANS_CYCLE_NUMBER + " = " + month;
         Cursor cur = db.rawQuery(sql, null);
         int plan_id = 0;
 
@@ -60,7 +60,7 @@ public class PlansController extends DbHelper {
         return flag;
     }
 
-    public int getPlanID(int cycleMonth) {
+    public int getPlanID(int cycleMonth, String from) {
         String sql = "SELECT * FROM Plans WHERE cycle_number = " + cycleMonth;
         SQLiteDatabase db = dbhelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
@@ -69,8 +69,10 @@ public class PlansController extends DbHelper {
         if (cur.moveToNext()) {
             planID = cur.getInt(cur.getColumnIndex(AI_ID));
 
-            if (cur.getInt(cur.getColumnIndex(PLANS_STATUS)) == 0)
-                planID = -1;
+            if (from.equals("PlanDetails")) {
+                if (cur.getInt(cur.getColumnIndex(PLANS_STATUS)) == 0)
+                    planID = -1;
+            }
         }
 
         cur.close();

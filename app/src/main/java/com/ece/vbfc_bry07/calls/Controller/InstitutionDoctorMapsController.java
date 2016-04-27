@@ -34,12 +34,14 @@ public class InstitutionDoctorMapsController extends DbHelper {
         String sql;
 
         if (!date.equals("")) {
-            sql = "SELECT pd.id as temp_plandetails_id, * FROM PlanDetails as pd INNER JOIN InstitutionDoctorMaps as idm ON pd.inst_doc_id = idm.IDM_ID INNER JOIN " +
-                    "Doctors as d ON idm.doctor_id = d.doc_id INNER JOIN DoctorClasses as dc ON idm.class_id = dc.doctor_classes_id INNER JOIN " +
-                    "Institutions as i on idm.institution_id = i.inst_id WHERE pd.cycle_day = '" + date + "' ORDER BY idm.institution_id";
+            sql = "SELECT  pd.id as temp_plandetails_id, pd.plan_details_id as pd_id, dc.name as class_name, * FROM Doctors as d INNER JOIN InstitutionDoctorMaps as idm ON idm.doctor_id = d.doc_id " +
+                    "INNER JOIN DoctorClasses as dc ON idm.class_id = dc.doctor_classes_id INNER JOIN Institutions as i on idm.institution_id = i.inst_id " +
+                    "INNER JOIN PlanDetails as pd ON idm.IDM_ID = pd.inst_doc_id LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id " +
+                    "LEFT JOIN RescheduledCalls as rc ON c.id = rc.call_id WHERE pd.cycle_day = '" + date + "' OR rc.cycle_day = '" + date + "'";
         } else
-            sql = "SELECT * from InstitutionDoctorMaps as idm INNER JOIN Doctors as d on idm.doctor_id = d.doc_id INNER JOIN DoctorClasses as dc on " +
-                    "idm.class_id = dc.doctor_classes_id INNER JOIN Institutions as i on idm.institution_id = i.inst_id ORDER BY idm.institution_id";
+            sql = "SELECT *, dc.name as class_name, s.name as specialization_name from InstitutionDoctorMaps as idm INNER JOIN Doctors as d on idm.doctor_id = d.doc_id " +
+                    "INNER JOIN DoctorClasses as dc on idm.class_id = dc.doctor_classes_id INNER JOIN Institutions as i on idm.institution_id = i.inst_id " +
+                    "INNER JOIN Specializations as s on d.specialization_id = s.specialization_id ORDER BY idm.institution_id";
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -55,39 +57,14 @@ public class InstitutionDoctorMapsController extends DbHelper {
             map.put("doc_name", cur.getString(cur.getColumnIndex("doc_name")));
             map.put("contact_number", cur.getString(cur.getColumnIndex("contact_number")));
             map.put("class_code", cur.getString(cur.getColumnIndex("max_visit")));
-            map.put("class_name", cur.getString(cur.getColumnIndex("name")));
+            map.put("class_name", cur.getString(cur.getColumnIndex("class_name")));
 
             if (!date.equals("")) {
-                map.put("plan_details_id", cur.getString(cur.getColumnIndex("plan_details_id")));
+                map.put("plan_details_id", cur.getString(cur.getColumnIndex("pd_id")));
                 map.put("temp_plandetails_id", cur.getString(cur.getColumnIndex("temp_plandetails_id")));
-            }
+            } else
+                map.put("specialization", cur.getString(cur.getColumnIndex("specialization_name")));
 
-            array.add(map);
-        }
-
-        cur.close();
-        db.close();
-
-        return array;
-    }
-
-    public ArrayList<HashMap<String, String>> getInstitutions(String date) {
-        String sql;
-
-        if (!date.equals(""))
-            sql = "SELECT DISTINCT institution_id, i.inst_name FROM PlanDetails as pd INNER JOIN InstitutionDoctorMaps as idm on pd.inst_doc_id = idm.IDM_ID INNER JOIN Institutions as i " +
-                    "on idm.institution_id = i.inst_id WHERE pd.cycle_day = '" + date + "'";
-        else
-            sql = "SELECT DISTINCT idm.institution_id, i.inst_name from InstitutionDoctorMaps AS idm INNER JOIN Institutions AS i ON idm.institution_id = i.inst_id";
-
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cur = db.rawQuery(sql, null);
-        ArrayList<HashMap<String, String>> array = new ArrayList<>();
-
-        while (cur.moveToNext()) {
-            HashMap<String, String> map = new HashMap<>();
-            map.put("institution_id", cur.getString(cur.getColumnIndex("institution_id")));
-            map.put("institution_name", cur.getString(cur.getColumnIndex("inst_name")));
             array.add(map);
         }
 
@@ -115,12 +92,16 @@ public class InstitutionDoctorMapsController extends DbHelper {
 
     public ArrayList<HashMap<String, String>> getDoctorsNotIncludedInMCP(String date) {
         String sql = "SELECT * FROM Doctors as d INNER JOIN InstitutionDoctorMaps as idm ON d.doc_id = idm.doctor_id INNER JOIN Institutions as i ON idm.institution_id = i.inst_id " +
-                "WHERE idm.IDM_ID NOT IN (SELECT pd.inst_doc_id FROM PlanDetails as pd WHERE cycle_day = '" + date + "') ORDER BY institution_id";
+                "LEFT JOIN PlanDetails as pd ON idm.IDM_ID = pd.inst_doc_id WHERE idm.IDM_ID NOT IN (SELECT pd.inst_doc_id FROM PlanDetails as pd " +
+                "LEFT JOIN Calls as c ON c.plan_details_id = pd.plan_details_id " +
+                "LEFT JOIN RescheduledCalls as rc ON c.id = rc.call_id WHERE pd.cycle_day = '" + date + "' OR rc.cycle_day = '" + date + "') GROUP BY d.id ORDER BY institution_id";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
         ArrayList<HashMap<String, String>> array = new ArrayList<>();
 
         while (cur.moveToNext()) {
+            String planDetails_id = cur.getString(cur.getColumnIndex("plan_details_id")) == null ? "0" : cur.getString(cur.getColumnIndex("plan_details_id"));
+
             HashMap<String, String> map = new HashMap<>();
             map.put("doctor_id", cur.getString(cur.getColumnIndex("doctor_id")));
             map.put("IDM_id", cur.getString(cur.getColumnIndex("IDM_ID")));
@@ -128,7 +109,7 @@ public class InstitutionDoctorMapsController extends DbHelper {
             map.put("inst_name", cur.getString(cur.getColumnIndex("inst_name")));
             map.put("doc_name", cur.getString(cur.getColumnIndex("doc_name")));
             map.put("contact_number", cur.getString(cur.getColumnIndex("contact_number")));
-            map.put("plan_details_id", String.valueOf(0));
+            map.put("plan_details_id", planDetails_id);
             array.add(map);
         }
 

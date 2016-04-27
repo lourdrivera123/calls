@@ -31,7 +31,7 @@ public class DoctorsController extends DbHelper {
     }
 
     public ArrayList<HashMap<String,String>> SelectAllDoctors() {
-        ArrayList<HashMap<String, String>> doctors = new ArrayList();
+        ArrayList<HashMap<String, String>> doctors = new ArrayList<>();
         String sql = "SELECT S.name, D.* FROM Doctors D " +
                     "left join Specializations S on S.specialization_id = D.specialization_id " +
                     "ORDER by D.doc_name ASC";
@@ -39,7 +39,7 @@ public class DoctorsController extends DbHelper {
         Cursor cur = db.rawQuery(sql, null);
 
         while (cur.moveToNext()) {
-            HashMap<String, String> map = new HashMap();
+            HashMap<String, String> map = new HashMap<>();
             map.put(DOCTORS_DOC_ID, cur.getString(cur.getColumnIndex(DOCTORS_DOC_ID)));
             map.put(DOCTORS_DOC_CODE, cur.getString(cur.getColumnIndex(DOCTORS_DOC_CODE)));
             map.put(DOCTORS_DOC_NAME, cur.getString(cur.getColumnIndex(DOCTORS_DOC_NAME)));
@@ -63,7 +63,7 @@ public class DoctorsController extends DbHelper {
     }
 
     public ArrayList<HashMap<String,String>> SelectAllBirthdaysThisMonthYear() {
-        ArrayList<HashMap<String, String>> doctorsBirthday = new ArrayList();
+        ArrayList<HashMap<String, String>> doctorsBirthday = new ArrayList<>();
         String sql = "SELECT id, doc_id, doc_name, birthday, " +
                 "   strftime('%m', birthday) as month, " +
                 "   strftime('%d', birthday) as day, " +
@@ -77,7 +77,7 @@ public class DoctorsController extends DbHelper {
         Cursor cur = db.rawQuery(sql, null);
 
         while (cur.moveToNext()) {
-            HashMap<String, String> map = new HashMap();
+            HashMap<String, String> map = new HashMap<>();
             map.put(DOCTORS_DOC_NAME, cur.getString(cur.getColumnIndex(DOCTORS_DOC_NAME)));
             map.put(DOCTORS_BIRTHDAY, cur.getString(cur.getColumnIndex(DOCTORS_BIRTHDAY)));
 

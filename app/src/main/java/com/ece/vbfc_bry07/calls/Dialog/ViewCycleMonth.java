@@ -3,6 +3,7 @@ package com.ece.vbfc_bry07.calls.Dialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -35,7 +36,6 @@ public class ViewCycleMonth extends AppCompatActivity {
         int screenWidth = (int) (metrics.widthPixels * 0.80);
 
         setContentView(R.layout.activity_view_cyle_month);
-
         getWindow().setLayout(screenWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         acp_gridview = (GridView) findViewById(R.id.acp_gridview);

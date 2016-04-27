@@ -45,7 +45,7 @@ public class SignatureFormAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.item_products, parent, false);
         }
 
-        product_name = (TextView) convertView.findViewById(R.id.product_name);
+        product_name = (TextView) convertView.findViewById(R.id.name);
         String count = "";
         String sample = objects.get(position).get("sample");
         String literature = objects.get(position).get("literature");

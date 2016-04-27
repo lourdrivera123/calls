@@ -1,18 +1,10 @@
 package com.ece.vbfc_bry07.calls.Adapter;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -23,17 +15,27 @@ import com.ece.vbfc_bry07.calls.Activity.MCPActivity;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 
-public class CalendarAdapter extends BaseAdapter {
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+
+public class MCPCalendarAdapter extends BaseAdapter {
     DateFormat df;
     Context context;
     java.util.Calendar month;
     Calendar pmonth, pmonthmaxset;
 
+    int firsttouch = 0;
+    long time;
     String itemvalue, currentDateString;
     int firstDay, maxWeeknumber, maxP, calMaxP, mnthlength, public_pos = -1;
 
     List<String> day_string;
-    ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> plans;
 
     View previousView;
     TextView dayView, with_plan;
@@ -41,11 +43,10 @@ public class CalendarAdapter extends BaseAdapter {
 
     Helpers helpers;
 
-    public CalendarAdapter(Context context, Calendar monthCalendar, ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> plans_objects) {
+    public MCPCalendarAdapter(Context context, Calendar monthCalendar) {
         day_string = new ArrayList<>();
         this.month = monthCalendar;
         this.context = context;
-        this.plans = plans_objects;
         helpers = new Helpers();
         df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         df.setTimeZone(TimeZone.getTimeZone("GMT+8"));
@@ -91,40 +92,96 @@ public class CalendarAdapter extends BaseAdapter {
             dayView.setTextColor(Color.GRAY);
             parent_layout.setEnabled(false);
         } else {
-            dayView.setTextColor(Color.BLACK);
+            if (helpers.convertToDayOfWeek(day_string.get(position)).equals("Sunday")) {
+                parent_layout.setEnabled(false);
+                dayView.setTextColor(Color.GRAY);
+            } else {
+                parent.setEnabled(true);
+                dayView.setTextColor(Color.BLACK);
 
-            if (day_string.get(position).equals(currentDateString) && (month.get(Calendar.MONTH) + 1) == helpers.convertDateToCycleMonth(currentDateString)) {
-                MCPActivity.picked_date.setText(helpers.convertToAlphabetDate(currentDateString, ""));
-                MCPActivity.picked_day.setText(helpers.convertToDayOfWeek(currentDateString));
-                MCPActivity.check_count += 1;
-                dayView.setTextColor(Color.parseColor("#A45F6E"));
-
-                if (MCPActivity.check_count <= 2)
-                    MCPActivity.date = currentDateString;
+                if (day_string.get(position).equals(currentDateString) && (month.get(Calendar.MONTH) + 1) == helpers.convertDateToCycleMonth(currentDateString))
+                    dayView.setTextColor(Color.parseColor("#A45F6E"));
             }
         }
 
         dayView.setText(gridvalue);
 
-        if (position == public_pos) {
-            if (!MCPActivity.isVisible)
-                with_plan.setVisibility(View.INVISIBLE);
-            else
+        if (MCPActivity.isVisible == 1) {
+            if (position == public_pos)
                 with_plan.setVisibility(View.VISIBLE);
+        } else if (MCPActivity.isVisible == 0) {
+            with_plan.setVisibility(View.INVISIBLE);
+
+            if (MCPActivity.list_of_dates.size() > 0) {
+                for (int x = 0; x < MCPActivity.list_of_dates.size(); x++) {
+                    if (day_string.get(position).equals(MCPActivity.list_of_dates.get(x)))
+                        with_plan.setVisibility(View.VISIBLE);
+                }
+            }
+        } else if (MCPActivity.isVisible == 3) {
+            if (MCPActivity.child_clicked != null) {
+                with_plan.setVisibility(View.INVISIBLE);
+                String IDM_id = MCPActivity.child_clicked.get("IDM_id");
+
+                for (int x = 0; x < MCPActivity.list_of_plans.size(); x++) {
+                    String keyset = MCPActivity.list_of_plans.get(x).keySet().toString().replace("[", "").replace("]", "");
+
+                    if (keyset.equals(IDM_id)) {
+                        ArrayList<String> list_of_date = MCPActivity.list_of_plans.get(x).get(keyset);
+
+                        for (int y = 0; y < list_of_date.size(); y++) {
+                            if (list_of_date.get(y).equals(day_string.get(position)))
+                                with_plan.setVisibility(View.VISIBLE);
+                        }
+
+                        break;
+                    }
+                }
+            }
+
         }
 
-        parent_layout.setOnClickListener(new View.OnClickListener() {
+        parent_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                MCPActivity.setFirstdaySelected = false;
-                setSelected(v, position);
-                public_pos = position;
-                String selectedGridDate = day_string.get(position);
-                MCPActivity.updateDuringOnItemClick(selectedGridDate);
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == event.ACTION_DOWN) {
+                    TextView plan = (TextView) v.getTag();
+
+                    if (firsttouch == 1 && (System.currentTimeMillis() - time) <= 300) {
+                        firsttouch += 1;
+
+                        if (MCPActivity.isVisible >= 1 && plan.getVisibility() == View.VISIBLE) {
+
+                            for (int x = 0; x < MCPActivity.list_of_plans.size(); x++) {
+                                String keyset = MCPActivity.list_of_plans.get(x).keySet().toString().replace("[", "").replace("]", "");
+
+                                if (keyset.equals(MCPActivity.child_clicked.get("IDM_id"))) {
+                                    MCPActivity.list_of_plans.get(x).get(keyset).remove(day_string.get(position));
+                                    MCPActivity.isVisible = 3;
+                                    MCPCalendarAdapter.this.notifyDataSetChanged();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if (firsttouch <= 1) {
+                        time = System.currentTimeMillis();
+                        setSelected(v, position);
+                        public_pos = position;
+                        MCPActivity.duringOnClick(day_string.get(position));
+                    }
+
+                    firsttouch = 1;
+                    return false;
+                }
+
+                return true;
             }
         });
 
-        setEventView(position);
+        if (MCPActivity.change_view.getVisibility() == View.VISIBLE)
+            setEventView(position);
 
         return v;
     }
@@ -189,11 +246,11 @@ public class CalendarAdapter extends BaseAdapter {
     }
 
     public void setEventView(final int pos) {
-        int len = plans.size();
+        int len = MCPActivity.list_of_plans_per_day.size();
         String date_selected = day_string.get(pos);
 
         for (int x = 0; x < len; x++) {
-            HashMap<String, ArrayList<HashMap<String, String>>> map_per_day = plans.get(x);
+            HashMap<String, ArrayList<HashMap<String, String>>> map_per_day = MCPActivity.list_of_plans_per_day.get(x);
             String date_on_map = map_per_day.keySet().toString().replace("[", "").replace("]", "");
 
             if (date_on_map.equals(date_selected))

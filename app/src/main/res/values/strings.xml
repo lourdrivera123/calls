@@ -10,4 +10,20 @@
     <string name="mcp">Master Coverage Plan</string>
     <string name="acp">Actual Coverage Plan</string>
     <string name="quick_sign">Quick Sign</string>
+
+    <array name="color_coded_circles">
+        <item>Missed Call</item>
+        <item>Incident Call</item>
+        <item>Recovered Call</item>
+        <item>Signed Call</item>
+        <item>Sent Call</item>
+    </array>
+
+    <array name="images_color_coded_circles">
+        <item>@mipmap/ic_missed_call</item>
+        <item>@mipmap/ic_incidental_call</item>
+        <item>@mipmap/ic_recovered_call</item>
+        <item>@mipmap/ic_signed_call</item>
+        <item>@mipmap/ic_actual_covered_call</item>
+    </array>
 </resources>

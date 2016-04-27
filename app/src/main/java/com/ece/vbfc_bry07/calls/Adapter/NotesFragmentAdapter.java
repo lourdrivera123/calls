@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 import com.ece.vbfc_bry07.calls.R;
 
@@ -14,6 +15,8 @@ import java.util.HashMap;
 public class NotesFragmentAdapter extends BaseAdapter {
     Context context;
     ArrayList<HashMap<String, String>> objects;
+
+    TextView title_note, date;
 
     public NotesFragmentAdapter(Context context, ArrayList<HashMap<String, String>> objects) {
         this.context = context;
@@ -37,12 +40,23 @@ public class NotesFragmentAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        View v = convertView;
 
         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.adapter_notes_fragment, parent, false);
+            LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            v = vi.inflate(R.layout.adapter_notes_fragment, parent, false);
         }
 
-        return convertView;
+        title_note = (TextView) v.findViewById(R.id.title_note);
+        date = (TextView) v.findViewById(R.id.date);
+
+        if (objects.get(position).get("note").length() > 30)
+            title_note.setText(objects.get(position).get("note").substring(0, 25) + "...");
+        else
+            title_note.setText(objects.get(position).get("note"));
+
+        date.setText(objects.get(position).get("date"));
+
+        return v;
     }
 }
