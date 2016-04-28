@@ -4,11 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.ece.vbfc_bry07.calls.Controller.DbHelper;
@@ -18,7 +18,7 @@ import com.ece.vbfc_bry07.calls.R;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     Button BtnLogin;
     LinearLayout root;
-    EditText username_txtfield, password_txtfield;
+    TextInputLayout username_wrapper, password_wrapper;
 
     SharedPreferences shared;
 
@@ -28,12 +28,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_login_page);
 
         BtnLogin = (Button) findViewById(R.id.BtnLogin);
         root = (LinearLayout) findViewById(R.id.root);
-        username_txtfield = (EditText) findViewById(R.id.username_txtfield);
-        password_txtfield = (EditText) findViewById(R.id.password_txtfield);
+        username_wrapper = (TextInputLayout) findViewById(R.id.username_wrapper);
+        password_wrapper = (TextInputLayout) findViewById(R.id.password_wrapper);
 
         db = new DbHelper(this);
         PC = new PreferencesController(this);
@@ -57,17 +57,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         String username, password;
         int success = 2;
 
-        username = username_txtfield.getText().toString();
-        password = password_txtfield.getText().toString();
+        username = username_wrapper.getEditText().getText().toString();
+        password = password_wrapper.getEditText().getText().toString();
 
-        if (username.equals("")) {
+        if (username.isEmpty()) {
             success -= 1;
-            username_txtfield.setError("Field required");
+            username_wrapper.setError("Field required");
         }
 
-        if (password.equals("")) {
+        if (password.isEmpty()) {
             success -= 1;
-            password_txtfield.setError("Fields required");
+            password_wrapper.setError("Field required");
         }
 
         if (success == 2) {
@@ -77,8 +77,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 editor.apply();
                 startActivity(new Intent(this, HomeActivity.class));
                 this.finish();
-            } else
+            } else {
                 Snackbar.make(root, "Invalid Login Credentials", Snackbar.LENGTH_SHORT).show();
+                username_wrapper.setErrorEnabled(false);
+                password_wrapper.setErrorEnabled(false);
+            }
         }
     }
 }

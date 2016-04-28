@@ -40,35 +40,35 @@ import java.util.TimeZone;
 public class MCPActivity extends AppCompatActivity implements ExpandableListView.OnChildClickListener, TextWatcher, View.OnClickListener {
     Toolbar toolbar;
     GridView gv_calendar;
+    EditText search_doctor;
     ImageButton prev, next;
     static ListView calls_per_day;
-    EditText search_doctor;
-    static TextView tv_month, number_of_calls;
     ExpandableListView list_of_doctors;
     static LinearLayout doc_details, root;
+    static TextView tv_month, number_of_calls;
     public static TextView picked_date, picked_day;
     public static LinearLayout change_view, all_doctors;
     TextView no_records, no_plans, class_code, specialization;
 
-    static Calendar cal_month;
     View _lastColored;
+    static Calendar cal_month;
 
     static boolean flag;
     public static int isVisible;
 
-    static Helpers helpers;
     PlansController pc;
-    static MCPActivity context;
+    static Helpers helpers;
     PlanDetailsController pdc;
+    static MCPActivity context;
     static MCPAdapter plans_adapter;
     InstitutionDoctorMapsController idmc;
     ExpandableListAdapter doctor_adapter;
     static MCPCalendarAdapter cal_adapter;
 
     List<String> listDataHeader;
+    public static ArrayList<String> list_of_dates;
     public static HashMap<String, String> child_clicked;
     public static ArrayList<HashMap<String, ArrayList<String>>> list_of_plans;
-    public static ArrayList<String> list_of_dates;
     HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild, duplicate_list_child;
     public static ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> list_of_plans_per_day;
 

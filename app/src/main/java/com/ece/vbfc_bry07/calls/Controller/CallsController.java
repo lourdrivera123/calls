@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.ece.vbfc_bry07.calls.Helpers;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 
 public class CallsController extends DbHelper {
@@ -55,7 +57,7 @@ public class CallsController extends DbHelper {
 
         float percentage = calls * 100f / total;
 
-        String callRate = percentage + "% ( " + calls + " / " + total + " )";
+        String callRate = new BigDecimal(percentage).setScale(2, RoundingMode.HALF_UP) + "% \n (" + calls + " / " + total + ")";
 
         cur.close();
         db.close();

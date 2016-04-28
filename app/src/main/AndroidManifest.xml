@@ -53,6 +53,10 @@
         <activity
             android:name="com.ece.vbfc_bry07.calls.Activity.StatusSummaryActivity"
             android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name=".Activity.QuickSignActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/Theme.MyTheme" />
 
         <!--DIALOG-->
         <activity

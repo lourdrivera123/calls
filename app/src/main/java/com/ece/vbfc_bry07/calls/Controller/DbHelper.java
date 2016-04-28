@@ -17,10 +17,9 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(PlansController.CREATE_PLANS);
         db.execSQL(DoctorsController.CREATE_DOCTORS);
+        db.execSQL(PlansController.CREATE_PLANS);
         db.execSQL(SpecializationsController.CREATE_SPECIALIZATIONS);
-
         db.execSQL(BroadcastsController.CREATE_Broadcasts);
         db.execSQL(CallDetailingAidsController.CREATE_CallDetailingAids);
         db.execSQL(CallMaterialsController.CREATE_CallMaterials);

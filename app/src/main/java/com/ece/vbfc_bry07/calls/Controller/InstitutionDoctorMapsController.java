@@ -58,6 +58,7 @@ public class InstitutionDoctorMapsController extends DbHelper {
             map.put("contact_number", cur.getString(cur.getColumnIndex("contact_number")));
             map.put("class_code", cur.getString(cur.getColumnIndex("max_visit")));
             map.put("class_name", cur.getString(cur.getColumnIndex("class_name")));
+            map.put("birthday", cur.getString(cur.getColumnIndex("birthday")));
 
             if (!date.equals("")) {
                 map.put("plan_details_id", cur.getString(cur.getColumnIndex("pd_id")));

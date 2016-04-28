@@ -151,6 +151,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 this.finish();
                 startActivity(new Intent(this, LoginActivity.class));
                 break;
+
+            case R.id.sync:
+
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -159,6 +163,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.quick_sign:
+                startActivity(new Intent(this, QuickSignActivity.class));
                 break;
             case R.id.actual_coverage_plan:
                 startActivity(new Intent(this, ACPActivity.class));

@@ -21,4 +21,13 @@
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
     </style>
+
+    <style name="TextLabel" parent="TextAppearance.AppCompat">
+        <!-- Hint color and label color in FALSE state -->
+        <item name="android:textColorHint">#A25063</item>
+        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
+        <item name="colorAccent">#A25063</item>
+        <item name="colorControlNormal">@color/toolbar</item>
+        <item name="colorControlActivated">@color/toolbar</item>
+    </style>
 </resources>

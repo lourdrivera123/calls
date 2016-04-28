@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 public class Helpers {
+
     public Helpers() {
 
     }
@@ -72,6 +73,14 @@ public class Helpers {
         return df.format(cal.getTime());
     }
 
+    public String getMonthYear(int cycle_month) {
+        TimeZone zone = TimeZone.getTimeZone("GMT+8");
+        Calendar cal = Calendar.getInstance(zone);
+
+        return String.valueOf(android.text.format.DateFormat.format("MMMM yyyy", cal));
+    }
+
+    //////////////////////////////////////////////////////
     public int convertDateToCycleMonth(String date) {
         Date date1;
         Calendar cal = Calendar.getInstance();

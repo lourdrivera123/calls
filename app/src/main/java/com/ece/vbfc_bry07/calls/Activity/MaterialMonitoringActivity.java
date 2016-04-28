@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.ece.vbfc_bry07.calls.Adapter.ProductListAdapter;
 import com.ece.vbfc_bry07.calls.Controller.DbHelper;
@@ -21,12 +22,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MaterialMonitoringActivity extends AppCompatActivity {
-    ListView productsListView;
     DbHelper dbHelper;
-    MaterialMonitoringController mmc;
+    TextView cycle_month;
 
     Helpers helpers;
+    ListView productsListView;
     ListAdapter doctorAdapter;
+    MaterialMonitoringController mmc;
 
     ArrayList<HashMap<String, String>> all_products, call__materials;
 
@@ -35,6 +37,7 @@ public class MaterialMonitoringActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_material_monitoring);
 
+        cycle_month = (TextView) findViewById(R.id.cycle_month);
         productsListView = (ListView) findViewById(R.id.productsListView);
 
         helpers = new Helpers();
@@ -51,6 +54,8 @@ public class MaterialMonitoringActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Material Monitoring");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#A25063")));
+
+        cycle_month.setText(helpers.getMonthYear(helpers.convertDateToCycleMonth(helpers.getCurrentDate(""))));
     }
 
     @Override

@@ -6,10 +6,11 @@
     android:baselineAligned="false"
     android:orientation="horizontal">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="0.4"
+        android:focusable="false"
         android:orientation="vertical">
 
         <EditText
@@ -22,21 +23,33 @@
             android:textSize="12sp" />
 
         <View
+            android:id="@+id/view"
             android:layout_width="match_parent"
             android:layout_height="1dip"
+            android:layout_below="@+id/BtnSearch"
             android:background="#C87C7C" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_above="@+id/doctor_count"
+            android:layout_below="@+id/view"
             android:orientation="vertical">
 
-            <ListView
-                android:id="@+id/doctorsList"
+            <ExpandableListView
+                android:id="@+id/list_of_doctors"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:divider="@null" />
+                android:layout_height="wrap_content"
+                android:childDivider="@android:color/transparent"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="2dp" />
 
+            <!--<ListView-->
+            <!--android:id="@+id/doctorsList"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:divider="@null"-->
+            <!--android:dividerHeight="2dp" />-->
 
             <TextView
                 android:id="@+id/no_records"
@@ -48,9 +61,18 @@
                 android:text="No matching records were found"
                 android:textSize="12sp"
                 android:visibility="gone" />
-
         </LinearLayout>
-    </LinearLayout>
+
+        <TextView
+            android:id="@+id/doctor_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/white"
+            android:gravity="center"
+            android:text="Doctor count: 45"
+            android:textSize="12sp" />
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -62,58 +84,53 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="10dp"
-            android:layout_weight="0.3"
+            android:layout_weight="0.2"
             android:background="@color/header"
             android:gravity="bottom"
             android:orientation="vertical"
-            android:padding="15dp">
+            android:padding="10dp">
 
             <TextView
                 android:id="@+id/TxtDoctorName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
-                android:textSize="13sp" />
+                android:textSize="15sp" />
 
             <TextView
-                android:id="@+id/TxtDoctorSpecialty"
+                android:id="@+id/specialization"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="SPECIALTY GOES HERE"
                 android:textColor="@android:color/white"
-                android:textSize="13sp" />
+                android:textSize="12sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.7"
-            android:background="@android:color/white"
+            android:layout_weight="0.8"
             android:orientation="vertical"
-            android:padding="5dp">
-
-            <TextView
-                android:id="@+id/TxtDoctorNumber"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@android:drawable/ic_menu_call"
-                android:gravity="center_vertical"
-                android:textSize="12sp" />
+            android:padding="10dp">
 
             <TextView
                 android:id="@+id/TxtDoctorClass"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="35dp"
-                android:text="Class B (2x)"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/TxtDoctorNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
                 android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/TxtDoctorBirthDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:drawableLeft="@android:drawable/ic_menu_my_calendar"
+                android:layout_marginTop="5dp"
                 android:gravity="center_vertical"
                 android:textSize="12sp" />
         </LinearLayout>

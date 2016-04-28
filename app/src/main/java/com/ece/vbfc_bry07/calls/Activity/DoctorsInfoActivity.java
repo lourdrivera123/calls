@@ -7,95 +7,66 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.ece.vbfc_bry07.calls.Adapter.DoctorListAdapter;
+import com.ece.vbfc_bry07.calls.Adapter.ExpandableListAdapter;
 import com.ece.vbfc_bry07.calls.Controller.DbHelper;
 import com.ece.vbfc_bry07.calls.Controller.DoctorsController;
-import com.ece.vbfc_bry07.calls.Controller.SpecializationsController;
+import com.ece.vbfc_bry07.calls.Controller.InstitutionDoctorMapsController;
 import com.ece.vbfc_bry07.calls.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
-public class DoctorsInfoActivity extends AppCompatActivity implements TextWatcher {
-
-    ListView DoctorsListView;
+public class DoctorsInfoActivity extends AppCompatActivity implements TextWatcher, ExpandableListView.OnChildClickListener {
     DbHelper dbHelper;
     DoctorsController DC;
+    ExpandableListAdapter doctor_adapter;
+    InstitutionDoctorMapsController idmc;
 
-    ArrayList<HashMap<String, String>> all_doctors;
-    ListAdapter doctorAdapter;
-    ArrayList<HashMap<String, String>> doctors_array = new ArrayList<>();
+    List<String> listDataHeader;
+    HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild, duplicate_list_child;
 
-    TextView TxtDoctorName, TxtDoctorSpecialty, TxtDoctorNumber, TxtDoctorClass, TxtDoctorBirthDate, no_records;
-    String DoctorName, DoctorSpecialty, DoctorNumber, DoctorClass, DoctorBirthDate;
     EditText BtnSearch;
+    ExpandableListView list_of_doctors;
+    TextView TxtDoctorName, TxtDoctorNumber, TxtDoctorClass, TxtDoctorBirthDate, no_records, doctor_count, specialization;
+
+    String DoctorNumber, DoctorBirthDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doc_info);
 
-        dbHelper = new DbHelper(this);
-        DC = new DoctorsController(this);
-
         TxtDoctorName = (TextView) findViewById(R.id.TxtDoctorName);
-        TxtDoctorSpecialty = (TextView) findViewById(R.id.TxtDoctorSpecialty);
         TxtDoctorNumber = (TextView) findViewById(R.id.TxtDoctorNumber);
         TxtDoctorClass = (TextView) findViewById(R.id.TxtDoctorClass);
         TxtDoctorBirthDate = (TextView) findViewById(R.id.TxtDoctorBirthDate);
-        BtnSearch = (EditText) findViewById(R.id.BtnSearch);
+        doctor_count = (TextView) findViewById(R.id.doctor_count);
         no_records = (TextView) findViewById(R.id.no_records);
+        specialization = (TextView) findViewById(R.id.specialization);
+        BtnSearch = (EditText) findViewById(R.id.BtnSearch);
+        list_of_doctors = (ExpandableListView) findViewById(R.id.list_of_doctors);
 
-        DoctorsListView = (ListView) findViewById(R.id.doctorsList);
-        all_doctors = DC.SelectAllDoctors();
-        doctors_array.addAll(all_doctors);
-        doctorAdapter = new DoctorListAdapter(this, R.layout.adapter_doctors_list, all_doctors);
-        DoctorsListView.setAdapter(doctorAdapter);
+        dbHelper = new DbHelper(this);
+        DC = new DoctorsController(this);
+        idmc = new InstitutionDoctorMapsController(this);
 
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Doctors");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#A25063")));
 
-        DoctorsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                DoctorName = all_doctors.get(position).get(DoctorsController.DOCTORS_DOC_NAME);
-                DoctorSpecialty = all_doctors.get(position).get(SpecializationsController.SPECIALIZATION_NAME);
-                DoctorNumber = all_doctors.get(position).get(DoctorsController.DOCTORS_CONTACT_NUMBER);
-                DoctorBirthDate = all_doctors.get(position).get(DoctorsController.DOCTORS_BIRTHDAY);
-                TxtDoctorName.setText(DoctorName);
-                TxtDoctorSpecialty.setText(DoctorSpecialty);
-                if (DoctorNumber.equals("")) {
-                    TxtDoctorNumber.setText("No mobile # to display");
-                } else {
-                    TxtDoctorNumber.setText(DoctorNumber);
-                }
-                if (DoctorBirthDate.equals("")) {
-                    TxtDoctorBirthDate.setText("No Birthdate to display");
-                } else {
-                    TxtDoctorBirthDate.setText(DoctorBirthDate);
-                }
-            }
-        });
+        prepareListData();
 
         BtnSearch.addTextChangedListener(this);
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.help, menu);
-        return true;
+        list_of_doctors.setOnChildClickListener(this);
     }
 
     @Override
@@ -103,9 +74,6 @@ public class DoctorsInfoActivity extends AppCompatActivity implements TextWatche
         switch (item.getItemId()) {
             case android.R.id.home:
                 this.finish();
-                break;
-            case R.id.BtnHelp:
-                Toast.makeText(this, "HELP!", Toast.LENGTH_SHORT).show();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -124,33 +92,96 @@ public class DoctorsInfoActivity extends AppCompatActivity implements TextWatche
     @Override
     public void afterTextChanged(Editable s) {
         String search = String.valueOf(s);
-        if(!search.equals("")) {
-            all_doctors.clear();
+        int counter = 0;
 
-            for (int x = 0; x < doctors_array.size(); x++) {
-                HashMap<String, String> hash = doctors_array.get(x);
+        if (!search.equals("")) {
+            HashMap<Integer, ArrayList<HashMap<String, String>>> new_child = new HashMap<>();
+            new_child.putAll(duplicate_list_child);
+            listDataHeader.clear();
+            listDataChild.clear();
 
-                if (hash.get(DoctorsController.DOCTORS_DOC_NAME).toLowerCase().contains(search.toLowerCase())) {
-                    all_doctors.add(hash);
+            for (int x = 0; x < new_child.size(); x++) {
+                ArrayList<HashMap<String, String>> new_array = new_child.get(x);
+                ArrayList<HashMap<String, String>> array_for_child = new ArrayList<>();
+
+                for (int y = 0; y < new_array.size(); y++) {
+                    HashMap<String, String> hash = new_array.get(y);
+
+                    if (hash.get("doc_name").toLowerCase().contains(search.toLowerCase()))
+                        array_for_child.add(hash);
+                }
+
+                if (array_for_child.size() > 0) {
+                    listDataChild.put(counter, array_for_child);
+                    counter += 1;
                 }
             }
 
-            if (all_doctors.size() > 0) {
-                no_records.setVisibility(View.GONE);
-                DoctorsListView.setVisibility(View.VISIBLE);
-
-                doctorAdapter = new DoctorListAdapter(this, R.layout.adapter_doctors_list, all_doctors);
-                DoctorsListView.setAdapter(doctorAdapter);
-            } else {
-                no_records.setVisibility(View.VISIBLE);
-                DoctorsListView.setVisibility(View.GONE);
+            for (int x = 0; x < listDataChild.size(); x++) {
+                int inst_id = Integer.parseInt(listDataChild.get(x).get(0).get("doctor_inst_id"));
+                listDataHeader.add(idmc.getInstitutionByID(inst_id));
             }
 
-        } else {
-            all_doctors = DC.SelectAllDoctors();
-            doctorAdapter = new DoctorListAdapter(this, R.layout.adapter_doctors_list, all_doctors);
-            DoctorsListView.setAdapter(doctorAdapter);
+            if (listDataHeader.size() > 0) {
+                no_records.setVisibility(View.GONE);
+                list_of_doctors.setVisibility(View.VISIBLE);
+                doctor_adapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+                list_of_doctors.setAdapter(doctor_adapter);
+            } else {
+                no_records.setVisibility(View.VISIBLE);
+                list_of_doctors.setVisibility(View.GONE);
+            }
+        } else
+            prepareListData();
+    }
+
+    private void prepareListData() {
+        listDataChild = new HashMap<>();
+        listDataHeader = new ArrayList<>();
+        duplicate_list_child = new HashMap<>();
+        Set<String> uniqueInstitutions = new LinkedHashSet<>();
+        ArrayList<HashMap<String, String>> doctors = idmc.getDoctorsWithInstitutions("");
+
+        for (int x = 0; x < doctors.size(); x++)
+            uniqueInstitutions.add(doctors.get(x).get("inst_name"));
+
+        listDataHeader.addAll(uniqueInstitutions);
+
+        for (int x = 0; x < listDataHeader.size(); x++) {
+            ArrayList<HashMap<String, String>> array = new ArrayList<>();
+
+            for (int y = 0; y < doctors.size(); y++) {
+                if (doctors.get(y).get("inst_name").equals(listDataHeader.get(x)))
+                    array.add(doctors.get(y));
+            }
+            listDataChild.put(x, array);
         }
 
+        duplicate_list_child.putAll(listDataChild);
+        doctor_adapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+        list_of_doctors.setAdapter(doctor_adapter);
+        doctor_count.setText("Doctor Count: " + doctors.size());
+    }
+
+    @Override
+    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+        DoctorNumber = listDataChild.get(groupPosition).get(childPosition).get("contact_number");
+        TxtDoctorName.setText(listDataChild.get(groupPosition).get(childPosition).get("doc_name"));
+        String class_name = listDataChild.get(groupPosition).get(childPosition).get("class_name") + " (" + listDataChild.get(groupPosition).get(childPosition).get("class_code") + "x)";
+        DoctorBirthDate = listDataChild.get(groupPosition).get(childPosition).get("birthday");
+        TxtDoctorClass.setText(class_name);
+        specialization.setText(listDataChild.get(groupPosition).get(childPosition).get("specialization"));
+
+        if (DoctorNumber.equals(""))
+            TxtDoctorNumber.setText("No mobile # to display");
+        else
+            TxtDoctorNumber.setText(DoctorNumber);
+
+        if (DoctorBirthDate.equals(""))
+            TxtDoctorBirthDate.setText("No birth date to display");
+        else
+            TxtDoctorBirthDate.setText(DoctorBirthDate);
+
+        return false;
     }
 }
