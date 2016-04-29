@@ -164,7 +164,7 @@ public class PlanDetailsController extends DbHelper {
     }
 
     public ArrayList<HashMap<String, String>> getMonthlyHistoryByIDM_id(int IDM_id, int cycle_month) {
-        String sql = "SELECT c.calls_id as server_id, c.status_id as call_status, * FROM PlanDetails as pd LEFT JOIN Calls as c ON c.plan_details_id = pd.plan_details_id " +
+        String sql = "SELECT c.calls_id as server_id, c.status_id as call_status,  pd.plan_details_id as pd_id, * FROM PlanDetails as pd LEFT JOIN Calls as c ON c.plan_details_id = pd.plan_details_id " +
                 "WHERE pd.inst_doc_id = " + IDM_id + " AND plan_id = (SELECT id FROM plans WHERE cycle_number = " + cycle_month + ") AND pd.plan_details_id > 0";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
@@ -191,6 +191,7 @@ public class PlanDetailsController extends DbHelper {
 
                 map.put("status", call_status);
                 map.put("server_id", server_id);
+                map.put("plan_details_id", cur.getString(cur.getColumnIndex("pd_id")));
                 array.add(map);
             }
         } else { //FOR INCIDENTAL CALLS

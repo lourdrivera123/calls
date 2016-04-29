@@ -32,9 +32,9 @@ public class ProductsController extends DbHelper {
 
         while (cur.moveToNext()) {
             HashMap<String, String> map = new HashMap<>();
-            map.put("product_id", cur.getString(cur.getColumnIndex(Products_ID)));
-            map.put("product_code", cur.getString(cur.getColumnIndex(CODE)));
-            map.put("product_name", cur.getString(cur.getColumnIndex(NAME)));
+            map.put("product_id", cur.getString(cur.getColumnIndex("products_id")));
+            map.put("product_code", cur.getString(cur.getColumnIndex("code")));
+            map.put("product_name", cur.getString(cur.getColumnIndex("name")));
             map.put("sample", "");
             map.put("literature", "");
             map.put("promaterials", "");

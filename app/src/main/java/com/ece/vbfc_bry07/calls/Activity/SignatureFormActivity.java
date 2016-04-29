@@ -23,6 +23,7 @@ import com.ece.vbfc_bry07.calls.Controller.CallsController;
 import com.ece.vbfc_bry07.calls.Controller.PlanDetailsController;
 import com.ece.vbfc_bry07.calls.Controller.ReasonsController;
 import com.ece.vbfc_bry07.calls.Controller.RescheduledCallsController;
+import com.ece.vbfc_bry07.calls.Controller.SignaturesController;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 import com.ece.vbfc_bry07.calls.Signature;
@@ -43,6 +44,7 @@ public class SignatureFormActivity extends AppCompatActivity {
     Signature signature;
     ReasonsController rc;
     CallNotesController cnc;
+    SignaturesController sc;
     PlanDetailsController pdc;
     CallMaterialsController cmc;
     SignatureFormAdapter adapter;
@@ -78,6 +80,7 @@ public class SignatureFormActivity extends AppCompatActivity {
         helpers = new Helpers();
         cc = new CallsController(this);
         rc = new ReasonsController(this);
+        sc = new SignaturesController(this);
         cnc = new CallNotesController(this);
         pdc = new PlanDetailsController(this);
         cmc = new CallMaterialsController(this);
@@ -121,7 +124,7 @@ public class SignatureFormActivity extends AppCompatActivity {
             case R.id.save:
                 if (signature.hasSigned()) {
                     mView.setDrawingCacheEnabled(true);
-                    signature.save(mView);
+                    String path = signature.save(mView);
 
                     details.put("calls_retry_count", String.valueOf(retry_count));
                     details.put("calls_status", "1");
@@ -144,6 +147,9 @@ public class SignatureFormActivity extends AppCompatActivity {
                     long callID = cc.insertCall(details);
 
                     if (callID > 0) {
+                        if (!sc.insertSignature(callID, path))
+                            Snackbar.make(root, "Error occurred while saving signature", Snackbar.LENGTH_SHORT).show();
+
                         if (products.size() > 0) {
                             if (!cmc.insertCallMaterials(products, callID))
                                 Snackbar.make(root, "Error occurred while saving materials", Snackbar.LENGTH_SHORT).show();

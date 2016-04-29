@@ -54,10 +54,9 @@ public class Signature extends View {
         mypath = getPath();
     }
 
-    public void save(View v) {
-        if (mBitmap == null) {
+    public String save(View v) {
+        if (mBitmap == null)
             mBitmap = Bitmap.createBitmap(mContent.getWidth(), mContent.getHeight(), Bitmap.Config.RGB_565);
-        }
 
         Canvas canvas = new Canvas(mBitmap);
         try {
@@ -68,15 +67,16 @@ public class Signature extends View {
             mFileOutStream.flush();
             mFileOutStream.close();
             String url = MediaStore.Images.Media.insertImage(context.getContentResolver(), mBitmap, "title", null);
-            Log.v("log_tag", "url: " + url);
+
             //In case you want to delete the file
-            //boolean deleted = mypath.delete();
+//            boolean deleted = mypath.delete();
             //Log.v("log_tag","deleted: " + mypath.toString() + deleted);
             //If you want to convert the image to string use base64 converter
-
         } catch (Exception e) {
             Log.v("log_tag", e.toString());
         }
+
+        return String.valueOf(mypath);
     }
 
     public void clear() {

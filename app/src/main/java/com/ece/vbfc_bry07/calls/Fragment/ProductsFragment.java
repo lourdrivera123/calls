@@ -2,12 +2,16 @@ package com.ece.vbfc_bry07.calls.Fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.ece.vbfc_bry07.calls.Activity.ACPActivity;
+import com.ece.vbfc_bry07.calls.Adapter.CallMaterialsFragmentAdapter;
 import com.ece.vbfc_bry07.calls.Adapter.ProductsFragmentAdapter;
+import com.ece.vbfc_bry07.calls.Controller.CallMaterialsController;
 import com.ece.vbfc_bry07.calls.Controller.ProductsController;
 import com.ece.vbfc_bry07.calls.R;
 
@@ -15,11 +19,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ProductsFragment extends Fragment {
-    ListView list_of_products;
+    static ListView list_of_products;
 
-    public static ArrayList<HashMap<String, String>> array_of_products;
+    public static ArrayList<HashMap<String, String>> array_of_products, call_materials;
 
     ProductsController pc;
+    static CallMaterialsController cm;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -28,7 +33,10 @@ public class ProductsFragment extends Fragment {
         list_of_products = (ListView) v.findViewById(R.id.list_of_products);
 
         pc = new ProductsController(getActivity());
+        cm = new CallMaterialsController(getActivity());
+
         array_of_products = pc.getAllProducts();
+        call_materials = new ArrayList<>();
 
         list_of_products.setAdapter(new ProductsFragmentAdapter(getActivity(), array_of_products));
 
@@ -50,5 +58,14 @@ public class ProductsFragment extends Fragment {
         }
 
         return array;
+    }
+
+    public static void setCallMaterials(int IDM_id, String date) {
+        call_materials = cm.getCallMaterialsByIDM_id(IDM_id, date);
+
+        if (call_materials.size() > 0) {
+            list_of_products.setAdapter(new CallMaterialsFragmentAdapter(ACPActivity.acp, call_materials));
+        } else
+            list_of_products.setAdapter(new ProductsFragmentAdapter(ACPActivity.acp, array_of_products));
     }
 }

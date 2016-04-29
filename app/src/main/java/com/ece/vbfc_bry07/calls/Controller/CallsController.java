@@ -44,21 +44,23 @@ public class CallsController extends DbHelper {
     ///////////////////////////////////GET METHODS
     public String callRate(int cycle_month) {
         String sql = "SELECT  c.id as call_id, * FROM Plans as p INNER JOIN PlanDetails as pd ON p.id = pd.plan_id LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id " +
-                "WHERE pd.plan_details_id > 0 OR c.temp_planDetails_id = pd.id AND p.cycle_number = " + cycle_month;
+                "WHERE (pd.plan_details_id > 0 OR c.temp_planDetails_id = pd.id) AND p.cycle_number = " + cycle_month;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
         int total = cur.getCount();
         int calls = 0;
+        float percentage = 0;
 
-        while (cur.moveToNext()) {
-            if (cur.getString(cur.getColumnIndex("call_id")) != null)
-                calls += 1;
+        if (cur.getCount() > 0) {
+            while (cur.moveToNext()) {
+                if (cur.getString(cur.getColumnIndex("call_id")) != null)
+                    calls += 1;
+            }
+
+            percentage = calls * 100f / total;
         }
 
-        float percentage = calls * 100f / total;
-
         String callRate = new BigDecimal(percentage).setScale(2, RoundingMode.HALF_UP) + "% \n (" + calls + " / " + total + ")";
-
         cur.close();
         db.close();
 
@@ -138,14 +140,16 @@ public class CallsController extends DbHelper {
         return missed_calls;
     }
 
-    public HashMap<String, String> getLastVisited(int plandetails_id) {
+    public HashMap<String, String> getLastVisited(int IDM_id, int cycle_month) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String last_visited;
         HashMap<String, String> map = new HashMap<>();
         map.put("last_visited", "");
         map.put("count_visits", "");
 
-        String sql = "SELECT c.created_at FROM PlanDetails as pd INNER JOIN Calls as c ON pd.plan_details_id = c.plan_details_id WHERE pd.plan_details_id = " + plandetails_id + " AND c.temp_planDetails_id = 0";
+        String sql = "SELECT  c.created_at FROM Calls as c INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id INNER JOIN Plans as p ON pd.plan_id = p.id " +
+                "WHERE (c.plan_details_id = pd.plan_details_id OR c.temp_planDetails_id = pd.id) AND pd.inst_doc_id = " + IDM_id + " AND p.cycle_number = " + cycle_month +
+                " GROUP BY c.created_at ORDER BY c.created_at DESC";
 
         Cursor cur = db.rawQuery(sql, null);
 
@@ -200,6 +204,7 @@ public class CallsController extends DbHelper {
     public int hasCalled(int id, String type) {
         int check = 0;
         String sql = "";
+
 
         if (type.equals("planDetails"))
             sql = "SELECT * FROM Calls as c WHERE plan_details_id = " + id;

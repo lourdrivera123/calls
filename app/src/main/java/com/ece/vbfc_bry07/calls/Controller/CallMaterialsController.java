@@ -2,6 +2,7 @@ package com.ece.vbfc_bry07.calls.Controller;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.ece.vbfc_bry07.calls.Helpers;
@@ -30,6 +31,7 @@ public class CallMaterialsController extends DbHelper {
         helpers = new Helpers();
     }
 
+    /////////////////////////////INSERT METHODS
     public boolean insertCallMaterials(ArrayList<HashMap<String, String>> materials, long callID) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         long rowID = 0;
@@ -53,5 +55,29 @@ public class CallMaterialsController extends DbHelper {
         db.close();
 
         return rowID > 0;
+    }
+
+    //////////////////////////////GET METHODS
+    public ArrayList<HashMap<String, String>> getCallMaterialsByIDM_id(int IDM_id, String date) {
+        String sql = "SELECT * FROM Products as p INNER JOIN CallMaterials as cm ON p.products_id = cm.product_id INNER JOIN Calls as c ON cm.call_id = c.id INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id " +
+                "WHERE (c.plan_details_id = pd.plan_details_id OR c.temp_planDetails_id = pd.id) AND pd.cycle_day = '" + date + "' AND pd.inst_doc_id = " + IDM_id;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+        ArrayList<HashMap<String, String>> array = new ArrayList<>();
+
+        while (cur.moveToNext()) {
+            HashMap<String, String> map = new HashMap<>();
+            map.put("product_id", cur.getString(cur.getColumnIndex("product_id")));
+            map.put("sample", cur.getString(cur.getColumnIndex("sample")));
+            map.put("promaterials", cur.getString(cur.getColumnIndex("promaterials")));
+            map.put("literature", cur.getString(cur.getColumnIndex("literature")));
+            map.put("product_name", cur.getString(cur.getColumnIndex("name")));
+            array.add(map);
+        }
+
+        cur.close();
+        db.close();
+
+        return array;
     }
 }

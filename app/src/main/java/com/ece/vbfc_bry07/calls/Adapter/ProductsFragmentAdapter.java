@@ -48,27 +48,30 @@ public class ProductsFragmentAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
+        View v = convertView;
 
         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.adapter_products_fragment, parent, false);
+            LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            v = vi.inflate(R.layout.adapter_products_fragment, parent, false);
 
             holder = new ViewHolder();
 
-            holder.product_name = (TextView) convertView.findViewById(R.id.name);
-            holder.sample = (EditText) convertView.findViewById(R.id.sample);
-            holder.literature = (EditText) convertView.findViewById(R.id.literature);
-            holder.promaterials = (EditText) convertView.findViewById(R.id.promaterials);
+            holder.product_name = (TextView) v.findViewById(R.id.name);
+            holder.sample = (EditText) v.findViewById(R.id.sample);
+            holder.literature = (EditText) v.findViewById(R.id.literature);
+            holder.promaterials = (EditText) v.findViewById(R.id.promaterials);
 
-            convertView.setTag(holder);
+            v.setTag(holder);
         } else
-            holder = (ViewHolder) convertView.getTag();
+            holder = (ViewHolder) v.getTag();
 
         holder.ref = position;
 
         holder.product_name.setText(objects.get(position).get("product_name"));
-
         holder.sample.setText(objects.get(position).get("sample"));
+        holder.literature.setText(objects.get(position).get("literature"));
+        holder.promaterials.setText(objects.get(position).get("promaterials"));
+
         holder.sample.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -90,7 +93,6 @@ public class ProductsFragmentAdapter extends BaseAdapter {
             }
         });
 
-        holder.literature.setText(objects.get(position).get("literature"));
         holder.literature.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -112,7 +114,6 @@ public class ProductsFragmentAdapter extends BaseAdapter {
             }
         });
 
-        holder.promaterials.setText(objects.get(position).get("promaterials"));
         holder.promaterials.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -134,6 +135,6 @@ public class ProductsFragmentAdapter extends BaseAdapter {
             }
         });
 
-        return convertView;
+        return v;
     }
 }

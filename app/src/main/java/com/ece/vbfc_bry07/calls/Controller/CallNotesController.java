@@ -2,6 +2,7 @@ package com.ece.vbfc_bry07.calls.Controller;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
@@ -44,5 +45,27 @@ public class CallNotesController extends DbHelper {
         db.close();
 
         return id > 0;
+    }
+
+    //////////////////////GET METHODS
+    public ArrayList<HashMap<String, String>> listOfNotesByIDM_id(int IDM_id, String date) {
+        String sql = "SELECT cn.id as call_note_id, * FROM CallNotes as cn INNER JOIN Calls as c ON cn.call_id = c.id INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id " +
+                "WHERE (c.plan_details_id > 0 OR c.temp_planDetails_id = pd.id) AND pd.cycle_day = '" + date + "' AND pd.inst_doc_id = " + IDM_id;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+        ArrayList<HashMap<String, String>> array = new ArrayList<>();
+
+        while(cur.moveToNext()) {
+            HashMap<String, String> map = new HashMap<>();
+            map.put("note", cur.getString(cur.getColumnIndex("notes")));
+            map.put("date", cur.getString(cur.getColumnIndex("datetime")));
+            map.put("call_note_id", cur.getString(cur.getColumnIndex("call_note_id")));
+            array.add(map);
+        }
+
+        cur.close();
+        db.close();
+
+        return array;
     }
 }

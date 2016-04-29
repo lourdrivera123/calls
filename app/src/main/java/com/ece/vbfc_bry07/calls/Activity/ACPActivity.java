@@ -75,9 +75,9 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
     HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild;
 
     boolean ongoing_call = false;
-    int plan_details_id = 0, menu_check = 0, joint_call = 0;
+    int plan_details_id = 0, joint_call = 0;
     String start_dateTime = "";
-    public static int check_adapter_acp = 0;
+    public static int check_adapter_acp = 0, menu_check = 0;
     public static String current_date = "", viewotheracp = "", IDM_id = "", missed_call_date = "", selected_reason = "";
     public static Activity acp;
 
@@ -270,8 +270,8 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
 
             case R.id.end_call:
                 String end_dateTime = helpers.getCurrentDate("timestamp");
-                String last_visited = cc.getLastVisited(plan_details_id).get("last_visited");
-                String count_visits = cc.getLastVisited(plan_details_id).get("count_visits");
+                String last_visited = cc.getLastVisited(Integer.parseInt(IDM_id), helpers.convertDateToCycleMonth(helpers.getCurrentDate(""))).get("last_visited");
+                String count_visits = cc.getLastVisited(Integer.parseInt(IDM_id), helpers.convertDateToCycleMonth(helpers.getCurrentDate(""))).get("count_visits");
 
                 HashMap<String, String> calls = new HashMap<>();
                 calls.put("start_time", start_dateTime);
@@ -436,7 +436,7 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                     }
                 }
             } else if (temp_pd_id > 0) {
-                int hascalled = cc.hasCalled(plan_details_id, "temp_planDetails");
+                int hascalled = cc.hasCalled(temp_pd_id, "temp_planDetails");
                 menu_check = 1;
                 image.setVisibility(View.VISIBLE);
 
@@ -448,6 +448,9 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
 
             doctor_name.setText(selected_doc);
             invalidateOptionsMenu();
+
+            NotesFragment.callNotesFragment();
+            ProductsFragment.setCallMaterials(Integer.parseInt(IDM_id), current_date);
         }
 
         return true;

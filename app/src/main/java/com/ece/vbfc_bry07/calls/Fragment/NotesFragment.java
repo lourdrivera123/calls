@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -13,19 +14,23 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.ece.vbfc_bry07.calls.Activity.ACPActivity;
 import com.ece.vbfc_bry07.calls.Adapter.NotesFragmentAdapter;
+import com.ece.vbfc_bry07.calls.Controller.CallNotesController;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class NotesFragment extends Fragment implements View.OnClickListener {
-    FloatingActionButton add_note;
-    ListView list_of_notes;
+public class NotesFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener {
+    static FloatingActionButton add_note;
+    static ListView list_of_notes;
 
     Helpers helpers;
+    static CallNotesController cnc;
 
     public static ArrayList<HashMap<String, String>> array_of_notes = new ArrayList<>();
 
@@ -37,12 +42,30 @@ public class NotesFragment extends Fragment implements View.OnClickListener {
         list_of_notes = (ListView) v.findViewById(R.id.list_of_notes);
 
         helpers = new Helpers();
+        cnc = new CallNotesController(getActivity());
 
-        list_of_notes.setAdapter(new NotesFragmentAdapter(getActivity(), array_of_notes));
         add_note.setOnClickListener(this);
         list_of_notes.setOnCreateContextMenuListener(this);
-
+        list_of_notes.setOnItemClickListener(this);
         return v;
+    }
+
+    public static void callNotesFragment() {
+        if (!ACPActivity.IDM_id.equals("")) {
+            array_of_notes = cnc.listOfNotesByIDM_id(Integer.parseInt(ACPActivity.IDM_id), ACPActivity.current_date);
+
+            if (array_of_notes.size() > 0)
+                add_note.setVisibility(View.INVISIBLE);
+            else {
+                add_note.setVisibility(View.VISIBLE);
+                array_of_notes = new ArrayList<>();
+
+                if (ACPActivity.menu_check == 1)
+                    add_note.setVisibility(View.INVISIBLE);
+            }
+        }
+
+        list_of_notes.setAdapter(new NotesFragmentAdapter(ACPActivity.acp, array_of_notes));
     }
 
     @Override
@@ -89,5 +112,27 @@ public class NotesFragment extends Fragment implements View.OnClickListener {
         }
 
         return super.onContextItemSelected(item);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (array_of_notes.get(position).get("note").length() > 30) {
+            final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+            final View v = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_view_note, null);
+            dialog.setView(v);
+            dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+
+            TextView date = (TextView) v.findViewById(R.id.date);
+            TextView note = (TextView) v.findViewById(R.id.note);
+
+            date.setText(array_of_notes.get(position).get("date"));
+            note.setText(array_of_notes.get(position).get("note"));
+        }
     }
 }

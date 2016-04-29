@@ -1,7 +1,6 @@
 package com.ece.vbfc_bry07.calls.Adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ece.vbfc_bry07.calls.Activity.ACPActivity;
 import com.ece.vbfc_bry07.calls.Dialog.ViewDoctorsHistoryDialog;
@@ -107,6 +105,7 @@ public class DoctorsHistoryAdapter extends BaseAdapter {
                 else
                     ACPActivity.missed_call_date = "";
 
+                ViewDoctorsHistoryDialog.child_clicked.put("plan_details_id", objects.get(position).get("plan_details_id"));
                 ACPActivity.check_adapter_acp = checker;
                 ViewDoctorsHistoryDialog.activity.finish();
             }
