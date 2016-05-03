@@ -313,11 +313,11 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/cycle_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="Cycle Statistics"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 

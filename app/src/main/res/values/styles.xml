@@ -30,4 +30,11 @@
         <item name="colorControlNormal">@color/toolbar</item>
         <item name="colorControlActivated">@color/toolbar</item>
     </style>
+
+    <style name="tableHeader">
+        <item name="android:textSize">11sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

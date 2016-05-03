@@ -47,8 +47,7 @@ public class CallsController extends DbHelper {
                 "WHERE (pd.plan_details_id > 0 OR c.temp_planDetails_id = pd.id) AND p.cycle_number = " + cycle_month;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
-        int total = cur.getCount();
-        int calls = 0;
+        int total = cur.getCount(), calls = 0;
         float percentage = 0;
 
         if (cur.getCount() > 0) {

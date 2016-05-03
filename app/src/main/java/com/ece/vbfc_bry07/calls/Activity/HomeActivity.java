@@ -30,7 +30,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     Toolbar toolbar;
     ScrollView statistics;
     ListView listBroadcastMessage;
-    TextView username, no_data, call_rate, call_reach, planned_calls, incidental_calls, recovered_calls, declared_missed_calls, unprocessed_calls;
+    TextView username, no_data, call_rate, call_reach, planned_calls, incidental_calls, recovered_calls, declared_missed_calls, unprocessed_calls, cycle_number;
     LinearLayout quick_sign, actual_coverage_plan, master_coverage_plan, doctors_information, call_report, sales_report, material_monitoring, status_summary;
 
     ArrayList<HashMap<String, String>> all_birthays;
@@ -52,26 +52,27 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        quick_sign = (LinearLayout) findViewById(R.id.quick_sign);
-        actual_coverage_plan = (LinearLayout) findViewById(R.id.actual_coverage_plan);
-        master_coverage_plan = (LinearLayout) findViewById(R.id.master_coverage_plan);
-        doctors_information = (LinearLayout) findViewById(R.id.doctors_information);
-        call_report = (LinearLayout) findViewById(R.id.call_report);
-        sales_report = (LinearLayout) findViewById(R.id.sales_report);
-        material_monitoring = (LinearLayout) findViewById(R.id.material_monitoring);
-        status_summary = (LinearLayout) findViewById(R.id.status_summary);
-        listBroadcastMessage = (ListView) findViewById(R.id.listBroadcastMessage);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        username = (TextView) findViewById(R.id.username);
         no_data = (TextView) findViewById(R.id.no_data);
+        username = (TextView) findViewById(R.id.username);
         call_rate = (TextView) findViewById(R.id.call_rate);
         call_reach = (TextView) findViewById(R.id.call_reach);
-        planned_calls = (TextView) findViewById(R.id.planned_calls);
-        incidental_calls = (TextView) findViewById(R.id.incidental_calls);
-        recovered_calls = (TextView) findViewById(R.id.recovered_calls);
-        declared_missed_calls = (TextView) findViewById(R.id.declared_missed_calls);
-        unprocessed_calls = (TextView) findViewById(R.id.unprocessed_calls);
         statistics = (ScrollView) findViewById(R.id.statistics);
+        quick_sign = (LinearLayout) findViewById(R.id.quick_sign);
+        cycle_number = (TextView) findViewById(R.id.cycle_number);
+        call_report = (LinearLayout) findViewById(R.id.call_report);
+        planned_calls = (TextView) findViewById(R.id.planned_calls);
+        sales_report = (LinearLayout) findViewById(R.id.sales_report);
+        recovered_calls = (TextView) findViewById(R.id.recovered_calls);
+        incidental_calls = (TextView) findViewById(R.id.incidental_calls);
+        status_summary = (LinearLayout) findViewById(R.id.status_summary);
+        unprocessed_calls = (TextView) findViewById(R.id.unprocessed_calls);
+        listBroadcastMessage = (ListView) findViewById(R.id.listBroadcastMessage);
+        doctors_information = (LinearLayout) findViewById(R.id.doctors_information);
+        material_monitoring = (LinearLayout) findViewById(R.id.material_monitoring);
+        declared_missed_calls = (TextView) findViewById(R.id.declared_missed_calls);
+        actual_coverage_plan = (LinearLayout) findViewById(R.id.actual_coverage_plan);
+        master_coverage_plan = (LinearLayout) findViewById(R.id.master_coverage_plan);
 
         helpers = new Helpers();
         dbHelper = new DbHelper(this);
@@ -100,6 +101,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         status_summary.setOnClickListener(this);
 
         username.setText(getUsername());
+        cycle_number.setText("Cycle Statistics (Cycle " + helpers.convertDateToCycleMonth(helpers.getCurrentDate("")) + ")");
     }
 
     @Override
@@ -175,6 +177,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(this, DoctorsInfoActivity.class));
                 break;
             case R.id.call_report:
+                startActivity(new Intent(this, CallReportActivity.class));
                 break;
             case R.id.sales_report:
                 startActivity(new Intent(this, SalesReportActivity.class));

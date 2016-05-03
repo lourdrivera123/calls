@@ -10,9 +10,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
-            android:name="com.ece.vbfc_bry07.calls.Activity.LoginActivity"
+            android:name=".Activity.LoginActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme">
             <intent-filter>
@@ -22,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ece.vbfc_bry07.calls.Activity.HomeActivity"
+            android:name=".Activity.HomeActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme" />
         <activity
@@ -30,35 +29,39 @@
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme" />
         <activity
-            android:name="com.ece.vbfc_bry07.calls.Activity.ACPActivity"
+            android:name=".Activity.ACPActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.ece.vbfc_bry07.calls.Activity.CycleCalendarActivity"
+            android:name=".Activity.CycleCalendarActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
-            android:name="com.ece.vbfc_bry07.calls.Activity.SignatureFormActivity"
+            android:name=".Activity.SignatureFormActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme" />
         <activity
-            android:name="com.ece.vbfc_bry07.calls.Activity.DoctorsInfoActivity"
+            android:name=".Activity.DoctorsInfoActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
-            android:name="com.ece.vbfc_bry07.calls.Activity.MaterialMonitoringActivity"
+            android:name=".Activity.MaterialMonitoringActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
-            android:name="com.ece.vbfc_bry07.calls.Activity.SalesReportActivity"
+            android:name=".Activity.SalesReportActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
-            android:name="com.ece.vbfc_bry07.calls.Activity.StatusSummaryActivity"
+            android:name=".Activity.StatusSummaryActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".Activity.QuickSignActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme" />
+        <activity
+            android:name=".Activity.CallReportActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/Theme.MyTheme" />
 
-        <!--DIALOG-->
+        <!-- DIALOG -->
         <activity
             android:name=".Dialog.ViewCycleMonth"
             android:screenOrientation="landscape"
@@ -66,9 +69,9 @@
         <activity
             android:name=".Dialog.ViewDoctorsHistoryDialog"
             android:theme="@style/myDialog" />
-
         <activity
             android:name=".Dialog.HelpDialog"
             android:theme="@style/myDialog" />
     </application>
+
 </manifest>
