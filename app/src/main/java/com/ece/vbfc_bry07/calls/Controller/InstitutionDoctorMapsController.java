@@ -41,7 +41,7 @@ public class InstitutionDoctorMapsController extends DbHelper {
         } else
             sql = "SELECT *, dc.name as class_name, s.name as specialization_name from InstitutionDoctorMaps as idm INNER JOIN Doctors as d on idm.doctor_id = d.doc_id " +
                     "INNER JOIN DoctorClasses as dc on idm.class_id = dc.doctor_classes_id INNER JOIN Institutions as i on idm.institution_id = i.inst_id " +
-                    "INNER JOIN Specializations as s on d.specialization_id = s.specialization_id ORDER BY idm.institution_id";
+                    "INNER JOIN Specializations as s on d.specialization_id = s.specialization_id ORDER BY doc_name ASC";
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 

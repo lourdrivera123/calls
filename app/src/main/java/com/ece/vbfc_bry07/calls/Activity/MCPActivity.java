@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -230,6 +231,36 @@ public class MCPActivity extends AppCompatActivity implements ExpandableListView
                     change_view.setVisibility(View.GONE);
                     all_doctors.setVisibility(View.VISIBLE);
                 }
+                break;
+
+            case R.id.copy_from:
+                int previous_month = (cal_month.get(Calendar.MONTH) + 1) - 1;
+                int plan_id = pc.getPlanID(previous_month, "");
+                ArrayList<HashMap<String, ArrayList<String>>> previous_mcp = pdc.getPlanDetailsByPID(plan_id);
+                ArrayList<HashMap<String, ArrayList<String>>> new_mcp = new ArrayList<>();
+
+                if (previous_mcp.size() > 0) {
+                    for (int x = 0; x < previous_mcp.size(); x++) {
+                        String keyset = previous_mcp.get(x).keySet().toString().replace("[", "").replace("]", "");
+                        HashMap<String, ArrayList<String>> per_IDM_id = new HashMap<>();
+                        ArrayList<String> array_date = new ArrayList<>();
+
+                        for (int y = 0; y < previous_mcp.get(x).get(keyset).size(); y++) {
+                            String date = helpers.Add1MonthToDate(previous_mcp.get(x).get(keyset).get(y));
+                            array_date.add(date);
+                        }
+
+                        per_IDM_id.put(keyset, array_date);
+                        new_mcp.add(per_IDM_id);
+                    }
+                } else
+                    Snackbar.make(root, "No data available for previous month", Snackbar.LENGTH_SHORT).show();
+
+                list_of_plans = new ArrayList<>();
+                list_of_plans.addAll(new_mcp);
+
+                cal_adapter = new MCPCalendarAdapter(this, cal_month);
+                gv_calendar.setAdapter(cal_adapter);
                 break;
         }
         return super.onOptionsItemSelected(item);

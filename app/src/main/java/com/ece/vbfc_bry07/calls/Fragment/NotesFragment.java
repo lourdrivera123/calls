@@ -47,6 +47,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Ada
         add_note.setOnClickListener(this);
         list_of_notes.setOnCreateContextMenuListener(this);
         list_of_notes.setOnItemClickListener(this);
+
         return v;
     }
 

@@ -59,8 +59,10 @@ public class CallMaterialsController extends DbHelper {
 
     //////////////////////////////GET METHODS
     public ArrayList<HashMap<String, String>> getCallMaterialsByIDM_id(int IDM_id, String date) {
-        String sql = "SELECT * FROM Products as p INNER JOIN CallMaterials as cm ON p.products_id = cm.product_id INNER JOIN Calls as c ON cm.call_id = c.id INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id " +
-                "WHERE (c.plan_details_id = pd.plan_details_id OR c.temp_planDetails_id = pd.id) AND pd.cycle_day = '" + date + "' AND pd.inst_doc_id = " + IDM_id;
+        String sql = "SELECT * FROM Products as p INNER JOIN CallMaterials as cm ON p.products_id = cm.product_id INNER JOIN Calls as c ON cm.call_id = c.id " +
+                "INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id LEFT JOIN RescheduledCalls as rc ON c.id = rc.call_id " +
+                "WHERE (c.plan_details_id > 0 OR c.temp_planDetails_id = pd.id) AND (pd.cycle_day = '" + date + "' OR rc.cycle_day = '" + date + "') " +
+                "AND pd.inst_doc_id = " + IDM_id+" ORDER BY name ASC";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
         ArrayList<HashMap<String, String>> array = new ArrayList<>();

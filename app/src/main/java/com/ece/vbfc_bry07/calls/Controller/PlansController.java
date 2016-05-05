@@ -5,12 +5,17 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.ece.vbfc_bry07.calls.Helpers;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 public class PlansController extends DbHelper {
     DbHelper dbhelper;
+    Helpers helpers;
 
     static String TBL_PLANS = "Plans",
             PLANS_ID = "plans_id",
@@ -25,6 +30,7 @@ public class PlansController extends DbHelper {
     public PlansController(Context context) {
         super(context);
         dbhelper = new DbHelper(context);
+        helpers = new Helpers();
     }
 
     //////////////////////////////CHECK METHODS///////////////////////////
@@ -60,6 +66,29 @@ public class PlansController extends DbHelper {
         return flag;
     }
 
+    ///////////////////////////////////////////GET METHODS
+    public ArrayList<HashMap<String, String>> getAllPlans() {
+        String sql = "SELECT * FROM Plans as p INNER JOIN CycleSets as cs ON p.cycle_set_id = cs.cycle_sets_id WHERE status = 1";
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+        ArrayList<HashMap<String, String>> array = new ArrayList<>();
+
+        while (cur.moveToNext()) {
+            HashMap<String, String> map = new HashMap<>();
+            String month = helpers.convertIntToStringMonth(cur.getInt(cur.getColumnIndex("cycle_number")));
+            int year = cur.getInt(cur.getColumnIndex("year"));
+            map.put("name", month + " " + year);
+            map.put("cycle_number", cur.getString(cur.getColumnIndex("cycle_number")));
+
+            array.add(map);
+        }
+
+        db.close();
+        cur.close();
+
+        return array;
+    }
+
     public int getPlanID(int cycleMonth, String from) {
         String sql = "SELECT * FROM Plans WHERE cycle_number = " + cycleMonth;
         SQLiteDatabase db = dbhelper.getWritableDatabase();
@@ -67,7 +96,7 @@ public class PlansController extends DbHelper {
         int planID = 0;
 
         if (cur.moveToNext()) {
-            planID = cur.getInt(cur.getColumnIndex(AI_ID));
+            planID = cur.getInt(cur.getColumnIndex("id"));
 
             if (from.equals("PlanDetails")) {
                 if (cur.getInt(cur.getColumnIndex(PLANS_STATUS)) == 0)

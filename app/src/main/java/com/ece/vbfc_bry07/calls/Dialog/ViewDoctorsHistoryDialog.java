@@ -150,7 +150,7 @@ public class ViewDoctorsHistoryDialog extends AppCompatActivity implements TextW
         child_clicked = listDataChild.get(groupPosition).get(childPosition);
         child_clicked.put("temp_plandetails_id", "0");
 
-        history = pdc.getMonthlyHistoryByIDM_id(IDM_id, cycle_month);
+        history = pdc.getMonthlyCallsByIDM_id(IDM_id, cycle_month);
 
         if (history.size() > 0) {
             int max_visit = dcc.getMaxVisit(IDM_id);

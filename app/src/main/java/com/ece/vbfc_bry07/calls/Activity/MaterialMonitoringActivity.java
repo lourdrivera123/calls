@@ -55,7 +55,7 @@ public class MaterialMonitoringActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Material Monitoring");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#A25063")));
 
-        cycle_month.setText(helpers.getMonthYear(helpers.convertDateToCycleMonth(helpers.getCurrentDate(""))));
+        cycle_month.setText(helpers.getMonthYear());
     }
 
     @Override

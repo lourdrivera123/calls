@@ -18,7 +18,7 @@ public class MaterialMonitoringController extends DbHelper {
 
     public ArrayList<HashMap<String, String>> SelectAllProductsPerUser() {
         ArrayList<HashMap<String, String>> products = new ArrayList<>();
-        String sql = "SELECT * FROM Products";
+        String sql = "SELECT * FROM Products ORDER BY name ASC";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
 

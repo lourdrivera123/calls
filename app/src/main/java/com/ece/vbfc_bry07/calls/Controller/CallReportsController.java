@@ -29,8 +29,10 @@ public class CallReportsController extends DbHelper {
 
     //////////////////////////GET METHODS
     public ArrayList<HashMap<String, String>> getMonthReport(int month) {
-        String sql = "SELECT COUNT(pd.inst_doc_id) as total, COUNT(c.id) as calls, * FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p.id " +
-                "LEFT JOIN Calls as c ON c.plan_details_id = pd.plan_details_id WHERE p.cycle_number = " + month + " AND p.status = 1 GROUP BY pd.inst_doc_id";
+        String sql = "SELECT max_visit as total, COUNT(c.id) as calls, * FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p.id " +
+                "LEFT JOIN Calls as c ON c.plan_details_id = pd.plan_details_id INNER JOIN InstitutionDoctorMaps as idm ON pd.inst_doc_id = idm.IDM_id " +
+                "INNER JOIN DoctorClasses as dc ON idm.class_id = dc.doctor_classes_id WHERE p.cycle_number = " + month + " AND p.status = 1 AND " +
+                "(c.plan_details_id IS NULL OR c.plan_details_id > 0 OR c.temp_planDetails_id = pd.id) GROUP BY pd.inst_doc_id";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
         ArrayList<HashMap<String, String>> array = new ArrayList<>();

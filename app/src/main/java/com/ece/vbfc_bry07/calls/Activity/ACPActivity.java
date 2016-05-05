@@ -35,7 +35,7 @@ import com.ece.vbfc_bry07.calls.Controller.ReasonsController;
 import com.ece.vbfc_bry07.calls.Dialog.HelpDialog;
 import com.ece.vbfc_bry07.calls.Dialog.ViewCycleMonth;
 import com.ece.vbfc_bry07.calls.Dialog.ViewDoctorsHistoryDialog;
-import com.ece.vbfc_bry07.calls.Fragment.CallsFragment;
+import com.ece.vbfc_bry07.calls.Fragment.NewCallsFragment;
 import com.ece.vbfc_bry07.calls.Fragment.NotesFragment;
 import com.ece.vbfc_bry07.calls.Fragment.ProductsFragment;
 import com.ece.vbfc_bry07.calls.Helpers;
@@ -77,7 +77,7 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
     boolean ongoing_call = false;
     int plan_details_id = 0, joint_call = 0;
     String start_dateTime = "";
-    public static int check_adapter_acp = 0, menu_check = 0;
+    public static int check_adapter_acp = 0, menu_check = 0, tab_position = 0;
     public static String current_date = "", viewotheracp = "", IDM_id = "", missed_call_date = "", selected_reason = "";
     public static Activity acp;
 
@@ -227,7 +227,7 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
         fragment_adapter = new ACPTabsAdapter(getSupportFragmentManager());
         fragment_adapter.addFragment(new ProductsFragment(), "Products");
         fragment_adapter.addFragment(new NotesFragment(), "Notes");
-        fragment_adapter.addFragment(new CallsFragment(), "Calls");
+        fragment_adapter.addFragment(new NewCallsFragment(), "Calls");
         viewPager.setAdapter(fragment_adapter);
     }
 
@@ -318,6 +318,16 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         pager.setCurrentItem(tab.getPosition());
+        tab_position = tab.getPosition();
+
+        if (!IDM_id.equals("")) {
+            if (tab_position == 0)
+                ProductsFragment.setCallMaterials(Integer.parseInt(IDM_id), current_date);
+            else if (tab_position == 1)
+                NotesFragment.callNotesFragment();
+            else if (tab_position == 2)
+                NewCallsFragment.UpdateCallsTab(Integer.parseInt(IDM_id), helpers.convertDateToCycleMonth(current_date));
+        }
     }
 
     @Override
@@ -451,6 +461,9 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
 
             NotesFragment.callNotesFragment();
             ProductsFragment.setCallMaterials(Integer.parseInt(IDM_id), current_date);
+
+            if (tab_position == 2)
+                NewCallsFragment.UpdateCallsTab(Integer.parseInt(IDM_id), helpers.convertDateToCycleMonth(current_date));
         }
 
         return true;

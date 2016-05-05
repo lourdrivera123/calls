@@ -1,155 +1,73 @@
 package com.ece.vbfc_bry07.calls.Activity;
 
-import android.app.DatePickerDialog;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDialog;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.DatePicker;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.ece.vbfc_bry07.calls.Controller.CallsController;
 import com.ece.vbfc_bry07.calls.Controller.DbHelper;
+import com.ece.vbfc_bry07.calls.Controller.PlansController;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
+import java.util.HashMap;
 
-public class StatusSummaryActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
-    TextView CycleDate;
+public class StatusSummaryActivity extends AppCompatActivity implements View.OnClickListener {
+    TextView tv_month, call_rate, call_reach, planned_calls, incidental_calls, recovered_calls, declared_missed_calls, unprocessed_calls, no_data;
+    ScrollView statistics;
+
+    Helpers helpers;
+    DbHelper dbHelper;
+    CallsController cc;
+    PlansController pc;
 
     String current_cycle_month = "strftime('%m', date())";
-
-    PieChart chart;
-
-    DbHelper dbHelper;
-    CallsController CC;
-    Helpers helpers;
-
-    private float[] yData;
-    private String[] xData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_status_summary);
 
-        dbHelper = new DbHelper(this);
-        CC = new CallsController(this);
-        helpers = new Helpers();
+        tv_month = (TextView) findViewById(R.id.tv_month);
+        call_rate = (TextView) findViewById(R.id.call_rate);
+        call_reach = (TextView) findViewById(R.id.call_reach);
+        planned_calls = (TextView) findViewById(R.id.planned_calls);
+        incidental_calls = (TextView) findViewById(R.id.incidental_calls);
+        recovered_calls = (TextView) findViewById(R.id.recovered_calls);
+        declared_missed_calls = (TextView) findViewById(R.id.declared_missed_calls);
+        unprocessed_calls = (TextView) findViewById(R.id.unprocessed_calls);
+        no_data = (TextView) findViewById(R.id.no_data);
+        statistics = (ScrollView) findViewById(R.id.statistics);
 
-        chart = (PieChart) findViewById(R.id.chart);
-        CycleDate = (TextView) findViewById(R.id.CycleDate);
+        helpers = new Helpers();
+        dbHelper = new DbHelper(this);
+        cc = new CallsController(this);
+        pc = new PlansController(this);
 
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Status Summary");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#A25063")));
 
-        this.CycleDate.setOnClickListener(this);
+        tv_month.setText(helpers.getMonthYear());
+        tv_month.setPaintFlags(tv_month.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        AddData(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
 
-        // data for Pie Chart
-        int Planned_Calls = CC.fetchPlannedCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
-        int IncidentalCalls = CC.IncidentalCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
-        int RecoveredCalls = CC.RecoveredCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
-        int DeclaredMissedCalls = CC.DeclaredMissedCalls(current_cycle_month);
-        int ActualCoveredCalls = CC.ActualCoveredCalls(current_cycle_month);
-        int UnprocessedCalls = Planned_Calls - (ActualCoveredCalls + IncidentalCalls);
-        yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls, ActualCoveredCalls};
-        String labelIC = "Incidental Calls " + IncidentalCalls + "/" + Planned_Calls;
-        String labelRC = "Recovered Calls " + RecoveredCalls + "/" + Planned_Calls;
-        String labelDMC = "Declared Missed Calls " + DeclaredMissedCalls + "/" + Planned_Calls;
-        String labelUC = "Unprocessed Calls " + UnprocessedCalls + "/" + Planned_Calls;
-        String labelSC = "Actual Covered Calls " + ActualCoveredCalls + "/" + Planned_Calls;
-        xData = new String[]{labelIC, labelRC, labelDMC, labelUC, labelSC};
-
-        // Configure Pie Chart
-        chart.setUsePercentValues(true);
-        chart.setDescription("Planned Calls: " + Planned_Calls);
-
-        // Enable hole and configure
-        chart.setDrawHoleEnabled(true);
-        chart.setHoleRadius(7);
-        chart.setTransparentCircleRadius(10);
-
-        // Enable rotation of the chart by touch
-        chart.setRotationAngle(0);
-        chart.setRotationEnabled(true);
-
-        // add data
-        addData();
-
-        // Customize legends
-        Legend l = chart.getLegend();
-        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART_CENTER);
-        l.setXEntrySpace(7);
-        l.setYEntrySpace(5);
-
-        // remove labels inside the Pie Chart
-        chart.setDrawSliceText(false);
-    }
-
-    private void addData() {
-        ArrayList<Entry> yVals1 = new ArrayList<>();
-        for (int i = 0; i < yData.length; i++)
-            yVals1.add(new Entry(yData[i], i));
-
-        ArrayList<String> xVals1 = new ArrayList<>();
-        Collections.addAll(xVals1, xData);
-
-        // Create pie data set
-        PieDataSet dataset = new PieDataSet(yVals1, "");
-        dataset.setSliceSpace(3);
-        dataset.setSelectionShift(5);
-
-        // Add many colors
-        ArrayList<Integer> colors = new ArrayList<>();
-
-        for (int c : ColorTemplate.VORDIPLOM_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.JOYFUL_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.COLORFUL_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.LIBERTY_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.PASTEL_COLORS)
-            colors.add(c);
-
-        colors.add(ColorTemplate.getHoloBlue());
-        dataset.setColors(colors);
-
-        // Instantiate pie data object now
-        PieData data = new PieData(xVals1, dataset);
-        data.setValueFormatter(new PercentFormatter());
-        data.setValueTextSize(11f);
-        data.setValueTextColor(Color.GRAY);
-
-        chart.setData(data);
-
-        // Undo all highlights
-        chart.highlightValue(null);
-
-        // Update pie chart
-        chart.invalidate();
-
+        tv_month.setOnClickListener(this);
     }
 
     @Override
@@ -162,87 +80,57 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onClick(View v) {
-        // createDialogWithoutDateField().show();
-        Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
-        DatePickerDialog dialog = new DatePickerDialog(this, this, year, month, day);
-        dialog.show();
+    void AddData(int month) {
+        if (pc.checkIfHasPlan(month) == 0) {
+            no_data.setVisibility(View.VISIBLE);
+            statistics.setVisibility(View.GONE);
+        } else {
+            no_data.setVisibility(View.GONE);
+            statistics.setVisibility(View.VISIBLE);
+
+            int plannedCalls = cc.fetchPlannedCalls(month);
+            int IncidentalCalls = cc.IncidentalCalls(month);
+            int RecoveredCalls = cc.RecoveredCalls(month);
+            int DeclaredMissedCalls = cc.DeclaredMissedCalls(current_cycle_month);
+            int ActualCoveredCalls = cc.ActualCoveredCalls(current_cycle_month);
+            int UnprocessedCalls = plannedCalls - (ActualCoveredCalls + IncidentalCalls);
+            String callRate = cc.callRate(month);
+
+            planned_calls.setText(String.valueOf(plannedCalls));
+            incidental_calls.setText(String.valueOf(IncidentalCalls));
+            recovered_calls.setText(String.valueOf(RecoveredCalls));
+            declared_missed_calls.setText(String.valueOf(DeclaredMissedCalls));
+            unprocessed_calls.setText(String.valueOf(UnprocessedCalls));
+            call_rate.setText(callRate);
+        }
     }
 
     @Override
-    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        String selected_cycle_month;
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tv_month:
+                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                View view = LayoutInflater.from(this).inflate(R.layout.fragment_calls, null);
+                alert.setView(view);
+                final AppCompatDialog pdialog = alert.create();
+                pdialog.show();
 
-        if (monthOfYear < 9) {
-            selected_cycle_month = "0" + String.valueOf(monthOfYear + 1);
-        } else {
-            selected_cycle_month = String.valueOf(monthOfYear + 1);
+                final ArrayList<HashMap<String, String>> all_plans = pc.getAllPlans();
+                ArrayList<String> names = new ArrayList<>();
+
+                for (int x = 0; x < all_plans.size(); x++)
+                    names.add(all_plans.get(x).get("name"));
+
+                ListView listview_calls = (ListView) view.findViewById(R.id.listview_calls);
+                listview_calls.setAdapter(new ArrayAdapter<>(this, R.layout.item_small_textview_colored, names));
+                listview_calls.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        AddData(Integer.parseInt(all_plans.get(position).get("cycle_number")));
+                        pdialog.dismiss();
+                    }
+                });
+                break;
         }
-
-        CycleDate.setText("Cycle " + (monthOfYear + 1) + " of Year " + year);
-
-        /* --------- CHANGE VALUE OF PIE CHART ON CHANGE OF DATE --------- */
-        // data for Pie Chart
-        int Planned_Calls = CC.fetchPlannedCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
-        int IncidentalCalls = CC.IncidentalCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
-        int RecoveredCalls = CC.RecoveredCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
-        int DeclaredMissedCalls = CC.DeclaredMissedCalls(current_cycle_month);
-        int ActualCoveredCalls = CC.ActualCoveredCalls(current_cycle_month);
-        int UnprocessedCalls = Planned_Calls - (ActualCoveredCalls + IncidentalCalls);
-        yData = new float[]{IncidentalCalls, RecoveredCalls, DeclaredMissedCalls, UnprocessedCalls, ActualCoveredCalls};
-        String labelIC = "Incidental Calls " + IncidentalCalls + "/" + Planned_Calls;
-        String labelRC = "Recovered Calls " + RecoveredCalls + "/" + Planned_Calls;
-        String labelDMC = "Declared Missed Calls " + DeclaredMissedCalls + "/" + Planned_Calls;
-        String labelUC = "Unprocessed Calls " + UnprocessedCalls + "/" + Planned_Calls;
-        String labelSC = "Actual Covered Calls " + ActualCoveredCalls + "/" + Planned_Calls;
-        xData = new String[]{labelIC, labelRC, labelDMC, labelUC, labelSC};
-
-        // Configure Pie Chart
-        chart.setUsePercentValues(true);
-        chart.setDescription("Planned Calls: " + Planned_Calls);
-
-        // Enable hole and configure
-        chart.setDrawHoleEnabled(true);
-        chart.setHoleRadius(20);
-        chart.setTransparentCircleRadius(10);
-
-        // Enable rotation of the chart by touch
-        chart.setRotationAngle(0);
-        chart.setRotationEnabled(true);
-
-        // set a Chart value Listener
-        chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-
-            @Override
-            public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
-                // display msg when value selected
-                if (e == null) {
-                    return;
-                }
-                // Toast.makeText(StatusSummaryActivity.this, xData[e.getXIndex()] + "=" + e.getVal() + "%", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected() {
-
-            }
-        });
-
-        // add data
-        addData();
-
-        // Customize legends
-        Legend l = chart.getLegend();
-        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART_CENTER);
-        l.setXEntrySpace(7);
-        l.setYEntrySpace(5);
-
-        // remove labels inside the Pie Chart
-        chart.setDrawSliceText(false);
-        /* ---------                END                          --------- */
     }
 }

@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/copy_from"
+        android:icon="@mipmap/copy"
+        android:title="Copy_from"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/save"
         android:icon="@mipmap/save"
         android:title="Save"
