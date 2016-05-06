@@ -21,7 +21,7 @@ import java.util.HashMap;
 public class ProductsFragment extends Fragment {
     static ListView list_of_products;
 
-    public static ArrayList<HashMap<String, String>> array_of_products, call_materials;
+    public static ArrayList<HashMap<String, String>> array_of_products = new ArrayList<>(), call_materials;
 
     ProductsController pc;
     static CallMaterialsController cm;
@@ -35,7 +35,9 @@ public class ProductsFragment extends Fragment {
         pc = new ProductsController(getActivity());
         cm = new CallMaterialsController(getActivity());
 
-        array_of_products = pc.getAllProducts();
+        if (array_of_products.size() == 0)
+            array_of_products = pc.getAllProducts();
+
         call_materials = new ArrayList<>();
 
         list_of_products.setAdapter(new ProductsFragmentAdapter(getActivity(), array_of_products));

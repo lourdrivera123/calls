@@ -158,7 +158,6 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:text="SPECIALIZATION: Cardiologist"
                     android:textSize="11sp" />
 
                 <TextView

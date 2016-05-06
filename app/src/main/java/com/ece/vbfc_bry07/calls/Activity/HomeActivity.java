@@ -10,12 +10,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.Adapter.BirthdayListAdapter;
 import com.ece.vbfc_bry07.calls.Controller.CallsController;
 import com.ece.vbfc_bry07.calls.Controller.DbHelper;
 import com.ece.vbfc_bry07.calls.Controller.DoctorsController;
@@ -23,19 +21,12 @@ import com.ece.vbfc_bry07.calls.Controller.PlansController;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     Toolbar toolbar;
     ScrollView statistics;
     ListView listBroadcastMessage;
     TextView username, no_data, call_rate, call_reach, planned_calls, incidental_calls, recovered_calls, declared_missed_calls, unprocessed_calls, cycle_number;
     LinearLayout quick_sign, actual_coverage_plan, master_coverage_plan, doctors_information, call_report, sales_report, material_monitoring, status_summary;
-
-    ArrayList<HashMap<String, String>> all_birthays;
-    ListAdapter birthdaysAdapter;
-    ArrayList<HashMap<String, String>> birthdays_array = new ArrayList<>();
 
     SharedPreferences sharedpref;
 
@@ -80,11 +71,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         dc = new DoctorsController(this);
         pc = new PlansController(this);
 
-        all_birthays = dc.SelectAllBirthdaysThisMonthYear();
-        birthdays_array.addAll(all_birthays);
-        birthdaysAdapter = new BirthdayListAdapter(this, R.layout.adapter_birthdays, all_birthays);
-        listBroadcastMessage.setAdapter(birthdaysAdapter);
-
         sharedpref = getSharedPreferences("ECECalls", Context.MODE_PRIVATE);
 
         setSupportActionBar(toolbar);
@@ -120,7 +106,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 int plannedCalls = cc.fetchPlannedCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
                 int IncidentalCalls = cc.IncidentalCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
                 int RecoveredCalls = cc.RecoveredCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
-                int DeclaredMissedCalls = cc.DeclaredMissedCalls(current_cycle_month);
+                int DeclaredMissedCalls = cc.DeclaredMissedCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
                 int ActualCoveredCalls = cc.ActualCoveredCalls(current_cycle_month);
                 int UnprocessedCalls = plannedCalls - (ActualCoveredCalls + IncidentalCalls);
                 String callRate = cc.callRate(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));

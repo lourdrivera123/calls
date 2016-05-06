@@ -3,6 +3,7 @@ package com.ece.vbfc_bry07.calls.Adapter;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,11 +68,9 @@ public class ProductsFragmentAdapter extends BaseAdapter {
 
         holder.ref = position;
 
-        holder.product_name.setText(objects.get(position).get("product_name"));
-        holder.sample.setText(objects.get(position).get("sample"));
-        holder.literature.setText(objects.get(position).get("literature"));
-        holder.promaterials.setText(objects.get(position).get("promaterials"));
+        holder.product_name.setText(objects.get(holder.ref).get("product_name"));
 
+        holder.sample.setText(objects.get(holder.ref).get("sample"));
         holder.sample.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -93,6 +92,7 @@ public class ProductsFragmentAdapter extends BaseAdapter {
             }
         });
 
+        holder.literature.setText(objects.get(holder.ref).get("literature"));
         holder.literature.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -114,6 +114,7 @@ public class ProductsFragmentAdapter extends BaseAdapter {
             }
         });
 
+        holder.promaterials.setText(objects.get(holder.ref).get("promaterials"));
         holder.promaterials.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

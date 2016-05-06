@@ -44,13 +44,6 @@
                 android:divider="@android:color/transparent"
                 android:dividerHeight="2dp" />
 
-            <!--<ListView-->
-            <!--android:id="@+id/doctorsList"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:divider="@null"-->
-            <!--android:dividerHeight="2dp" />-->
-
             <TextView
                 android:id="@+id/no_records"
                 android:layout_width="match_parent"
@@ -70,7 +63,6 @@
             android:layout_alignParentBottom="true"
             android:background="@android:color/white"
             android:gravity="center"
-            android:text="Doctor count: 45"
             android:textSize="12sp" />
     </RelativeLayout>
 

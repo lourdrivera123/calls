@@ -48,7 +48,7 @@ public class CallReportActivity extends AppCompatActivity {
         current_cycle = (TextView) findViewById(R.id.current_cycle);
         incidental_call = (TextView) findViewById(R.id.incidental_call);
         list_of_call_reports = (ListView) findViewById(R.id.list_of_call_reports);
-        declared_missed_call = (TextView) findViewById(R.id.declared_missed_calls);
+        declared_missed_call = (TextView) findViewById(R.id.declared_missed_call);
 
         helpers = new Helpers();
         cc = new CallsController(this);
@@ -82,6 +82,7 @@ public class CallReportActivity extends AppCompatActivity {
         int IncidentalCalls = cc.IncidentalCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
         String callRate = cc.callRate(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
         String callReach = cc.callReach(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
+        int declaredMissedCall = cc.DeclaredMissedCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
         list_prev_month = crc.getMonthReport(previous_month);
         list_current_month = crc.getMonthReport(current_month);
         int prev_total = 0, prev_calls = 0, current_total = 0, current_calls = 0;
@@ -98,6 +99,7 @@ public class CallReportActivity extends AppCompatActivity {
 
         call_rate.setText(callRate);
         call_reach.setText(callReach);
+        declared_missed_call.setText(String.valueOf(declaredMissedCall));
         incidental_call.setText(String.valueOf(IncidentalCalls));
         doctor_header.setText("Doctors \n (" + idmc.getDoctorsWithInstitutions("").size() + ")");
         prev_cycle.setText("Cycle " + previous_month + " \n(" + prev_calls + "/" + prev_total + ")");

@@ -10,6 +10,11 @@
     <string name="mcp">Master Coverage Plan</string>
     <string name="acp">Actual Coverage Plan</string>
     <string name="quick_sign">Quick Sign</string>
+    <string name="declared_missed">Declared Missed</string>
+    <string name="incidental_call">Incidental Call</string>
+    <string name="call_reach">Call Reach</string>
+    <string name="call_rate">Call Rate</string>
+    <string name="average">Average</string>
 
     <array name="color_coded_circles">
         <item>Missed Call</item>

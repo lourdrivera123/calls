@@ -66,7 +66,7 @@ public class CallsController extends DbHelper {
     }
 
     public String callReach(int cycle_month) {
-        String sql = "SELECT COUNT(c.id) as count_call_id, * FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p.id " +
+        String sql = "SELECT COUNT(c.id) as count_call_id, COUNT(pd.id) as total_pd, * FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p.id " +
                 "INNER JOIN InstitutionDoctorMaps as idm ON pd.inst_doc_id = idm.IDM_ID INNER JOIN DoctorClasses as dc ON idm.class_id = dc.doctor_classes_id " +
                 "LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id WHERE p.cycle_number = " + cycle_month + " AND " +
                 "(c.plan_details_id > 0 OR c.plan_details_id IS NULL OR c.temp_planDetails_id = pd.id) GROUP BY idm.IDM_id";
@@ -74,20 +74,24 @@ public class CallsController extends DbHelper {
         Cursor cur = db.rawQuery(sql, null);
         int total_doctor = cur.getCount();
         int total = 0;
+        float percentage = 0;
 
-        while (cur.moveToNext()) {
-            int max_visit = cur.getInt(cur.getColumnIndex("max_visit"));
-            int count_call_id = cur.getInt(cur.getColumnIndex("count_call_id"));
+        if (cur.getCount() > 0) {
+            while (cur.moveToNext()) {
+                int total_number_of_pd = cur.getInt(cur.getColumnIndex("total_pd"));
+                int count_call_id = cur.getInt(cur.getColumnIndex("count_call_id"));
 
-            if (count_call_id >= max_visit)
-                total += 1;
+                if (count_call_id >= total_number_of_pd)
+                    total += 1;
+            }
+
+            percentage = total * 100f / total_doctor;
         }
 
         db.close();
         cur.close();
 
-        float percentage = total * 100f / total_doctor;
-        return percentage + "% (" + total + "/" + total_doctor + ")";
+        return new BigDecimal(percentage).setScale(2, RoundingMode.HALF_UP) + "% (" + total + "/" + total_doctor + ")";
     }
 
     public int fetchPlannedCalls(int cycle_month) {
@@ -147,15 +151,12 @@ public class CallsController extends DbHelper {
         return covered_calls;
     }
 
-    public int DeclaredMissedCalls(String cycle_month) {
-        String sql = "Select count(MC.id) as missed_calls,  strftime('%m', PD.cycle_day) as cycle_month from MissedCalls MC  left join Calls C on MC.call_id_fk = C.calls_id " +
-                "left join PlanDetails PD on C.plan_details_id = PD.plan_id where cycle_month = " + cycle_month;
+    public int DeclaredMissedCalls(int cycle_month) {
+        String sql = "SELECT * FROM MissedCalls as mc INNER JOIN Calls as c ON mc.call_id_fk = c.id INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id " +
+                "INNER JOIN Plans as p ON pd.plan_id = p.id WHERE p.cycle_number = " + cycle_month;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
-        int missed_calls = 0;
-
-        while (cur.moveToNext())
-            missed_calls = cur.getInt(cur.getColumnIndex("missed_calls"));
+        int missed_calls = cur.getCount();
 
         cur.close();
         db.close();
@@ -238,13 +239,15 @@ public class CallsController extends DbHelper {
         Cursor cur = db.rawQuery(sql, null);
 
         if (cur.moveToNext()) {
-            if (cur.getString(cur.getColumnIndex("calls_id")) == null)
-                check = 2; //signed but not sync
+            if (cur.getString(cur.getColumnIndex("calls_id")) != null)
+                check = 1; //signed and sync
             else {
-                check = 1; //sync
+                check = 2; //signed but not sync
 
-                if (cur.getString(cur.getColumnIndex("status_id")).equals("2") && cur.getString(cur.getColumnIndex("makeup")).equals("1"))
-                    check = 3; //missed call recovered - signed and sync
+                if (cur.getString(cur.getColumnIndex("status_id")).equals("2") && cur.getInt(cur.getColumnIndex("temp_planDetails_id")) == 0)
+                    check = 3; //recovered call (missed call or advanced call) - signed
+                if (cur.getInt(cur.getColumnIndex("temp_planDetails_id")) > 0 && cur.getString(cur.getColumnIndex("status_id")).equals("2"))
+                    check = 4; //incidental call
             }
         }
 

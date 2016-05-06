@@ -28,7 +28,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight=".25">
+            android:layout_weight=".25"
+            android:baselineAligned="false">
 
             <RelativeLayout
                 android:layout_width="0dp"
@@ -52,7 +53,7 @@
                     android:background="@android:color/white"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="Incidental Call"
+                    android:text="@string/incidental_call"
                     android:textSize="12sp" />
             </RelativeLayout>
 
@@ -78,7 +79,7 @@
                     android:background="@android:color/white"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="Declared Missed"
+                    android:text="@string/declared_missed"
                     android:textSize="12sp" />
             </RelativeLayout>
 
@@ -104,7 +105,7 @@
                     android:background="@android:color/white"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="Call Reach"
+                    android:text="@string/call_reach"
                     android:textSize="12sp" />
             </RelativeLayout>
 
@@ -130,7 +131,7 @@
                     android:background="@android:color/white"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="Call Rate"
+                    android:text="@string/call_rate"
                     android:textSize="12sp" />
             </RelativeLayout>
         </LinearLayout>
@@ -149,35 +150,32 @@
                 android:padding="3dp">
 
                 <TextView
-                    style="@style/tableHeader"
                     android:id="@+id/doctor_header"
+                    style="@style/tableHeader"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight=".4"
-                    android:text="Doctors \n (175)" />
+                    android:layout_weight=".4" />
 
                 <TextView
                     android:id="@+id/prev_cycle"
                     style="@style/tableHeader"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight=".2"
-                    android:text="Cycle 3 \n (200/215)" />
+                    android:layout_weight=".2" />
 
                 <TextView
                     android:id="@+id/current_cycle"
                     style="@style/tableHeader"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight=".2"
-                    android:text="Cycle 4 \n (215/215)" />
+                    android:layout_weight=".2" />
 
                 <TextView
                     style="@style/tableHeader"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight=".2"
-                    android:text="Average" />
+                    android:text="@string/average" />
             </LinearLayout>
 
             <View

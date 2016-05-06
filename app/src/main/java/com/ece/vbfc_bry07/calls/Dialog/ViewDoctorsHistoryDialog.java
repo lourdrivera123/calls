@@ -155,10 +155,12 @@ public class ViewDoctorsHistoryDialog extends AppCompatActivity implements TextW
         if (history.size() > 0) {
             int max_visit = dcc.getMaxVisit(IDM_id);
 
-            if (max_visit > history.size()) {
-                add_incidental_call.setVisibility(View.VISIBLE);
-            } else if (max_visit == history.size())
-                add_incidental_call.setVisibility(View.GONE);
+            if (Integer.parseInt(listDataChild.get(groupPosition).get(childPosition).get("plan_details_id")) == 0) {
+                if (max_visit > history.size()) {
+                    add_incidental_call.setVisibility(View.VISIBLE);
+                } else if (max_visit == history.size())
+                    add_incidental_call.setVisibility(View.GONE);
+            }
 
             list_of_history.setVisibility(View.VISIBLE);
             child_adapter = new DoctorsHistoryAdapter(this, history);

@@ -56,6 +56,15 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:id="@+id/declared_as_missed"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/state_circle"
+                        android:padding="1dp"
+                        android:src="@mipmap/declar_missed_calls" />
+
+                    <ImageView
                         android:id="@+id/add_incidental_call"
                         android:layout_width="20dp"
                         android:layout_height="20dp"

@@ -13,14 +13,14 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:gravity="center"
-        android:text="April 2016"
         android:textStyle="bold" />
 
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/cycle_month">
+        android:layout_below="@+id/cycle_month"
+        android:baselineAligned="false">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -40,7 +40,8 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:baselineAligned="false">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -52,7 +53,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Total"
+                    android:text="Call Materials"
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
@@ -99,7 +100,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Content"
+                    android:text="Material Count"
                     android:textSize="12sp"
                     android:textStyle="bold" />
 

@@ -23,7 +23,7 @@
             android:layout_height="match_parent"
             android:background="#413B41"
             android:orientation="vertical"
-            android:paddingTop="10dp">
+            android:paddingTop="5dp">
 
             <TextView
                 android:id="@+id/username"
@@ -63,6 +63,7 @@
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_weight=".2"
+                            android:contentDescription="@string/quick_sign"
                             android:src="@mipmap/quick_sign" />
 
                         <TextView
@@ -88,6 +89,7 @@
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_weight=".2"
+                            android:contentDescription="@string/acp"
                             android:src="@mipmap/acp" />
 
                         <TextView
@@ -113,6 +115,7 @@
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_weight=".2"
+                            android:contentDescription="@string/mcp"
                             android:src="@mipmap/mcp" />
 
                         <TextView
@@ -138,6 +141,7 @@
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_weight=".2"
+                            android:contentDescription="@string/doctor_information"
                             android:src="@mipmap/doctors" />
 
                         <TextView
@@ -163,6 +167,7 @@
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_weight=".2"
+                            android:contentDescription="@string/call_report"
                             android:src="@mipmap/call_report" />
 
                         <TextView
@@ -188,6 +193,7 @@
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_weight=".2"
+                            android:contentDescription="@string/sales_report"
                             android:src="@mipmap/sales_report" />
 
                         <TextView
@@ -213,6 +219,7 @@
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_weight=".2"
+                            android:contentDescription="@string/material_monitoring"
                             android:src="@mipmap/material_monitoring" />
 
                         <TextView
@@ -238,6 +245,7 @@
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_weight=".2"
+                            android:contentDescription="@string/status_summary"
                             android:src="@mipmap/status_summary" />
 
                         <TextView
@@ -301,8 +309,9 @@
                     android:id="@+id/listBroadcastMessage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
                     android:divider="@null"
-                    android:dividerHeight="-20dp" />
+                    android:dividerHeight="5dp" />
             </LinearLayout>
 
             <LinearLayout

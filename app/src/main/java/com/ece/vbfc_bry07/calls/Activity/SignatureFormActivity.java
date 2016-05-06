@@ -24,6 +24,7 @@ import com.ece.vbfc_bry07.calls.Controller.PlanDetailsController;
 import com.ece.vbfc_bry07.calls.Controller.ReasonsController;
 import com.ece.vbfc_bry07.calls.Controller.RescheduledCallsController;
 import com.ece.vbfc_bry07.calls.Controller.SignaturesController;
+import com.ece.vbfc_bry07.calls.Fragment.ProductsFragment;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 import com.ece.vbfc_bry07.calls.Signature;
@@ -176,6 +177,7 @@ public class SignatureFormActivity extends AppCompatActivity {
                                 Snackbar.make(root, "Error saving call", Snackbar.LENGTH_SHORT).show();
                         }
 
+                        ProductsFragment.array_of_products = new ArrayList<>();
                         ACPActivity.acp.finish();
                         startActivity(new Intent(this, ACPActivity.class));
                         finish();

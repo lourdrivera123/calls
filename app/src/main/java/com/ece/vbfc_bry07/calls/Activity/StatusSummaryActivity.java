@@ -7,7 +7,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -91,7 +90,7 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
             int plannedCalls = cc.fetchPlannedCalls(month);
             int IncidentalCalls = cc.IncidentalCalls(month);
             int RecoveredCalls = cc.RecoveredCalls(month);
-            int DeclaredMissedCalls = cc.DeclaredMissedCalls(current_cycle_month);
+            int DeclaredMissedCalls = cc.DeclaredMissedCalls(month);
             int ActualCoveredCalls = cc.ActualCoveredCalls(current_cycle_month);
             int UnprocessedCalls = plannedCalls - (ActualCoveredCalls + IncidentalCalls);
             String callRate = cc.callRate(month);

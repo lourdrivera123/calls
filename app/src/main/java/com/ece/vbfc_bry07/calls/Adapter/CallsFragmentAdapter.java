@@ -76,7 +76,7 @@ public class CallsFragmentAdapter extends BaseAdapter {
             Date date_missed = helpers.convertStringToDate(objects.get(position).get("missed_call_date"));
 
             if (date_missed.after(history_date))
-                missed_call_date.setText("Advanced call on: " + objects.get(position).get("missed_call_date"));
+                missed_call_date.setText("Advanced call for: " + objects.get(position).get("missed_call_date"));
             else
                 missed_call_date.setText("Missed call on: " + objects.get(position).get("missed_call_date"));
         } else if (objects.get(position).get("status").equals("3"))

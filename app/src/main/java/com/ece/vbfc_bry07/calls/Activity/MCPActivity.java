@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -235,8 +236,7 @@ public class MCPActivity extends AppCompatActivity implements ExpandableListView
             case R.id.copy_from:
                 int previous_month = (cal_month.get(Calendar.MONTH) + 1) - 1;
                 int plan_id = pc.getPlanID(previous_month, "");
-                ArrayList<HashMap<String, ArrayList<String>>> previous_mcp = pdc.getPlanDetailsByPID(plan_id);
-                ArrayList<HashMap<String, ArrayList<String>>> new_mcp = new ArrayList<>();
+                ArrayList<HashMap<String, ArrayList<String>>> previous_mcp = pdc.getPlanDetailsByPID(plan_id), new_mcp = new ArrayList<>();
 
                 if (previous_mcp.size() > 0) {
                     for (int x = 0; x < previous_mcp.size(); x++) {
@@ -514,6 +514,7 @@ public class MCPActivity extends AppCompatActivity implements ExpandableListView
 
     static void refreshCalendar() {
         list_of_plans = new ArrayList<>();
+        list_of_dates = new ArrayList<>();
 
         cal_adapter.refreshDays();
 

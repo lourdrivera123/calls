@@ -50,7 +50,7 @@ import java.util.Set;
 
 public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, View.OnClickListener, ExpandableListView.OnChildClickListener {
     TextView LblDate, no_calls, doctor_name, proceed;
-    ImageView view_acp, add_incidental_call;
+    ImageView view_acp, add_incidental_call, declared_as_missed;
     Spinner spinner_of_reasons;
     TabLayout tab_layout;
     LinearLayout root;
@@ -94,6 +94,7 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         root = (LinearLayout) findViewById(R.id.root);
         image = (ImageView) findViewById(R.id.image);
+        declared_as_missed = (ImageView) findViewById(R.id.declared_as_missed);
         view_acp = (ImageView) findViewById(R.id.view_acp);
         add_incidental_call = (ImageView) findViewById(R.id.add_incidental_call);
         HospitalListView = (ExpandableListView) findViewById(R.id.HospitalListView);
@@ -320,14 +321,8 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
         pager.setCurrentItem(tab.getPosition());
         tab_position = tab.getPosition();
 
-        if (!IDM_id.equals("")) {
-            if (tab_position == 0)
-                ProductsFragment.setCallMaterials(Integer.parseInt(IDM_id), current_date);
-            else if (tab_position == 1)
-                NotesFragment.callNotesFragment();
-            else if (tab_position == 2)
-                NewCallsFragment.UpdateCallsTab(Integer.parseInt(IDM_id), helpers.convertDateToCycleMonth(current_date));
-        }
+        if (tab_position == 2 && !IDM_id.equals(""))
+            NewCallsFragment.UpdateCallsTab(Integer.parseInt(IDM_id), helpers.convertDateToCycleMonth(current_date));
     }
 
     @Override
@@ -435,6 +430,10 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                     menu_check = 1;
                     image.setVisibility(View.VISIBLE);
                     image.setImageResource(R.mipmap.ic_signed_call);
+                } else if (hascalled == 3) {
+                    menu_check = 1;
+                    image.setVisibility(View.VISIBLE);
+                    image.setImageResource(R.mipmap.ic_recovered_call);
                 } else if (!viewotheracp.equals("") && !viewotheracp.equals(helpers.getCurrentDate("date"))) {
                     Date dateNow = helpers.convertStringToDate(helpers.getCurrentDate("date"));
                     Date date1 = helpers.convertStringToDate(viewotheracp);
@@ -450,10 +449,8 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                 menu_check = 1;
                 image.setVisibility(View.VISIBLE);
 
-                if (hascalled == 3)
-                    image.setImageResource(R.mipmap.ic_recovered_call);
-                else if (hascalled == 2)
-                    image.setImageResource(R.mipmap.ic_signed_call);
+                if (hascalled == 4)
+                    image.setImageResource(R.mipmap.ic_incidental_call);
             }
 
             doctor_name.setText(selected_doc);

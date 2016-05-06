@@ -34,9 +34,6 @@
             android:theme="@style/Theme.MyTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".Activity.CycleCalendarActivity"
-            android:screenOrientation="sensorLandscape" />
-        <activity
             android:name=".Activity.SignatureFormActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme" />
