@@ -117,7 +117,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Ada
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (array_of_notes.get(position).get("note").length() > 30) {
+        if (array_of_notes.get(position).get("note").length() > 35) {
             final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
             final View v = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_view_note, null);
             dialog.setView(v);

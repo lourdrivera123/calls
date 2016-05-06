@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.ece.vbfc_bry07.calls.Helpers;
 
@@ -59,11 +58,36 @@ public class CallsController extends DbHelper {
             percentage = calls * 100f / total;
         }
 
-        String callRate = new BigDecimal(percentage).setScale(2, RoundingMode.HALF_UP) + "% \n (" + calls + " / " + total + ")";
+        String callRate = new BigDecimal(percentage).setScale(2, RoundingMode.HALF_UP) + "% (" + calls + "/" + total + ")";
         cur.close();
         db.close();
 
         return callRate;
+    }
+
+    public String callReach(int cycle_month) {
+        String sql = "SELECT COUNT(c.id) as count_call_id, * FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p.id " +
+                "INNER JOIN InstitutionDoctorMaps as idm ON pd.inst_doc_id = idm.IDM_ID INNER JOIN DoctorClasses as dc ON idm.class_id = dc.doctor_classes_id " +
+                "LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id WHERE p.cycle_number = " + cycle_month + " AND " +
+                "(c.plan_details_id > 0 OR c.plan_details_id IS NULL OR c.temp_planDetails_id = pd.id) GROUP BY idm.IDM_id";
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+        int total_doctor = cur.getCount();
+        int total = 0;
+
+        while (cur.moveToNext()) {
+            int max_visit = cur.getInt(cur.getColumnIndex("max_visit"));
+            int count_call_id = cur.getInt(cur.getColumnIndex("count_call_id"));
+
+            if (count_call_id >= max_visit)
+                total += 1;
+        }
+
+        db.close();
+        cur.close();
+
+        float percentage = total * 100f / total_doctor;
+        return percentage + "% (" + total + "/" + total_doctor + ")";
     }
 
     public int fetchPlannedCalls(int cycle_month) {
@@ -147,7 +171,7 @@ public class CallsController extends DbHelper {
         map.put("count_visits", "");
 
         String sql = "SELECT  c.created_at FROM Calls as c INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id INNER JOIN Plans as p ON pd.plan_id = p.id " +
-                "WHERE (c.plan_details_id = pd.plan_details_id OR c.temp_planDetails_id = pd.id) AND pd.inst_doc_id = " + IDM_id + " AND p.cycle_number = " + cycle_month +
+                "WHERE (c.plan_details_id > 0 OR c.temp_planDetails_id = pd.id) AND pd.inst_doc_id = " + IDM_id + " AND p.cycle_number = " + cycle_month +
                 " GROUP BY c.created_at ORDER BY c.created_at DESC";
 
         Cursor cur = db.rawQuery(sql, null);

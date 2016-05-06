@@ -13,13 +13,14 @@ import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class CallsFragmentAdapter extends BaseAdapter {
     Context context;
     ArrayList<HashMap<String, String>> objects;
 
-    TextView date;
+    TextView date, missed_call_date;
     ImageView image;
 
     Helpers helpers;
@@ -56,18 +57,31 @@ public class CallsFragmentAdapter extends BaseAdapter {
 
         date = (TextView) v.findViewById(R.id.date);
         image = (ImageView) v.findViewById(R.id.image);
+        missed_call_date = (TextView) v.findViewById(R.id.missed_call_date);
 
         date.setText(helpers.convertToAlphabetDate(objects.get(position).get("date"), ""));
+        image.setVisibility(View.VISIBLE);
+
+        final Date dateNow = helpers.convertStringToDate(helpers.getCurrentDate("date"));
+        final Date history_date = helpers.convertStringToDate(objects.get(position).get("date"));
 
         if (!objects.get(position).get("server_id").equals(""))
             image.setImageResource(R.mipmap.ic_actual_covered_call);
+        else if (dateNow.before(history_date) && objects.get(position).get("status").equals(""))
+            image.setVisibility(View.INVISIBLE);
         else if (objects.get(position).get("status").equals("1"))
             image.setImageResource(R.mipmap.ic_signed_call);
-        else if (objects.get(position).get("status").equals("2"))
+        else if (objects.get(position).get("status").equals("2")) {
             image.setImageResource(R.mipmap.ic_recovered_call);
-        else if (objects.get(position).get("status").equals("3"))
+            Date date_missed = helpers.convertStringToDate(objects.get(position).get("missed_call_date"));
+
+            if (date_missed.after(history_date))
+                missed_call_date.setText("Advanced call on: " + objects.get(position).get("missed_call_date"));
+            else
+                missed_call_date.setText("Missed call on: " + objects.get(position).get("missed_call_date"));
+        } else if (objects.get(position).get("status").equals("3"))
             image.setImageResource(R.mipmap.ic_incidental_call);
-        else if (objects.get(position).get("status").equals(""))
+        else if (dateNow.after(history_date) && objects.get(position).get("status").equals(""))
             image.setImageResource(R.mipmap.ic_missed_call);
 
         return v;

@@ -124,6 +124,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 int ActualCoveredCalls = cc.ActualCoveredCalls(current_cycle_month);
                 int UnprocessedCalls = plannedCalls - (ActualCoveredCalls + IncidentalCalls);
                 String callRate = cc.callRate(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
+                String callReach = cc.callReach(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
 
                 planned_calls.setText(String.valueOf(plannedCalls));
                 incidental_calls.setText(String.valueOf(IncidentalCalls));
@@ -131,6 +132,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 declared_missed_calls.setText(String.valueOf(DeclaredMissedCalls));
                 unprocessed_calls.setText(String.valueOf(UnprocessedCalls));
                 call_rate.setText(callRate);
+                call_reach.setText(callReach);
             }
         }
 

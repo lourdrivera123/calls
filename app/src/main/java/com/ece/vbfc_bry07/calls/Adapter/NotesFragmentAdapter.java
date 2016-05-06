@@ -50,8 +50,8 @@ public class NotesFragmentAdapter extends BaseAdapter {
         title_note = (TextView) v.findViewById(R.id.title_note);
         date = (TextView) v.findViewById(R.id.date);
 
-        if (objects.get(position).get("note").length() > 30)
-            title_note.setText(objects.get(position).get("note").substring(0, 25) + "...");
+        if (objects.get(position).get("note").length() > 35)
+            title_note.setText(objects.get(position).get("note").substring(0, 30) + "...");
         else
             title_note.setText(objects.get(position).get("note"));
 

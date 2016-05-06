@@ -33,6 +33,8 @@ public class NewCallsFragment extends Fragment {
     }
 
     public static void UpdateCallsTab(int IDM_id, int month) {
+        Log.d("details_idm", IDM_id + "");
+
         ArrayList<HashMap<String, String>> objects = pdc.getMonthlyCallsByIDM_id(IDM_id, month);
         listview_calls.setAdapter(new CallsFragmentAdapter(ACPActivity.acp, objects));
     }

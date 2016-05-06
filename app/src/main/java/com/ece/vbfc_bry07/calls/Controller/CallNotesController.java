@@ -49,13 +49,14 @@ public class CallNotesController extends DbHelper {
 
     //////////////////////GET METHODS
     public ArrayList<HashMap<String, String>> listOfNotesByIDM_id(int IDM_id, String date) {
-        String sql = "SELECT cn.id as call_note_id, * FROM CallNotes as cn INNER JOIN Calls as c ON cn.call_id = c.id INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id " +
-                "WHERE (c.plan_details_id > 0 OR c.temp_planDetails_id = pd.id) AND pd.cycle_day = '" + date + "' AND pd.inst_doc_id = " + IDM_id;
+        String sql = "SELECT cn.id as call_note_id, * FROM CallNotes as cn INNER JOIN Calls as c ON cn.call_id = c.id " +
+                "INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id LEFT JOIN RescheduledCalls as rc ON c.id = rc.call_id " +
+                "WHERE (c.plan_details_id > 0 OR c.temp_planDetails_id = pd.id) AND (pd.cycle_day = '" + date + "' OR rc.cycle_day = '" + date + "') AND pd.inst_doc_id = " + IDM_id;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
         ArrayList<HashMap<String, String>> array = new ArrayList<>();
 
-        while(cur.moveToNext()) {
+        while (cur.moveToNext()) {
             HashMap<String, String> map = new HashMap<>();
             map.put("note", cur.getString(cur.getColumnIndex("notes")));
             map.put("date", cur.getString(cur.getColumnIndex("datetime")));

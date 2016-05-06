@@ -31,7 +31,7 @@ public class SalesReportActivity extends AppCompatActivity {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#A25063")));
 
         // Add Sample data on spinner
-        final List<String> list=new ArrayList<String>();
+        final List<String> list=new ArrayList<>();
         list.add("Channel 1");
         list.add("Channel 2");
         list.add("Channel 3");
@@ -40,11 +40,11 @@ public class SalesReportActivity extends AppCompatActivity {
 
         final String[] str={"Product 1","Product 2","Product 3","Product 4","Product 5"};
 
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerChannel.setAdapter(adapter1);
 
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, str);
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, str);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerProduct.setAdapter(adapter2);
     }

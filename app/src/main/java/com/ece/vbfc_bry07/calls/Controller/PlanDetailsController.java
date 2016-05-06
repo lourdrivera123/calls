@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.ece.vbfc_bry07.calls.Helpers;
 
@@ -164,7 +163,7 @@ public class PlanDetailsController extends DbHelper {
     }
 
     public ArrayList<HashMap<String, String>> getMonthlyCallsByIDM_id(int IDM_id, int month) {
-        String sql = "SELECT pd.cycle_day as orig_cycle_day, rc.cycle_day as rescheduled_cycle_day,  c.calls_id as server_id, c.id as call_ai_id, c.status_id as call_status, * FROM PlanDetails as pd " +
+        String sql = "SELECT pd.plan_details_id as pd_id, pd.cycle_day as orig_cycle_day, rc.cycle_day as rescheduled_cycle_day,  c.calls_id as server_id, c.id as call_ai_id, c.status_id as call_status, * FROM PlanDetails as pd " +
                 "INNER JOIN Plans as p ON pd.plan_id = p.id LEFT JOIN Calls as c ON c.plan_details_id = pd.plan_details_id LEFT JOIN RescheduledCalls as rc ON c.id = rc.call_id " +
                 "WHERE inst_doc_id = " + IDM_id + " AND p.cycle_number = " + month + " GROUP BY pd.id";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -176,7 +175,10 @@ public class PlanDetailsController extends DbHelper {
             String server_id = cur.getString(cur.getColumnIndex("server_id")) == null ? "" : cur.getString(cur.getColumnIndex("server_id"));
             String date = cur.getString(cur.getColumnIndex("rescheduled_cycle_day")) == null ? cur.getString(cur.getColumnIndex("orig_cycle_day")) :
                     cur.getString(cur.getColumnIndex("rescheduled_cycle_day"));
+            String planDetails_id = cur.getString(cur.getColumnIndex("pd_id")) == null ? "0" : cur.getString(cur.getColumnIndex("pd_id"));
+
             String status = "";
+            String missed_call_date = "";
 
             if (cur.getString(cur.getColumnIndex("call_ai_id")) == null)
                 status = "";
@@ -186,15 +188,19 @@ public class PlanDetailsController extends DbHelper {
                 else {
                     if (cur.getInt(cur.getColumnIndex("call_status")) == 1)
                         status = "1"; //SIGNED CALL
-                    else if (cur.getInt(cur.getColumnIndex("call_status")) == 2)
+                    else if (cur.getInt(cur.getColumnIndex("call_status")) == 2) {
                         status = "2"; //RECOVERED CALL
+                        missed_call_date = cur.getString(cur.getColumnIndex("orig_cycle_day"));
+                    }
                 }
             }
 
             map.put("server_id", server_id);
             map.put("date", date);
             map.put("status", status);
+            map.put("missed_call_date", missed_call_date);
             map.put("IDM_id", cur.getString(cur.getColumnIndex("inst_doc_id")));
+            map.put("plan_details_id", planDetails_id);
             array.add(map);
         }
 
