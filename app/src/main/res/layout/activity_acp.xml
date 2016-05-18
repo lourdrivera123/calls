@@ -62,7 +62,7 @@
                         android:layout_marginRight="10dp"
                         android:background="@drawable/state_circle"
                         android:padding="1dp"
-                        android:src="@mipmap/declar_missed_calls" />
+                        android:src="@mipmap/declare_as_missed" />
 
                     <ImageView
                         android:id="@+id/add_incidental_call"

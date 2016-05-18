@@ -9,6 +9,7 @@ import com.ece.vbfc_bry07.calls.Helpers;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CallsController extends DbHelper {
@@ -66,7 +67,7 @@ public class CallsController extends DbHelper {
     }
 
     public String callReach(int cycle_month) {
-        String sql = "SELECT COUNT(c.id) as count_call_id, COUNT(pd.id) as total_pd, * FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p.id " +
+        String sql = "SELECT COUNT(c.id) as count_call_id, * FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p.id " +
                 "INNER JOIN InstitutionDoctorMaps as idm ON pd.inst_doc_id = idm.IDM_ID INNER JOIN DoctorClasses as dc ON idm.class_id = dc.doctor_classes_id " +
                 "LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id WHERE p.cycle_number = " + cycle_month + " AND " +
                 "(c.plan_details_id > 0 OR c.plan_details_id IS NULL OR c.temp_planDetails_id = pd.id) GROUP BY idm.IDM_id";
@@ -78,10 +79,9 @@ public class CallsController extends DbHelper {
 
         if (cur.getCount() > 0) {
             while (cur.moveToNext()) {
-                int total_number_of_pd = cur.getInt(cur.getColumnIndex("total_pd"));
                 int count_call_id = cur.getInt(cur.getColumnIndex("count_call_id"));
 
-                if (count_call_id >= total_number_of_pd)
+                if (count_call_id >= 1)
                     total += 1;
             }
 
@@ -107,63 +107,6 @@ public class CallsController extends DbHelper {
         return planned_calls;
     }
 
-    public int IncidentalCalls(int cycle_month) {
-        String sql = "SELECT COUNT(c.id) as incidental_calls FROM Plans as p INNER JOIN PlanDetails as pd ON p.id = pd.plan_id INNER JOIN Calls as c " +
-                "ON pd.id = c.temp_planDetails_id WHERE cycle_number = " + cycle_month + " AND c.status_id = 2 AND c.makeup = 0";
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cur = db.rawQuery(sql, null);
-        int incidental_calls = 0;
-
-        while (cur.moveToNext())
-            incidental_calls = cur.getInt(cur.getColumnIndex("incidental_calls"));
-
-        cur.close();
-        db.close();
-
-        return incidental_calls;
-    }
-
-    public int RecoveredCalls(int cycle_month) {
-        String sql = "SELECT * FROM RescheduledCalls as rc INNER JOIN Calls as c ON rc.call_id = c.id INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id " +
-                "INNER JOIN Plans as p ON pd.plan_id = p.id WHERE p.cycle_number = " + cycle_month;
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cur = db.rawQuery(sql, null);
-
-        int recovered_calls = cur.getCount();
-
-        cur.close();
-        db.close();
-
-        return recovered_calls;
-    }
-
-    public int ActualCoveredCalls(String cycle_month) {
-        String sql = "SELECT * FROM Calls as c INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id INNER JOIN Plans as p " +
-                "on pd.plan_id = p.id WHERE p.cycle_number = " + cycle_month + "  AND c.status_id = 1 GROUP BY c.id";
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cur = db.rawQuery(sql, null);
-
-        int covered_calls = cur.getCount();
-
-        cur.close();
-        db.close();
-
-        return covered_calls;
-    }
-
-    public int DeclaredMissedCalls(int cycle_month) {
-        String sql = "SELECT * FROM MissedCalls as mc INNER JOIN Calls as c ON mc.call_id_fk = c.id INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id " +
-                "INNER JOIN Plans as p ON pd.plan_id = p.id WHERE p.cycle_number = " + cycle_month;
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cur = db.rawQuery(sql, null);
-        int missed_calls = cur.getCount();
-
-        cur.close();
-        db.close();
-
-        return missed_calls;
-    }
-
     public HashMap<String, String> getLastVisited(int IDM_id, int cycle_month) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String last_visited;
@@ -187,6 +130,54 @@ public class CallsController extends DbHelper {
         db.close();
 
         return map;
+    }
+
+    public ArrayList<HashMap<String, String>> getCallReportDetails(String type, int cycle_month) {
+        String sql;
+        SQLiteDatabase db = getWritableDatabase();
+        ArrayList<HashMap<String, String>> array = new ArrayList<>();
+
+        switch (type) {
+            case "actual_covered_call":
+                sql = "SELECT * FROM Calls as c INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id INNER JOIN Plans as p ON pd.plan_id = p.id " +
+                        "INNER JOIN InstitutionDoctorMaps as idm ON idm.IDM_ID = pd.inst_doc_id INNER JOIN Doctors as d ON d.doc_id = idm.doctor_id " +
+                        "WHERE p.cycle_number = " + cycle_month + " AND c.status_id = 1 AND c.makeup = 0";
+                break;
+            case "declared_missed_call":
+                sql = "SELECT * FROM MissedCalls as mc INNER JOIN PlanDetails as pd ON mc.plan_details_id = pd.plan_details_id INNER JOIN Plans as p ON pd.plan_id = p.id " +
+                        "INNER JOIN InstitutionDoctorMaps as idm ON idm.IDM_ID = pd.inst_doc_id INNER JOIN Doctors as d ON idm.doctor_id = d.doc_id WHERE p.cycle_number = " + cycle_month;
+                break;
+            case "recovered_call":
+                sql = "SELECT rc.cycle_day as rc_cycleday, * FROM RescheduledCalls as rc INNER JOIN Calls as c ON rc.call_id = c.id INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id " +
+                        "INNER JOIN Plans as p ON pd.plan_id = p.id INNER JOIN InstitutionDoctorMaps as idm ON pd.inst_doc_id = idm.IDM_ID " +
+                        "INNER JOIN Doctors as d ON idm.doctor_id = d.doc_id WHERE p.cycle_number = " + cycle_month;
+                break;
+            default:
+                sql = "SELECT * FROM Plans as p INNER JOIN PlanDetails as pd ON p.id = pd.plan_id INNER JOIN Calls as c ON pd.id = c.temp_planDetails_id " +
+                        "INNER JOIN InstitutionDoctorMaps as idm ON pd.inst_doc_id = idm.IDM_ID INNER JOIN Doctors as d ON idm.doctor_id = d.doc_id " +
+                        "WHERE cycle_number = " + cycle_month + " AND c.status_id = 2 AND c.makeup = 0";
+                break;
+        }
+
+        Cursor cur = db.rawQuery(sql, null);
+
+        while (cur.moveToNext()) {
+            HashMap<String, String> map = new HashMap<>();
+            String input;
+
+            if (type.equals("recovered_call"))
+                input = cur.getString(cur.getColumnIndex("doc_name")) + " (" + cur.getString(cur.getColumnIndex("rc_cycleday")) + ")";
+            else
+                input = cur.getString(cur.getColumnIndex("doc_name")) + " (" + cur.getString(cur.getColumnIndex("cycle_day")) + ")";
+
+            map.put("doc_name", input);
+            array.add(map);
+        }
+
+        db.close();
+        cur.close();
+
+        return array;
     }
 
     /////////////////////////////////////////////INSERT METHODS//////////////////////////////
@@ -231,7 +222,8 @@ public class CallsController extends DbHelper {
 
 
         if (type.equals("planDetails"))
-            sql = "SELECT * FROM Calls as c WHERE plan_details_id = " + id;
+            sql = "SELECT mc.id as mc_id, * FROM PlanDetails as pd LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id " +
+                    "LEFT JOIN MissedCalls as mc ON pd.plan_details_id = mc.plan_details_id WHERE pd.plan_details_id = " + id;
         else if (type.equals("temp_planDetails"))
             sql = "SELECT * FROM calls as c WHERE temp_planDetails_id = " + id;
 
@@ -242,12 +234,17 @@ public class CallsController extends DbHelper {
             if (cur.getString(cur.getColumnIndex("calls_id")) != null)
                 check = 1; //signed and sync
             else {
-                check = 2; //signed but not sync
+                if (cur.getString(cur.getColumnIndex("status_id")) != null && cur.getString(cur.getColumnIndex("temp_planDetails_id")) != null) {
+                    check = 2; //signed but not sync
 
-                if (cur.getString(cur.getColumnIndex("status_id")).equals("2") && cur.getInt(cur.getColumnIndex("temp_planDetails_id")) == 0)
-                    check = 3; //recovered call (missed call or advanced call) - signed
-                if (cur.getInt(cur.getColumnIndex("temp_planDetails_id")) > 0 && cur.getString(cur.getColumnIndex("status_id")).equals("2"))
-                    check = 4; //incidental call
+                    if (cur.getString(cur.getColumnIndex("status_id")).equals("2") && cur.getInt(cur.getColumnIndex("temp_planDetails_id")) == 0)
+                        check = 3; //recovered call (missed call or advanced call) - signed
+                    if (cur.getInt(cur.getColumnIndex("temp_planDetails_id")) > 0 && cur.getString(cur.getColumnIndex("status_id")).equals("2"))
+                        check = 4; //incidental call
+                } else {
+                    if (cur.getString(cur.getColumnIndex("mc_id")) != null)
+                        check = 5; //declared missed call
+                }
             }
         }
 

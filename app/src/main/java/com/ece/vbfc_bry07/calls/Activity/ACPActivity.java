@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -13,12 +14,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,6 +30,7 @@ import com.ece.vbfc_bry07.calls.Adapter.ACPListAdapter;
 import com.ece.vbfc_bry07.calls.Adapter.ACPTabsAdapter;
 import com.ece.vbfc_bry07.calls.Controller.CallsController;
 import com.ece.vbfc_bry07.calls.Controller.InstitutionDoctorMapsController;
+import com.ece.vbfc_bry07.calls.Controller.MissedCallsController;
 import com.ece.vbfc_bry07.calls.Controller.PlanDetailsController;
 import com.ece.vbfc_bry07.calls.Controller.PlansController;
 import com.ece.vbfc_bry07.calls.Controller.ReasonsController;
@@ -49,22 +51,22 @@ import java.util.List;
 import java.util.Set;
 
 public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, View.OnClickListener, ExpandableListView.OnChildClickListener {
-    TextView LblDate, no_calls, doctor_name, proceed;
-    ImageView view_acp, add_incidental_call, declared_as_missed;
-    Spinner spinner_of_reasons;
-    TabLayout tab_layout;
     LinearLayout root;
+    EditText remarks;
     ImageView image;
     ViewPager pager;
     Toolbar toolbar;
-
-    Dialog dialog;
+    TabLayout tab_layout;
+    Spinner spinner_of_reasons;
+    ImageView view_acp, add_incidental_call, declared_as_missed;
+    TextView LblDate, no_calls, doctor_name, proceed, title;
 
     Helpers helpers;
     CallsController cc;
     PlansController pc;
     ReasonsController rcc;
     PlanDetailsController pdc;
+    MissedCallsController mcc;
     ACPTabsAdapter fragment_adapter;
     ACPListAdapter hospital_adapter;
     ExpandableListView HospitalListView;
@@ -75,11 +77,12 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
     HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild;
 
     boolean ongoing_call = false;
-    int plan_details_id = 0, joint_call = 0;
+    int plan_details_id = 0, joint_call = 0, cycle_month;
     String start_dateTime = "";
     public static int check_adapter_acp = 0, menu_check = 0, tab_position = 0;
     public static String current_date = "", viewotheracp = "", IDM_id = "", missed_call_date = "", selected_reason = "";
     public static Activity acp;
+    Dialog dialog_reasons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +97,8 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         root = (LinearLayout) findViewById(R.id.root);
         image = (ImageView) findViewById(R.id.image);
-        declared_as_missed = (ImageView) findViewById(R.id.declared_as_missed);
         view_acp = (ImageView) findViewById(R.id.view_acp);
+        declared_as_missed = (ImageView) findViewById(R.id.declared_as_missed);
         add_incidental_call = (ImageView) findViewById(R.id.add_incidental_call);
         HospitalListView = (ExpandableListView) findViewById(R.id.HospitalListView);
 
@@ -113,14 +116,16 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
         pc = new PlansController(this);
         rcc = new ReasonsController(this);
         pdc = new PlanDetailsController(this);
+        mcc = new MissedCallsController(this);
         idmc = new InstitutionDoctorMapsController(this);
 
         acp = this;
         selected_reason = "";
         missed_call_date = "";
         additional_call = new HashMap<>();
+        current_date = helpers.getCurrentDate("");
+        cycle_month = helpers.convertDateToCycleMonth(current_date);
 
-        current_date = helpers.getCurrentDate("date");
         LblDate.setText(helpers.convertToAlphabetDate(current_date, ""));
         prepareListData();
 
@@ -131,6 +136,7 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
         view_acp.setOnClickListener(this);
         HospitalListView.setOnChildClickListener(this);
         add_incidental_call.setOnClickListener(this);
+        declared_as_missed.setOnClickListener(this);
     }
 
     @Override
@@ -138,7 +144,7 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
         image.setVisibility(View.INVISIBLE);
 
         if (check_adapter_acp == 30 || check_adapter_acp >= 50) {
-            int checkPlanDetails = pdc.checkPlanDetails(helpers.convertDateToCycleMonth(helpers.getCurrentDate("date")));
+            int checkPlanDetails = pdc.checkPlanDetails(cycle_month);
 
             if (checkPlanDetails == 0)
                 Snackbar.make(root, "You have to plot a plan for this month first", Snackbar.LENGTH_LONG).show();
@@ -155,17 +161,15 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                     alert.setPositiveButton("Ok", null);
                     alert.show();
                 } else if (check_adapter_acp == 55) {
-                    dialog = new Dialog(this);
-                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    dialog.setContentView(R.layout.dialog_reasons);
-                    dialog.show();
+                    showDialog(true);
 
-                    spinner_of_reasons = (Spinner) dialog.findViewById(R.id.spinner_of_reasons);
-                    proceed = (TextView) dialog.findViewById(R.id.proceed);
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_products, rcc.getEnabledReasons());
-                    spinner_of_reasons.setAdapter(adapter);
-                    proceed.setOnClickListener(this);
+                    proceed.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            selected_reason = String.valueOf(spinner_of_reasons.getSelectedItem());
+                            dialog_reasons.dismiss();
+                        }
+                    });
                 }
 
                 if (ViewDoctorsHistoryDialog.child_clicked.get("plan_details_id").equals("0")) {
@@ -200,9 +204,11 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
             if (viewotheracp.equals(helpers.getCurrentDate("date"))) {
                 current_date = helpers.getCurrentDate("date");
                 menu_check = 20;
+                declared_as_missed.setVisibility(View.VISIBLE);
                 add_incidental_call.setVisibility(View.VISIBLE);
             } else {
                 current_date = viewotheracp;
+                declared_as_missed.setVisibility(View.INVISIBLE);
                 add_incidental_call.setVisibility(View.INVISIBLE);
                 menu_check = 8;
                 invalidateOptionsMenu();
@@ -253,10 +259,9 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                 break;
 
             case R.id.start_call:
-                int cycleMonth = helpers.convertDateToCycleMonth(current_date);
                 int cycleSet = helpers.convertDateToCycleSet(current_date);
 
-                if (pc.checkIfPlanIsApproved(cycleSet, cycleMonth)) {
+                if (pc.checkIfPlanIsApproved(cycleSet, cycle_month)) {
                     if (ViewDoctorsHistoryDialog.child_clicked != null && !IDM_id.equals(ViewDoctorsHistoryDialog.child_clicked.get("IDM_id")))
                         missed_call_date = "";
 
@@ -271,8 +276,8 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
 
             case R.id.end_call:
                 String end_dateTime = helpers.getCurrentDate("timestamp");
-                String last_visited = cc.getLastVisited(Integer.parseInt(IDM_id), helpers.convertDateToCycleMonth(helpers.getCurrentDate(""))).get("last_visited");
-                String count_visits = cc.getLastVisited(Integer.parseInt(IDM_id), helpers.convertDateToCycleMonth(helpers.getCurrentDate(""))).get("count_visits");
+                String last_visited = cc.getLastVisited(Integer.parseInt(IDM_id), cycle_month).get("last_visited");
+                String count_visits = cc.getLastVisited(Integer.parseInt(IDM_id), cycle_month).get("count_visits");
 
                 HashMap<String, String> calls = new HashMap<>();
                 calls.put("start_time", start_dateTime);
@@ -312,6 +317,10 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                 intent1.putExtra("array_name", "color_coded_circles");
                 startActivity(intent1);
                 break;
+
+            case R.id.brochure:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("content://media/external/images/media")));
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -322,7 +331,7 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
         tab_position = tab.getPosition();
 
         if (tab_position == 2 && !IDM_id.equals(""))
-            NewCallsFragment.UpdateCallsTab(Integer.parseInt(IDM_id), helpers.convertDateToCycleMonth(current_date));
+            NewCallsFragment.UpdateCallsTab(Integer.parseInt(IDM_id), cycle_month);
     }
 
     @Override
@@ -348,14 +357,58 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
 
                     break;
 
-                case R.id.proceed:
-                    selected_reason = String.valueOf(spinner_of_reasons.getSelectedItem());
-                    dialog.dismiss();
+                case R.id.declared_as_missed:
+                    if (listDataHeader.size() > 0) {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                        alert.setMessage("Are you sure you want to declare all unprocessed calls as missed calls?");
+                        alert.setNegativeButton("No", null);
+                        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                prepareListData();
+                                showDialog(false);
 
+                                title.setText(R.string.header);
+                                proceed.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        String get_remarks = remarks.getText().toString();
+                                        int reason_id = rcc.getReasonID(spinner_of_reasons.getSelectedItem().toString());
+
+                                        if (!mcc.insertMissedCalls(reason_id, get_remarks, listDataChild))
+                                            Snackbar.make(root, "All calls have been declared as missed", Snackbar.LENGTH_SHORT).show();
+
+                                        dialog_reasons.dismiss();
+                                    }
+                                });
+                            }
+                        });
+                        alert.show();
+                    } else
+                        Snackbar.make(root, "No calls to declare as missed", Snackbar.LENGTH_SHORT).show();
                     break;
             }
         } else
             Snackbar.make(root, "There is an ongoing call. You are not allowed to do this action", Snackbar.LENGTH_SHORT).show();
+    }
+
+    void showDialog(boolean hidden) {
+        dialog_reasons = new Dialog(this);
+        dialog_reasons.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog_reasons.setContentView(R.layout.dialog_reasons);
+        dialog_reasons.show();
+
+        title = (TextView) dialog_reasons.findViewById(R.id.title);
+        spinner_of_reasons = (Spinner) dialog_reasons.findViewById(R.id.spinner_of_reasons);
+        proceed = (TextView) dialog_reasons.findViewById(R.id.proceed);
+        remarks = (EditText) dialog_reasons.findViewById(R.id.remarks);
+
+        if (hidden)
+            remarks.setVisibility(View.GONE);
+        else
+            remarks.setVisibility(View.VISIBLE);
+
+        spinner_of_reasons.setAdapter(new ArrayAdapter<>(ACPActivity.this, R.layout.item_products, rcc.getEnabledReasons()));
     }
 
     @Override
@@ -434,6 +487,10 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                     menu_check = 1;
                     image.setVisibility(View.VISIBLE);
                     image.setImageResource(R.mipmap.ic_recovered_call);
+                } else if (hascalled == 5) {
+                    menu_check = 1;
+                    image.setVisibility(View.VISIBLE);
+                    image.setImageResource(R.mipmap.ic_missed_call);
                 } else if (!viewotheracp.equals("") && !viewotheracp.equals(helpers.getCurrentDate("date"))) {
                     Date dateNow = helpers.convertStringToDate(helpers.getCurrentDate("date"));
                     Date date1 = helpers.convertStringToDate(viewotheracp);
@@ -460,7 +517,7 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
             ProductsFragment.setCallMaterials(Integer.parseInt(IDM_id), current_date);
 
             if (tab_position == 2)
-                NewCallsFragment.UpdateCallsTab(Integer.parseInt(IDM_id), helpers.convertDateToCycleMonth(current_date));
+                NewCallsFragment.UpdateCallsTab(Integer.parseInt(IDM_id), cycle_month);
         }
 
         return true;

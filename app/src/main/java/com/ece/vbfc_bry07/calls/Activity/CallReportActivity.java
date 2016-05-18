@@ -1,9 +1,10 @@
 package com.ece.vbfc_bry07.calls.Activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -12,6 +13,7 @@ import com.ece.vbfc_bry07.calls.Adapter.CallReportAdapter;
 import com.ece.vbfc_bry07.calls.Controller.CallReportsController;
 import com.ece.vbfc_bry07.calls.Controller.CallsController;
 import com.ece.vbfc_bry07.calls.Controller.InstitutionDoctorMapsController;
+import com.ece.vbfc_bry07.calls.Dialog.CallReportDetails;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 
@@ -32,6 +34,8 @@ public class CallReportActivity extends AppCompatActivity {
     InstitutionDoctorMapsController idmc;
 
     Calendar cal;
+
+    int cycle_month;
 
     ArrayList<HashMap<String, String>> list_prev_month, list_current_month;
 
@@ -55,6 +59,8 @@ public class CallReportActivity extends AppCompatActivity {
         crc = new CallReportsController(this);
         idmc = new InstitutionDoctorMapsController(this);
 
+        cycle_month = helpers.convertDateToCycleMonth(helpers.getCurrentDate(""));
+
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -64,10 +70,20 @@ public class CallReportActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.view_details_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 this.finish();
+                break;
+
+            case R.id.view_details:
+                startActivity(new Intent(this, CallReportDetails.class));
                 break;
         }
 
@@ -78,13 +94,12 @@ public class CallReportActivity extends AppCompatActivity {
         TimeZone zone = TimeZone.getTimeZone("GMT+8");
         cal = Calendar.getInstance(zone);
         int previous_month = (cal.get(Calendar.MONTH) + 1) - 1;
-        int current_month = helpers.convertDateToCycleMonth(helpers.getCurrentDate(""));
-        int IncidentalCalls = cc.IncidentalCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
-        String callRate = cc.callRate(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
-        String callReach = cc.callReach(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
-        int declaredMissedCall = cc.DeclaredMissedCalls(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
+        int IncidentalCalls = cc.getCallReportDetails("incidental_call", cycle_month).size();
+        String callRate = cc.callRate(cycle_month);
+        String callReach = cc.callReach(cycle_month);
+        int declaredMissedCall = cc.getCallReportDetails("declared_missed_call", cycle_month).size();
         list_prev_month = crc.getMonthReport(previous_month);
-        list_current_month = crc.getMonthReport(current_month);
+        list_current_month = crc.getMonthReport(cycle_month);
         int prev_total = 0, prev_calls = 0, current_total = 0, current_calls = 0;
 
         for (int x = 0; x < list_prev_month.size(); x++) {
@@ -103,7 +118,8 @@ public class CallReportActivity extends AppCompatActivity {
         incidental_call.setText(String.valueOf(IncidentalCalls));
         doctor_header.setText("Doctors \n (" + idmc.getDoctorsWithInstitutions("").size() + ")");
         prev_cycle.setText("Cycle " + previous_month + " \n(" + prev_calls + "/" + prev_total + ")");
-        current_cycle.setText("Cycle " + current_month + "\n (" + current_calls + "/" + current_total + ")");
+        current_cycle.setText("Cycle " + cycle_month + "\n (" + current_calls + "/" + current_total + ")");
+        current_cycle.setText("Cycle " + cycle_month + "\n (" + current_calls + "/" + current_total + ")");
 
         adapter = new CallReportAdapter(this, idmc.getDoctorsWithInstitutions(""), list_prev_month, list_current_month);
         list_of_call_reports.setAdapter(adapter);

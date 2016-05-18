@@ -17,15 +17,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NewCallsFragment extends Fragment {
-    static ListView listview_calls;
+    static ListView listview;
 
     static PlanDetailsController pdc;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_calls, container, false);
+        View v = inflater.inflate(R.layout.layout_listview_only, container, false);
 
-        listview_calls = (ListView) v.findViewById(R.id.listview_calls);
+        listview = (ListView) v.findViewById(R.id.listview);
 
         pdc = new PlanDetailsController(getActivity());
 
@@ -33,9 +33,7 @@ public class NewCallsFragment extends Fragment {
     }
 
     public static void UpdateCallsTab(int IDM_id, int month) {
-        Log.d("details_idm", IDM_id + "");
-
         ArrayList<HashMap<String, String>> objects = pdc.getMonthlyCallsByIDM_id(IDM_id, month);
-        listview_calls.setAdapter(new CallsFragmentAdapter(ACPActivity.acp, objects));
+        listview.setAdapter(new CallsFragmentAdapter(ACPActivity.acp, objects));
     }
 }

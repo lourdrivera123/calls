@@ -47,35 +47,23 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/username_wrapper"
-                    style="@style/TextLabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Username"
-                        android:textColor="@color/toolbar"
-                        android:textSize="13sp" />
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/password_wrapper"
+                <EditText
+                    android:id="@+id/username"
                     style="@style/TextLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp">
+                    android:hint="Username"
+                    android:textSize="13sp" />
 
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Password"
-                        android:inputType="textPassword"
-                        android:textColor="@color/toolbar"
-                        android:textSize="13sp" />
-                </android.support.design.widget.TextInputLayout>
+                <EditText
+                    android:id="@+id/password"
+                    style="@style/TextLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="Password"
+                    android:inputType="textPassword"
+                    android:textSize="13sp" />
             </LinearLayout>
 
             <Button

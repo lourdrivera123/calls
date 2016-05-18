@@ -69,6 +69,8 @@
         <activity
             android:name=".Dialog.HelpDialog"
             android:theme="@style/myDialog" />
+        <activity
+            android:name=".Dialog.CallReportDetails"
+            android:theme="@style/myDialog" />
     </application>
-
 </manifest>

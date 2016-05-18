@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.ece.vbfc_bry07.calls.Helpers;
 
@@ -126,14 +127,21 @@ public class PlanDetailsController extends DbHelper {
     }
 
     public ArrayList<HashMap<String, String>> getMonthDetails(int cycle_month) {
-        String sql = "SELECT DISTINCT pd.cycle_day FROM Plans as p INNER JOIN PlanDetails as pd ON p.id = pd.plan_id WHERE p.cycle_number = " + cycle_month;
+        String sql = "SELECT DISTINCT pd.cycle_day, rc.cycle_day as rc_cycle_day FROM Plans as p INNER JOIN PlanDetails as pd ON p.id = pd.plan_id " +
+                "LEFT JOIN Calls as c ON c.plan_details_id = pd.plan_details_id LEFT JOIN RescheduledCalls as rc ON c.id = rc.call_id " +
+                "WHERE p.cycle_number = " + cycle_month + " AND (c.plan_details_id IS NULL OR c.plan_details_id > 0)";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
         ArrayList<HashMap<String, String>> array = new ArrayList<>();
 
         while (cur.moveToNext()) {
+            String rc_cycle_day = cur.getString(cur.getColumnIndex("rc_cycle_day"));
             String date = cur.getString(cur.getColumnIndex("cycle_day"));
-            String sql2 = "SELECT c.id as call_id_final, * FROM PlanDetails as pd LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id " +
+
+            if (rc_cycle_day != null)
+                date = rc_cycle_day;
+
+            String sql2 = "SELECT c.id as call_id_final, rc.cycle_day as rc_cycleday, * FROM PlanDetails as pd LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id " +
                     "LEFT JOIN RescheduledCalls as rc ON c.id = rc.call_id WHERE pd.cycle_day = '" + date + "' OR rc.cycle_day = '" + date + "' GROUP BY pd.id";
             Cursor cur2 = db.rawQuery(sql2, null);
             HashMap<String, String> map = new HashMap<>();
@@ -141,12 +149,20 @@ public class PlanDetailsController extends DbHelper {
             int divisor = 0;
             int dividend = 0;
 
-
             while (cur2.moveToNext()) {
                 divisor += 1;
 
-                if (cur2.getString(cur2.getColumnIndex("call_id_final")) != null)
-                    dividend += 1;
+                String rc_cycleday = cur2.getString(cur2.getColumnIndex("rc_cycleday"));
+
+                if (cur2.getString(cur2.getColumnIndex("call_id_final")) != null) {
+                    if (rc_cycleday != null) {
+                        if (rc_cycleday.equals(date))
+                            dividend += 1;
+                        else
+                            divisor -= 1;
+                    } else
+                        dividend += 1;
+                }
             }
 
             map.put("divisor", String.valueOf(divisor));

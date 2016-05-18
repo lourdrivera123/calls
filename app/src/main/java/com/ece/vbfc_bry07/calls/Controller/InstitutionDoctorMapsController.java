@@ -34,10 +34,11 @@ public class InstitutionDoctorMapsController extends DbHelper {
         String sql;
 
         if (!date.equals("")) {
-            sql = "SELECT  pd.id as temp_plandetails_id, pd.plan_details_id as pd_id, dc.name as class_name, * FROM Doctors as d INNER JOIN InstitutionDoctorMaps as idm ON idm.doctor_id = d.doc_id " +
-                    "INNER JOIN DoctorClasses as dc ON idm.class_id = dc.doctor_classes_id INNER JOIN Institutions as i on idm.institution_id = i.inst_id " +
-                    "INNER JOIN PlanDetails as pd ON idm.IDM_ID = pd.inst_doc_id LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id " +
-                    "LEFT JOIN RescheduledCalls as rc ON c.id = rc.call_id WHERE pd.cycle_day = '" + date + "' OR rc.cycle_day = '" + date + "' GROUP BY pd.id";
+            sql = "SELECT  pd.id as temp_plandetails_id, pd.plan_details_id as pd_id, dc.name as class_name, rc.cycle_day as rc_cycle_day, rc.cycle_day as rc_cycle_day, * FROM " +
+                    "Doctors as d INNER JOIN InstitutionDoctorMaps as idm ON idm.doctor_id = d.doc_id INNER JOIN DoctorClasses as dc ON idm.class_id = dc.doctor_classes_id " +
+                    "INNER JOIN Institutions as i on idm.institution_id = i.inst_id INNER JOIN PlanDetails as pd ON idm.IDM_ID = pd.inst_doc_id " +
+                    "LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id LEFT JOIN RescheduledCalls as rc ON c.id = rc.call_id " +
+                    "WHERE pd.cycle_day = '" + date + "' OR rc.cycle_day = '" + date + "' GROUP BY pd.id";
         } else
             sql = "SELECT *, dc.name as class_name, s.name as specialization_name from InstitutionDoctorMaps as idm INNER JOIN Doctors as d on idm.doctor_id = d.doc_id " +
                     "INNER JOIN DoctorClasses as dc on idm.class_id = dc.doctor_classes_id INNER JOIN Institutions as i on idm.institution_id = i.inst_id " +
@@ -63,10 +64,16 @@ public class InstitutionDoctorMapsController extends DbHelper {
             if (!date.equals("")) {
                 map.put("plan_details_id", cur.getString(cur.getColumnIndex("pd_id")));
                 map.put("temp_plandetails_id", cur.getString(cur.getColumnIndex("temp_plandetails_id")));
-            } else
-                map.put("specialization", cur.getString(cur.getColumnIndex("specialization_name")));
 
-            array.add(map);
+                if (cur.getString(cur.getColumnIndex("rc_cycle_day")) != null) {
+                    if (cur.getString(cur.getColumnIndex("rc_cycle_day")).equals(date))
+                        array.add(map);
+                } else
+                    array.add(map);
+            } else {
+                map.put("specialization", cur.getString(cur.getColumnIndex("specialization_name")));
+                array.add(map);
+            }
         }
 
         cur.close();

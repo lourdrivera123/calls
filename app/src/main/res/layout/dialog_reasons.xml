@@ -6,6 +6,7 @@
     android:padding="5dp">
 
     <TextView
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="This will count as a rescheduled call. Please select from one of the reasons below:"
@@ -19,25 +20,27 @@
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp" />
 
-    <LinearLayout
+    <EditText
+        android:id="@+id/remarks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="Remarks..."
+        android:lines="3"
+        android:textSize="12sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
         android:layout_marginTop="10dp"
-        android:orientation="vertical">
+        android:background="@color/gray" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gray" />
-
-        <TextView
-            android:id="@+id/proceed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:gravity="center"
-            android:background="?android:attr/selectableItemBackground"
-            android:text="Proceed"
-            android:textSize="12sp" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/proceed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center"
+        android:text="Proceed"
+        android:textSize="12sp" />
 </LinearLayout>

@@ -1,7 +1,5 @@
 package com.ece.vbfc_bry07.calls;
 
-import android.util.Log;
-
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
@@ -23,10 +21,17 @@ public class Helpers {
         SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
         try {
-            if (type.equals("complete"))
-                outputFormat = new SimpleDateFormat("MMM dd yyyy", Locale.getDefault());
-            else
-                outputFormat = new SimpleDateFormat("MMM dd", Locale.getDefault());
+            switch (type) {
+                case "complete":
+                    outputFormat = new SimpleDateFormat("MMM dd yyyy", Locale.getDefault());
+                    break;
+                case "without_year":
+                    outputFormat = new SimpleDateFormat("MM-dd", Locale.getDefault());
+                    break;
+                default:
+                    outputFormat = new SimpleDateFormat("MMM dd", Locale.getDefault());
+                    break;
+            }
 
             date = date_format.parse(input);
         } catch (ParseException e) {

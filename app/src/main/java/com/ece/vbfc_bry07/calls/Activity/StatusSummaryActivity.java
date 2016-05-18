@@ -34,7 +34,7 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
     CallsController cc;
     PlansController pc;
 
-    String current_cycle_month = "strftime('%m', date())";
+    int cycle_month;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +57,8 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
         cc = new CallsController(this);
         pc = new PlansController(this);
 
+        cycle_month = helpers.convertDateToCycleMonth(helpers.getCurrentDate(""));
+
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Status Summary");
@@ -64,7 +66,7 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
 
         tv_month.setText(helpers.getMonthYear());
         tv_month.setPaintFlags(tv_month.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        AddData(helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
+        AddData(cycle_month);
 
         tv_month.setOnClickListener(this);
     }
@@ -88,10 +90,10 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
             statistics.setVisibility(View.VISIBLE);
 
             int plannedCalls = cc.fetchPlannedCalls(month);
-            int IncidentalCalls = cc.IncidentalCalls(month);
-            int RecoveredCalls = cc.RecoveredCalls(month);
-            int DeclaredMissedCalls = cc.DeclaredMissedCalls(month);
-            int ActualCoveredCalls = cc.ActualCoveredCalls(current_cycle_month);
+            int IncidentalCalls = cc.getCallReportDetails("incidental_call", month).size();
+            int RecoveredCalls = cc.getCallReportDetails("recovered_call", month).size();
+            int DeclaredMissedCalls = cc.getCallReportDetails("declared_missed_call", month).size();
+            int ActualCoveredCalls = cc.getCallReportDetails("actual_covered_call", month).size();
             int UnprocessedCalls = plannedCalls - (ActualCoveredCalls + IncidentalCalls);
             String callRate = cc.callRate(month);
             String callReach = cc.callReach(month);
@@ -111,7 +113,7 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
         switch (v.getId()) {
             case R.id.tv_month:
                 AlertDialog.Builder alert = new AlertDialog.Builder(this);
-                View view = LayoutInflater.from(this).inflate(R.layout.fragment_calls, null);
+                View view = LayoutInflater.from(this).inflate(R.layout.layout_listview_only, null);
                 alert.setView(view);
                 final AppCompatDialog pdialog = alert.create();
                 pdialog.show();
@@ -122,9 +124,9 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
                 for (int x = 0; x < all_plans.size(); x++)
                     names.add(all_plans.get(x).get("name"));
 
-                ListView listview_calls = (ListView) view.findViewById(R.id.listview_calls);
-                listview_calls.setAdapter(new ArrayAdapter<>(this, R.layout.item_small_textview_colored, names));
-                listview_calls.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                ListView listview = (ListView) view.findViewById(R.id.listview);
+                listview.setAdapter(new ArrayAdapter<>(this, R.layout.item_small_textview_colored, names));
+                listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         AddData(Integer.parseInt(all_plans.get(position).get("cycle_number")));
