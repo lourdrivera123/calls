@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -142,7 +143,12 @@ public class MCPActivity extends AppCompatActivity implements ExpandableListView
                 getMenuInflater().inflate(R.menu.add_menu, menu);
                 no_plans.setText("No plotted plan for this month. Tap the \"+\" icon to start plotting.");
             } else {
-                getMenuInflater().inflate(R.menu.view_all, menu);
+                if (pc.checkForDisapprovedPlans() == month) {
+                    getMenuInflater().inflate(R.menu.edit_white_menu, menu);
+                } else {
+                    getMenuInflater().inflate(R.menu.view_all, menu);
+                }
+
                 all_doctors.setVisibility(View.VISIBLE);
                 change_view.setVisibility(View.GONE);
                 no_plans.setVisibility(View.GONE);
@@ -179,8 +185,16 @@ public class MCPActivity extends AppCompatActivity implements ExpandableListView
                 if (list_of_plans.size() > 0) {
                     long plan_id = pc.insertPlans(year, month);
 
-                    if (plan_id > 0) {
-                        if (pdc.insertPlanDetails(plan_id, list_of_plans)) {
+                    if (plan_id > 0 || plan_id == -1) {
+                        long new_plan_id = plan_id;
+
+                        if (plan_id == -1) {
+                            new_plan_id = pc.getPlanID(month, "");
+                            pdc.deletePlanDetails(new_plan_id);
+                            pc.updatePlanStatus(new_plan_id);
+                        }
+
+                        if (pdc.savePlanDetails(new_plan_id, list_of_plans)) {
                             Snackbar.make(root, "Successfully saved", Snackbar.LENGTH_SHORT).show();
                             flag = false;
                             cal_adapter = new MCPCalendarAdapter(this, cal_month);
@@ -260,12 +274,18 @@ public class MCPActivity extends AppCompatActivity implements ExpandableListView
                 cal_adapter = new MCPCalendarAdapter(this, cal_month);
                 gv_calendar.setAdapter(cal_adapter);
                 break;
+
+            case R.id.edit:
+                flag = true;
+                invalidateOptionsMenu();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
+                                int childPosition, long id) {
         doc_details.setVisibility(View.VISIBLE);
         child_clicked = listDataChild.get(groupPosition).get(childPosition);
         String IDM_id = child_clicked.get("IDM_id");

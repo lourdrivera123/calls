@@ -151,21 +151,6 @@ public class Helpers {
         return (cal.get(Calendar.MONTH) + 1);
     }
 
-    public int convertDateToCycleSet(String date) {
-        Date date1;
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-
-        try {
-            date1 = date_format.parse(date);
-            cal.setTime(date1);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return (cal.get(Calendar.YEAR));
-    }
-
     public String convertIntToStringMonth(int month) {
         return new DateFormatSymbols().getMonths()[month - 1];
     }

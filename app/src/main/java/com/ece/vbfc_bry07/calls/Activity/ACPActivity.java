@@ -259,9 +259,7 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                 break;
 
             case R.id.start_call:
-                int cycleSet = helpers.convertDateToCycleSet(current_date);
-
-                if (pc.checkIfPlanIsApproved(cycleSet, cycle_month)) {
+                if (pc.checkIfPlanIsApproved(cycle_month) == 1) {
                     if (ViewDoctorsHistoryDialog.child_clicked != null && !IDM_id.equals(ViewDoctorsHistoryDialog.child_clicked.get("IDM_id")))
                         missed_call_date = "";
 
@@ -408,7 +406,7 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
         else
             remarks.setVisibility(View.VISIBLE);
 
-        spinner_of_reasons.setAdapter(new ArrayAdapter<>(ACPActivity.this, R.layout.item_products, rcc.getEnabledReasons()));
+        spinner_of_reasons.setAdapter(new ArrayAdapter<>(ACPActivity.this, R.layout.item_plain_textview, rcc.getEnabledReasons()));
     }
 
     @Override

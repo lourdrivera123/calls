@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -12,12 +11,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.ece.vbfc_bry07.calls.Adapter.BirthdayAdapter;
+import com.ece.vbfc_bry07.calls.Controller.BroadcastsController;
 import com.ece.vbfc_bry07.calls.Controller.CallsController;
 import com.ece.vbfc_bry07.calls.Controller.DbHelper;
 import com.ece.vbfc_bry07.calls.Controller.DoctorsController;
@@ -31,9 +32,10 @@ import java.util.HashMap;
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     Toolbar toolbar;
     ScrollView statistics;
-    ListView listBroadcastMessage;
-    TextView username, no_data, call_rate, call_reach, planned_calls, incidental_calls, recovered_calls, declared_missed_calls, unprocessed_calls, cycle_number;
-    LinearLayout root, quick_sign, actual_coverage_plan, master_coverage_plan, doctors_information, call_report, sales_report, material_monitoring, status_summary;
+    TextView username, no_data, call_rate, call_reach, planned_calls, incidental_calls, recovered_calls,
+            declared_missed_calls, unprocessed_calls, cycle_number, count_birthday, count_broadcast;
+    LinearLayout root, birthday, quick_sign, actual_coverage_plan, master_coverage_plan, doctors_information,
+            call_report, sales_report, material_monitoring, status_summary, broadcast_msg;
 
     SharedPreferences sharedpref;
 
@@ -42,8 +44,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     CallsController cc;
     PlansController pc;
     DoctorsController dc;
+    BroadcastsController bc;
 
     int cycle_month;
+
+    ArrayList<String> broadcasts;
+    ArrayList<HashMap<String, String>> birthdays;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,16 +63,19 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         call_rate = (TextView) findViewById(R.id.call_rate);
         call_reach = (TextView) findViewById(R.id.call_reach);
         statistics = (ScrollView) findViewById(R.id.statistics);
+        birthday = (LinearLayout) findViewById(R.id.birthday);
         quick_sign = (LinearLayout) findViewById(R.id.quick_sign);
         cycle_number = (TextView) findViewById(R.id.cycle_number);
         call_report = (LinearLayout) findViewById(R.id.call_report);
         planned_calls = (TextView) findViewById(R.id.planned_calls);
         sales_report = (LinearLayout) findViewById(R.id.sales_report);
+        count_birthday = (TextView) findViewById(R.id.count_birthday);
+        broadcast_msg = (LinearLayout) findViewById(R.id.broadcast_msg);
+        count_broadcast = (TextView) findViewById(R.id.count_broadcast);
         recovered_calls = (TextView) findViewById(R.id.recovered_calls);
         incidental_calls = (TextView) findViewById(R.id.incidental_calls);
         status_summary = (LinearLayout) findViewById(R.id.status_summary);
         unprocessed_calls = (TextView) findViewById(R.id.unprocessed_calls);
-        listBroadcastMessage = (ListView) findViewById(R.id.listBroadcastMessage);
         doctors_information = (LinearLayout) findViewById(R.id.doctors_information);
         material_monitoring = (LinearLayout) findViewById(R.id.material_monitoring);
         declared_missed_calls = (TextView) findViewById(R.id.declared_missed_calls);
@@ -78,6 +87,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         cc = new CallsController(this);
         dc = new DoctorsController(this);
         pc = new PlansController(this);
+        bc = new BroadcastsController(this);
 
         sharedpref = getSharedPreferences("ECECalls", Context.MODE_PRIVATE);
         cycle_month = helpers.convertDateToCycleMonth(helpers.getCurrentDate(""));
@@ -86,17 +96,27 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        birthday.setOnClickListener(this);
         quick_sign.setOnClickListener(this);
+        call_report.setOnClickListener(this);
+        sales_report.setOnClickListener(this);
+        broadcast_msg.setOnClickListener(this);
+        status_summary.setOnClickListener(this);
         actual_coverage_plan.setOnClickListener(this);
         master_coverage_plan.setOnClickListener(this);
         doctors_information.setOnClickListener(this);
-        call_report.setOnClickListener(this);
-        sales_report.setOnClickListener(this);
         material_monitoring.setOnClickListener(this);
-        status_summary.setOnClickListener(this);
 
         username.setText(getUsername());
         cycle_number.setText("Cycle Statistics (Cycle " + cycle_month + ")");
+
+        birthdays = dc.getBirthdayByDate(helpers.convertToAlphabetDate(helpers.getCurrentDate(""), "without_year"));
+
+        if (birthdays.size() > 0) {
+            count_birthday.setVisibility(View.VISIBLE);
+            count_birthday.setText(birthdays.size() + "");
+        } else
+            count_birthday.setVisibility(View.GONE);
     }
 
     @Override
@@ -128,6 +148,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 unprocessed_calls.setText(String.valueOf(UnprocessedCalls));
                 call_rate.setText(callRate);
                 call_reach.setText(callReach);
+
+                broadcasts = bc.getBroadcastMessages();
+
+                if (pc.checkForDisapprovedPlans() > 0)
+                    broadcasts.add("* Plan has been disapproved. Tap the MCP tab to edit");
+
+                if (broadcasts.size() > 0) {
+                    count_broadcast.setVisibility(View.VISIBLE);
+                    count_broadcast.setText(broadcasts.size() + "");
+                } else
+                    count_broadcast.setVisibility(View.GONE);
             }
         }
 
@@ -153,21 +184,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.sync:
 
-                break;
-
-            case R.id.birthday:
-                ArrayList<HashMap<String, String>> birthdays = dc.getBirthdayByDate(helpers.convertToAlphabetDate(helpers.getCurrentDate(""), "without_year"));
-
-                if (birthdays.size() > 0) {
-                    Dialog dialog = new Dialog(this);
-                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    dialog.setContentView(R.layout.layout_listview_only);
-                    dialog.show();
-
-                    ListView listview = (ListView) dialog.findViewById(R.id.listview);
-                    listview.setAdapter(new BirthdayAdapter(this, birthdays));
-                } else
-                    Snackbar.make(root, "No one is celebrating their birthday for today", Snackbar.LENGTH_SHORT).show();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -200,11 +216,35 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.status_summary:
                 startActivity(new Intent(this, StatusSummaryActivity.class));
                 break;
+
+            case R.id.birthday:
+                if (birthdays.size() > 0) {
+                    Dialog dialog = new Dialog(this);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.layout_listview_only);
+                    dialog.show();
+
+                    ListView listview = (ListView) dialog.findViewById(R.id.listview);
+                    listview.setAdapter(new BirthdayAdapter(this, birthdays));
+                }
+                break;
+
+            case R.id.broadcast_msg:
+                if (broadcasts.size() > 0) {
+                    Dialog dialog = new Dialog(this);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.layout_listview_only);
+                    dialog.getWindow().setLayout(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                    dialog.show();
+
+                    ListView listview = (ListView) dialog.findViewById(R.id.listview);
+                    listview.setAdapter(new ArrayAdapter<>(this, R.layout.item_plain_textview, broadcasts));
+                }
+                break;
         }
     }
 
     public String getUsername() {
         return sharedpref.getString("Username", "");
     }
-
 }

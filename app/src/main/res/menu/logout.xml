@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/birthday"
-        android:icon="@mipmap/ic_cake"
-        android:title="Birthday"
-        app:showAsAction="always" />
-
-    <item
         android:id="@+id/sync"
         android:icon="@mipmap/sync"
         android:title="Sync"

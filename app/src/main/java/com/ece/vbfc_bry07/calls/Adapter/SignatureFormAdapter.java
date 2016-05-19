@@ -42,7 +42,7 @@ public class SignatureFormAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.item_products, parent, false);
+            convertView = inflater.inflate(R.layout.item_plain_textview, parent, false);
         }
 
         product_name = (TextView) convertView.findViewById(R.id.name);

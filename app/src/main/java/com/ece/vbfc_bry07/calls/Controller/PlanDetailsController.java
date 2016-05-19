@@ -227,7 +227,7 @@ public class PlanDetailsController extends DbHelper {
     }
 
     /////////////////////////////INSERT METHODS
-    public boolean insertPlanDetails(long plan_id, ArrayList<HashMap<String, ArrayList<String>>> planDetails) {
+    public boolean savePlanDetails(long plan_id, ArrayList<HashMap<String, ArrayList<String>>> planDetails) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         long id = 0;
 
@@ -282,5 +282,13 @@ public class PlanDetailsController extends DbHelper {
             rowID = -1;
 
         return rowID;
+    }
+
+    //////////////////////////////////DELETE METHODS
+    public boolean deletePlanDetails(long plan_id) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        long id = db.delete(TBL_PlanDetails, PLAN_ID_FK + " = " + plan_id, null);
+
+        return id > 0;
     }
 }

@@ -49,21 +49,35 @@ public class PlansController extends DbHelper {
         return plan_id;
     }
 
-    public boolean checkIfPlanIsApproved(int cycle_set, int cycle_number) {
-        String sql = "SELECT * FROM Plans WHERE cycle_number = " + cycle_number + " AND cycle_set_id = (SELECT cycle_sets_id FROM CycleSets WHERE year = " + cycle_set + ")";
+    public int checkIfPlanIsApproved(int cycle_number) {
+        String sql = "SELECT * FROM Plans WHERE cycle_number = " + cycle_number;
         SQLiteDatabase db = dbhelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
-        boolean flag = false;
+        int status_id = 0;
+
+        if (cur.moveToNext())
+            status_id = cur.getInt(cur.getColumnIndex("status"));
+
+        cur.close();
+        db.close();
+
+        return status_id;
+    }
+
+    public int checkForDisapprovedPlans() {
+        String sql = "SELECT * FROM Plans WHERE status = 2";
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+        int cycle_number = 0;
 
         if (cur.moveToNext()) {
-            if (cur.getInt(cur.getColumnIndex(PLANS_STATUS)) == 1)
-                flag = true;
+            cycle_number = cur.getInt(cur.getColumnIndex("cycle_number"));
         }
 
         cur.close();
         db.close();
 
-        return flag;
+        return cycle_number;
     }
 
     ///////////////////////////////////////////GET METHODS
@@ -114,7 +128,7 @@ public class PlansController extends DbHelper {
     public long insertPlans(int year, int month) {
         ContentValues val = new ContentValues();
         SQLiteDatabase db = getWritableDatabase();
-        String sql = "SELECT * FROM " + CycleSetsController.TBL_CycleSets + " WHERE " + CycleSetsController.YEAR + " = " + year;
+        String sql = "SELECT * FROM CycleSets WHERE year = " + year;
         Cursor cur = db.rawQuery(sql, null);
         int cycle_set_id = 0;
         long id;
@@ -144,5 +158,17 @@ public class PlansController extends DbHelper {
         db.close();
 
         return id;
+    }
+
+    /////////////////////UPDATE METHODS
+    public boolean updatePlanStatus(long plan_id) {
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+        ContentValues val = new ContentValues();
+
+        val.put(PLANS_STATUS, 0);
+
+        long id = db.update(TBL_PLANS, val, PLANS_ID + " = " + plan_id, null);
+
+        return id > 0;
     }
 }
