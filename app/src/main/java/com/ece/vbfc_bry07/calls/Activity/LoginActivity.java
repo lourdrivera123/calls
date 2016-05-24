@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +14,8 @@ import android.widget.LinearLayout;
 import com.ece.vbfc_bry07.calls.Controller.DbHelper;
 import com.ece.vbfc_bry07.calls.Controller.PreferencesController;
 import com.ece.vbfc_bry07.calls.R;
+
+import java.io.IOException;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     Button BtnLogin;
@@ -41,6 +42,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         shared = getSharedPreferences("ECECalls", Context.MODE_PRIVATE);
 
         BtnLogin.setOnClickListener(this);
+
+        try {
+            db.createDataBase();
+            db.openDataBase();
+        } catch (IOException ioe) {
+            throw new Error(ioe + "");
+        }
     }
 
     @Override

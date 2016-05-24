@@ -8,14 +8,7 @@ public class DoctorClassesController extends DbHelper {
 
     DbHelper dbHelper;
 
-    static String TBL_DoctorClasses = "DoctorClasses",
-            DoctorClasses_ID = "doctor_classes_id",
-            CODE = "code",
-            NAME = "name",
-            MAX_VISIT = "max_visit";
-
-    public static final String CREATE_DoctorClasses = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s TEXT, %s TEXT, %s INTEGER, %s TEXT, %s TEXT, %s TEXT)",
-            TBL_DoctorClasses, AI_ID, DoctorClasses_ID, CODE, NAME, MAX_VISIT, CREATED_AT, UPDATED_AT, DELETED_AT);
+    static String MAX_VISIT = "max_visit";
 
     public DoctorClassesController(Context context) {
         super(context);
@@ -29,7 +22,7 @@ public class DoctorClassesController extends DbHelper {
         int max_visit = 0;
 
         if (cur.moveToNext())
-            max_visit = cur.getInt(cur.getColumnIndex("max_visit"));
+            max_visit = cur.getInt(cur.getColumnIndex(MAX_VISIT));
 
         cur.close();
         db.close();

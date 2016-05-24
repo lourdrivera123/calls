@@ -1,70 +1,95 @@
 package com.ece.vbfc_bry07.calls.Controller;
 
 import android.content.Context;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class DbHelper extends SQLiteOpenHelper {
     public static String CREATED_AT = "created_at",
             UPDATED_AT = "updated_at",
             DELETED_AT = "deleted_at",
-            AI_ID = "id";
+            AI_ID = "_id";
 
+    private static String DB_PATH;
+    private static String DB_NAME = "ECE_calls";
+    private static SQLiteDatabase myDataBase;
+    private Context myContext;
 
     public DbHelper(Context context) {
-        super(context, "ECE_calls", null, 1);
+        super(context, DB_NAME, null, 1);
+        this.myContext = context;
+
+        if (android.os.Build.VERSION.SDK_INT >= 17)
+            DB_PATH = context.getApplicationInfo().dataDir + "/databases/";
+        else
+            DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";
+    }
+
+    public void createDataBase() throws IOException {
+        boolean dbExist = checkDataBase();
+
+        if (!dbExist) {
+            this.getReadableDatabase();
+
+            try {
+                copyDataBase();
+            } catch (IOException e) {
+                throw new Error("" + e);
+            }
+        }
+    }
+
+    private boolean checkDataBase() {
+        File databasePath = myContext.getDatabasePath(DB_NAME);
+        return databasePath.exists();
+    }
+
+    private void copyDataBase() throws IOException {
+        //Open your local db as the input stream
+        InputStream myInput = myContext.getAssets().open(DB_NAME);
+        String path = DB_PATH + DB_NAME;
+
+        //Open the empty db as the output stream
+        OutputStream myOutput = new FileOutputStream(path);
+
+        //transfer bytes from the inputfile to the outputfile
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = myInput.read(buffer)) > 0) {
+            myOutput.write(buffer, 0, length);
+        }
+
+        //Close the streams
+        myOutput.flush();
+        myOutput.close();
+        myInput.close();
+    }
+
+    public void openDataBase() throws SQLException {
+        String path = DB_PATH + DB_NAME;
+        myDataBase = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY);
+    }
+
+    @Override
+    public synchronized void close() {
+        if (myDataBase != null)
+            myDataBase.close();
+
+        super.close();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(DoctorsController.CREATE_DOCTORS);
-        db.execSQL(PlansController.CREATE_PLANS);
-        db.execSQL(SpecializationsController.CREATE_SPECIALIZATIONS);
-        db.execSQL(BroadcastsController.CREATE_Broadcasts);
-        db.execSQL(CallDetailingAidsController.CREATE_CallDetailingAids);
-        db.execSQL(CallMaterialsController.CREATE_CallMaterials);
-        db.execSQL(CallNotesController.CREATE_CallNotes);
-        db.execSQL(CallReportsController.CREATE_CallReports);
-        db.execSQL(CallsController.CREATE_Calls);
-        db.execSQL(MaterialsController.CREATE_MATERIALS);
-        db.execSQL(CycleSetsController.CREATE_CycleSets);
-        db.execSQL(DayTypesController.CREATE_DayTypes);
-        db.execSQL(DetailingAidEmailsController.CREATE_DetailingAidEmails);
-        db.execSQL(DetailingAidsController.CREATE_DetailingAids);
-        db.execSQL(DoctorClassesController.CREATE_DoctorClasses);
-
-        db.execSQL(InstitutionDoctorMapsController.CREATE_InstitutionDoctorMaps);
-        db.execSQL(InstitutionsController.CREATE_Institutions);
-        db.execSQL(MaterialAllocationsController.CREATE_MaterialAllocation);
-        db.execSQL(MaterialInventoriesController.CREATE_MaterialInventories);
-        db.execSQL(MaterialReplenishmentDetailsController.CREATE_MaterialReplenishmentDetails);
-        db.execSQL(MaterialReplenishmentsController.CREATE_MaterialReplenishments);
-        db.execSQL(MaterialsByClassSpecializationMapsController.CREATE_MaterialsByClassSpecializationMaps);
-        db.execSQL(MaterialsByInstitutionDoctorMapsController.CREATE_MaterialsByInstitutionDoctorMaps);
-        db.execSQL(MissedCallsController.CREATE_MissedCalls);
-        db.execSQL(MockPlanDetailsController.CREATE_MockPlanDetails);
-        db.execSQL(MockPlansController.CREATE_MockPlans);
-        db.execSQL(ModulesController.CREATE_Modules);
-        db.execSQL(PlanDetailsController.CREATE_PlanDetails);
-        db.execSQL(PreferencesController.CREATE_PREFERENCES);
-        db.execSQL(ProductsController.CREATE_Products);
-        db.execSQL(QuickSignaturesController.CREATE_QuickSignatures);
-        db.execSQL(ReasonsController.CREATE_Reasons);
-        db.execSQL(RescheduledCallsController.CREATE_RescheduledCalls);
-        db.execSQL(SalesReportDetailsController.CREATE_SalesReportDetails);
-        db.execSQL(SalesReportsController.CREATE_SalesReports);
-        db.execSQL(SettingsController.CREATE_Settings);
-        db.execSQL(SignaturesController.CREATE_Signatures);
-        db.execSQL(StagesController.CREATE_Stages);
-        db.execSQL(VersionsController.CREATE_Versions);
-
-        PreferencesController.insertToTablePreferences(db);
-        CycleSetsController.insertStartUpYear(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String sql = "DROP TABLE IF EXISTS ECE_calls";
-        db.execSQL(sql);
     }
 }

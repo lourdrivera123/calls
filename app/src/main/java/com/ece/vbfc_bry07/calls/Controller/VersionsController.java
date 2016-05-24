@@ -12,9 +12,6 @@ public class VersionsController extends DbHelper {
             NAME = "name",
             VALUE = "value";
 
-    public static final String CREATE_Versions = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s TEXT, %s TEXT, %s DOUBLE, %s TEXT, %s TEXT, %s TEXT)",
-            TBL_Versions, AI_ID, Versions_ID, CODE, NAME, VALUE, CREATED_AT, UPDATED_AT, DELETED_AT);
-
     public VersionsController(Context context) {
         super(context);
         dbHelper = new DbHelper(context);

@@ -15,15 +15,11 @@ public class CallMaterialsController extends DbHelper {
     DbHelper dbHelper;
 
     static String TBL_CallMaterials = "CallMaterials",
-            CallMaterials_ID = "callmaterials_id",
             CALL_ID_FK = "call_id",
             PRODUCT_ID_FK = "product_id",
             SAMPLE = "sample",
             LITERATURE = "literature",
             PROMATERIALS = "promaterials";
-
-    public static final String CREATE_CallMaterials = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s INTEGER, %s TEXT, %s INTEGER, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s TEXT)",
-            TBL_CallMaterials, AI_ID, CallMaterials_ID, CALL_ID_FK, PRODUCT_ID_FK, SAMPLE, LITERATURE, PROMATERIALS, CREATED_AT, UPDATED_AT, DELETED_AT);
 
     public CallMaterialsController(Context context) {
         super(context);
@@ -59,9 +55,9 @@ public class CallMaterialsController extends DbHelper {
 
     //////////////////////////////GET METHODS
     public ArrayList<HashMap<String, String>> getCallMaterialsByIDM_id(int IDM_id, String date) {
-        String sql = "SELECT * FROM Products as p INNER JOIN CallMaterials as cm ON p.products_id = cm.product_id INNER JOIN Calls as c ON cm.call_id = c.id " +
-                "INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id LEFT JOIN RescheduledCalls as rc ON c.id = rc.call_id " +
-                "WHERE (c.plan_details_id > 0 OR c.temp_planDetails_id = pd.id) AND (pd.cycle_day = '" + date + "' OR rc.cycle_day = '" + date + "') " +
+        String sql = "SELECT * FROM Products as p INNER JOIN CallMaterials as cm ON p.products_id = cm.product_id INNER JOIN Calls as c ON cm.call_id = c._id " +
+                "INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id LEFT JOIN RescheduledCalls as rc ON c._id = rc.call_id " +
+                "WHERE (c.plan_details_id > 0 OR c.temp_planDetails_id = pd._id) AND (pd.cycle_day = '" + date + "' OR rc.cycle_day = '" + date + "') " +
                 "AND pd.inst_doc_id = " + IDM_id+" ORDER BY name ASC";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);

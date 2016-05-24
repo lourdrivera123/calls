@@ -3,7 +3,6 @@ package com.ece.vbfc_bry07.calls.Controller;
 import android.content.Context;
 
 public class MaterialInventoriesController extends DbHelper {
-
     DbHelper dbHelper;
 
     static String TBL_MaterialInventories = "MaterialInventories",
@@ -14,9 +13,6 @@ public class MaterialInventoriesController extends DbHelper {
             MATERIAL_ID_FK = "material_id_fk",
             MATERIAL_COUNT = "material_count",
             BEGINNING_BALANCE = "beginning_balance";
-
-    public static final String CREATE_MaterialInventories = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s INTEGER, %s INTEGER, %s INTEGER, %s INTEGER, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s TEXT)",
-            TBL_MaterialInventories, AI_ID, MaterialInventories_ID, CYCLE_SET_ID_FK, CYCLE_NUMBER, PRODUCT_ID_FK, MATERIAL_ID_FK, MATERIAL_COUNT, BEGINNING_BALANCE, CREATED_AT, UPDATED_AT, DELETED_AT);
 
     public MaterialInventoriesController(Context context) {
         super(context);

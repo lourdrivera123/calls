@@ -43,8 +43,8 @@ public class CallsController extends DbHelper {
 
     ///////////////////////////////////GET METHODS
     public String callRate(int cycle_month) {
-        String sql = "SELECT  c.id as call_id, * FROM Plans as p INNER JOIN PlanDetails as pd ON p.id = pd.plan_id LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id " +
-                "WHERE (pd.plan_details_id > 0 OR c.temp_planDetails_id = pd.id) AND p.cycle_number = " + cycle_month;
+        String sql = "SELECT  c._id as call_id, * FROM Plans as p INNER JOIN PlanDetails as pd ON p._id = pd.plan_id LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id " +
+                "WHERE (pd.plan_details_id > 0 OR c.temp_planDetails_id = pd._id) AND p.cycle_number = " + cycle_month;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
         int total = cur.getCount(), calls = 0;
@@ -67,10 +67,10 @@ public class CallsController extends DbHelper {
     }
 
     public String callReach(int cycle_month) {
-        String sql = "SELECT COUNT(c.id) as count_call_id, * FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p.id " +
+        String sql = "SELECT COUNT(c._id) as count_call_id, * FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p._id " +
                 "INNER JOIN InstitutionDoctorMaps as idm ON pd.inst_doc_id = idm.IDM_ID INNER JOIN DoctorClasses as dc ON idm.class_id = dc.doctor_classes_id " +
                 "LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id WHERE p.cycle_number = " + cycle_month + " AND " +
-                "(c.plan_details_id > 0 OR c.plan_details_id IS NULL OR c.temp_planDetails_id = pd.id) GROUP BY idm.IDM_id";
+                "(c.plan_details_id > 0 OR c.plan_details_id IS NULL OR c.temp_planDetails_id = pd._id) GROUP BY idm.IDM_id";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
         int total_doctor = cur.getCount();
@@ -95,7 +95,7 @@ public class CallsController extends DbHelper {
     }
 
     public int fetchPlannedCalls(int cycle_month) {
-        String sql = "SELECT * FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p.id WHERE p.cycle_number = " + cycle_month + " AND plan_details_id > 0";
+        String sql = "SELECT * FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p._id WHERE p.cycle_number = " + cycle_month + " AND plan_details_id > 0";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
 
@@ -114,8 +114,8 @@ public class CallsController extends DbHelper {
         map.put("last_visited", "");
         map.put("count_visits", "");
 
-        String sql = "SELECT  c.created_at FROM Calls as c INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id INNER JOIN Plans as p ON pd.plan_id = p.id " +
-                "WHERE (c.plan_details_id > 0 OR c.temp_planDetails_id = pd.id) AND pd.inst_doc_id = " + IDM_id + " AND p.cycle_number = " + cycle_month +
+        String sql = "SELECT  c.created_at FROM Calls as c INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id INNER JOIN Plans as p ON pd.plan_id = p._id " +
+                "WHERE (c.plan_details_id > 0 OR c.temp_planDetails_id = pd._id) AND pd.inst_doc_id = " + IDM_id + " AND p.cycle_number = " + cycle_month +
                 " GROUP BY c.created_at ORDER BY c.created_at DESC";
 
         Cursor cur = db.rawQuery(sql, null);
@@ -139,21 +139,21 @@ public class CallsController extends DbHelper {
 
         switch (type) {
             case "actual_covered_call":
-                sql = "SELECT * FROM Calls as c INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id INNER JOIN Plans as p ON pd.plan_id = p.id " +
+                sql = "SELECT * FROM Calls as c INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id INNER JOIN Plans as p ON pd.plan_id = p._id " +
                         "INNER JOIN InstitutionDoctorMaps as idm ON idm.IDM_ID = pd.inst_doc_id INNER JOIN Doctors as d ON d.doc_id = idm.doctor_id " +
                         "WHERE p.cycle_number = " + cycle_month + " AND c.status_id = 1 AND c.makeup = 0";
                 break;
             case "declared_missed_call":
-                sql = "SELECT * FROM MissedCalls as mc INNER JOIN PlanDetails as pd ON mc.plan_details_id = pd.plan_details_id INNER JOIN Plans as p ON pd.plan_id = p.id " +
+                sql = "SELECT * FROM MissedCalls as mc INNER JOIN PlanDetails as pd ON mc.plan_details_id = pd.plan_details_id INNER JOIN Plans as p ON pd.plan_id = p._id " +
                         "INNER JOIN InstitutionDoctorMaps as idm ON idm.IDM_ID = pd.inst_doc_id INNER JOIN Doctors as d ON idm.doctor_id = d.doc_id WHERE p.cycle_number = " + cycle_month;
                 break;
             case "recovered_call":
-                sql = "SELECT rc.cycle_day as rc_cycleday, * FROM RescheduledCalls as rc INNER JOIN Calls as c ON rc.call_id = c.id INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id " +
-                        "INNER JOIN Plans as p ON pd.plan_id = p.id INNER JOIN InstitutionDoctorMaps as idm ON pd.inst_doc_id = idm.IDM_ID " +
+                sql = "SELECT rc.cycle_day as rc_cycleday, * FROM RescheduledCalls as rc INNER JOIN Calls as c ON rc.call_id = c._id INNER JOIN PlanDetails as pd ON c.plan_details_id = pd.plan_details_id " +
+                        "INNER JOIN Plans as p ON pd.plan_id = p._id INNER JOIN InstitutionDoctorMaps as idm ON pd.inst_doc_id = idm.IDM_ID " +
                         "INNER JOIN Doctors as d ON idm.doctor_id = d.doc_id WHERE p.cycle_number = " + cycle_month;
                 break;
             default:
-                sql = "SELECT * FROM Plans as p INNER JOIN PlanDetails as pd ON p.id = pd.plan_id INNER JOIN Calls as c ON pd.id = c.temp_planDetails_id " +
+                sql = "SELECT * FROM Plans as p INNER JOIN PlanDetails as pd ON p._id = pd.plan_id INNER JOIN Calls as c ON pd._id = c.temp_planDetails_id " +
                         "INNER JOIN InstitutionDoctorMaps as idm ON pd.inst_doc_id = idm.IDM_ID INNER JOIN Doctors as d ON idm.doctor_id = d.doc_id " +
                         "WHERE cycle_number = " + cycle_month + " AND c.status_id = 2 AND c.makeup = 0";
                 break;
@@ -222,7 +222,7 @@ public class CallsController extends DbHelper {
 
 
         if (type.equals("planDetails"))
-            sql = "SELECT mc.id as mc_id, * FROM PlanDetails as pd LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id " +
+            sql = "SELECT mc._id as mc_id, * FROM PlanDetails as pd LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id " +
                     "LEFT JOIN MissedCalls as mc ON pd.plan_details_id = mc.plan_details_id WHERE pd.plan_details_id = " + id;
         else if (type.equals("temp_planDetails"))
             sql = "SELECT * FROM calls as c WHERE temp_planDetails_id = " + id;

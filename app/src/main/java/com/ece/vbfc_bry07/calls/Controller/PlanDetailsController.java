@@ -35,7 +35,7 @@ public class PlanDetailsController extends DbHelper {
 
     ///////////////////////////////////////GET METHODS
     public ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> getPlanDetailsByPlanID(int plan_id) {
-        String sql1 = "SELECT DISTINCT cycle_day FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p.id WHERE pd.plan_id = " + plan_id;
+        String sql1 = "SELECT DISTINCT cycle_day FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p._id WHERE pd.plan_id = " + plan_id;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql1, null);
         ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> array = new ArrayList<>();
@@ -78,15 +78,15 @@ public class PlanDetailsController extends DbHelper {
     }
 
     public ArrayList<HashMap<String, ArrayList<String>>> getPlanDetailsByPID(int plan_ID) {
-        String sql1 = "SELECT DISTINCT inst_doc_id FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p.id WHERE plan_id = " + plan_ID;
+        String sql1 = "SELECT DISTINCT inst_doc_id FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p._id WHERE plan_id = " + plan_ID;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql1, null);
         ArrayList<HashMap<String, ArrayList<String>>> array = new ArrayList<>();
 
         while (cur.moveToNext()) {
-            String sql2 = "SELECT cycle_day FROM Plans as p INNER JOIN PlanDetails as pd ON p.id = pd.plan_id INNER JOIN InstitutionDoctorMaps as idm on pd.inst_doc_id = idm.IDM_ID " +
+            String sql2 = "SELECT cycle_day FROM Plans as p INNER JOIN PlanDetails as pd ON p._id = pd.plan_id INNER JOIN InstitutionDoctorMaps as idm on pd.inst_doc_id = idm.IDM_ID " +
                     "INNER JOIN Doctors as d on idm.doctor_id = d.doc_id INNER JOIN Institutions as i on idm.institution_id = i.inst_id " +
-                    "INNER JOIN DoctorClasses as dc on idm.class_id = dc.doctor_classes_id where IDM_id = " + cur.getInt(cur.getColumnIndex("inst_doc_id")) + " AND p.id = " + plan_ID;
+                    "INNER JOIN DoctorClasses as dc on idm.class_id = dc.doctor_classes_id where IDM_id = " + cur.getInt(cur.getColumnIndex("inst_doc_id")) + " AND p._id = " + plan_ID;
             Cursor cur2 = db.rawQuery(sql2, null);
             ArrayList<String> date = new ArrayList<>();
             HashMap<String, ArrayList<String>> map = new HashMap<>();
@@ -127,8 +127,8 @@ public class PlanDetailsController extends DbHelper {
     }
 
     public ArrayList<HashMap<String, String>> getMonthDetails(int cycle_month) {
-        String sql = "SELECT DISTINCT pd.cycle_day, rc.cycle_day as rc_cycle_day FROM Plans as p INNER JOIN PlanDetails as pd ON p.id = pd.plan_id " +
-                "LEFT JOIN Calls as c ON c.plan_details_id = pd.plan_details_id LEFT JOIN RescheduledCalls as rc ON c.id = rc.call_id " +
+        String sql = "SELECT DISTINCT pd.cycle_day, rc.cycle_day as rc_cycle_day FROM Plans as p INNER JOIN PlanDetails as pd ON p._id = pd.plan_id " +
+                "LEFT JOIN Calls as c ON c.plan_details_id = pd.plan_details_id LEFT JOIN RescheduledCalls as rc ON c._id = rc.call_id " +
                 "WHERE p.cycle_number = " + cycle_month + " AND (c.plan_details_id IS NULL OR c.plan_details_id > 0)";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
@@ -141,8 +141,8 @@ public class PlanDetailsController extends DbHelper {
             if (rc_cycle_day != null)
                 date = rc_cycle_day;
 
-            String sql2 = "SELECT c.id as call_id_final, rc.cycle_day as rc_cycleday, * FROM PlanDetails as pd LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id " +
-                    "LEFT JOIN RescheduledCalls as rc ON c.id = rc.call_id WHERE pd.cycle_day = '" + date + "' OR rc.cycle_day = '" + date + "' GROUP BY pd.id";
+            String sql2 = "SELECT c._id as call_id_final, rc.cycle_day as rc_cycleday, * FROM PlanDetails as pd LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id " +
+                    "LEFT JOIN RescheduledCalls as rc ON c._id = rc.call_id WHERE pd.cycle_day = '" + date + "' OR rc.cycle_day = '" + date + "' GROUP BY pd._id";
             Cursor cur2 = db.rawQuery(sql2, null);
             HashMap<String, String> map = new HashMap<>();
             map.put("date", date);
@@ -179,9 +179,9 @@ public class PlanDetailsController extends DbHelper {
     }
 
     public ArrayList<HashMap<String, String>> getMonthlyCallsByIDM_id(int IDM_id, int month) {
-        String sql = "SELECT pd.plan_details_id as pd_id, pd.cycle_day as orig_cycle_day, rc.cycle_day as rescheduled_cycle_day,  c.calls_id as server_id, c.id as call_ai_id, c.status_id as call_status, * FROM PlanDetails as pd " +
-                "INNER JOIN Plans as p ON pd.plan_id = p.id LEFT JOIN Calls as c ON c.plan_details_id = pd.plan_details_id LEFT JOIN RescheduledCalls as rc ON c.id = rc.call_id " +
-                "WHERE inst_doc_id = " + IDM_id + " AND p.cycle_number = " + month + " GROUP BY pd.id";
+        String sql = "SELECT pd.plan_details_id as pd_id, pd.cycle_day as orig_cycle_day, rc.cycle_day as rescheduled_cycle_day,  c.calls_id as server_id, c._id as call_ai_id, c.status_id as call_status, * FROM PlanDetails as pd " +
+                "INNER JOIN Plans as p ON pd.plan_id = p._id LEFT JOIN Calls as c ON c.plan_details_id = pd.plan_details_id LEFT JOIN RescheduledCalls as rc ON c._id = rc.call_id " +
+                "WHERE inst_doc_id = " + IDM_id + " AND p.cycle_number = " + month + " GROUP BY pd._id";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
         ArrayList<HashMap<String, String>> array = new ArrayList<>();

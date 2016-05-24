@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MaterialMonitoringController extends DbHelper {
-
     DbHelper dbHelper;
 
     public MaterialMonitoringController(Context context) {
@@ -38,8 +37,8 @@ public class MaterialMonitoringController extends DbHelper {
 
     public ArrayList<HashMap<String, String>> getCallMaterialsByMonth(int cycleMonth) {
         String sql = "SELECT cm.product_id, sum(sample) as sample, sum(literature) as literature, sum(promaterials) as promaterials  FROM Calls as c " +
-                "INNER JOIN PlanDetails as pd ON pd.plan_details_id = c.plan_details_id INNER JOIN Plans as p ON p.id = pd.plan_id " +
-                "INNER JOIN CallMaterials as cm ON c.id = cm.call_id WHERE (c.temp_planDetails_id = pd.id OR c.plan_details_id > 0) AND p.cycle_number = " + cycleMonth + " GROUP BY cm.product_id";
+                "INNER JOIN PlanDetails as pd ON pd.plan_details_id = c.plan_details_id INNER JOIN Plans as p ON p._id = pd.plan_id " +
+                "INNER JOIN CallMaterials as cm ON c._id = cm.call_id WHERE (c.temp_planDetails_id = pd._id OR c.plan_details_id > 0) AND p.cycle_number = " + cycleMonth + " GROUP BY cm.product_id";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
         ArrayList<HashMap<String, String>> array = new ArrayList<>();

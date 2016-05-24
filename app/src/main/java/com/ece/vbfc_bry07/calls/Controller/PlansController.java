@@ -24,9 +24,6 @@ public class PlansController extends DbHelper {
             PLANS_STATUS = "status",
             PLANS_STATUS_DATE = "status_date";
 
-    public static final String CREATE_PLANS = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
-            TBL_PLANS, AI_ID, PLANS_ID, PLANS_CYCLE_SET, PLANS_CYCLE_NUMBER, PLANS_STATUS, PLANS_STATUS_DATE, CREATED_AT, UPDATED_AT, DELETED_AT);
-
     public PlansController(Context context) {
         super(context);
         dbhelper = new DbHelper(context);
@@ -56,7 +53,7 @@ public class PlansController extends DbHelper {
         int status_id = 0;
 
         if (cur.moveToNext())
-            status_id = cur.getInt(cur.getColumnIndex("status"));
+            status_id = cur.getInt(cur.getColumnIndex(PLANS_STATUS));
 
         cur.close();
         db.close();
@@ -71,7 +68,7 @@ public class PlansController extends DbHelper {
         int cycle_number = 0;
 
         if (cur.moveToNext()) {
-            cycle_number = cur.getInt(cur.getColumnIndex("cycle_number"));
+            cycle_number = cur.getInt(cur.getColumnIndex(PLANS_CYCLE_NUMBER));
         }
 
         cur.close();
@@ -89,10 +86,10 @@ public class PlansController extends DbHelper {
 
         while (cur.moveToNext()) {
             HashMap<String, String> map = new HashMap<>();
-            String month = helpers.convertIntToStringMonth(cur.getInt(cur.getColumnIndex("cycle_number")));
+            String month = helpers.convertIntToStringMonth(cur.getInt(cur.getColumnIndex(PLANS_CYCLE_NUMBER)));
             int year = cur.getInt(cur.getColumnIndex("year"));
             map.put("name", month + " " + year);
-            map.put("cycle_number", cur.getString(cur.getColumnIndex("cycle_number")));
+            map.put("cycle_number", cur.getString(cur.getColumnIndex(PLANS_CYCLE_NUMBER)));
 
             array.add(map);
         }
@@ -110,7 +107,7 @@ public class PlansController extends DbHelper {
         int planID = 0;
 
         if (cur.moveToNext()) {
-            planID = cur.getInt(cur.getColumnIndex("id"));
+            planID = cur.getInt(cur.getColumnIndex(AI_ID));
 
             if (from.equals("PlanDetails")) {
                 if (cur.getInt(cur.getColumnIndex(PLANS_STATUS)) == 0)

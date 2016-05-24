@@ -121,6 +121,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onResume() {
+        broadcasts = bc.getBroadcastMessages();
+
         if (!sharedpref.contains("Username")) {
             startActivity(new Intent(this, LoginActivity.class));
             this.finish();
@@ -148,18 +150,16 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 unprocessed_calls.setText(String.valueOf(UnprocessedCalls));
                 call_rate.setText(callRate);
                 call_reach.setText(callReach);
-
-                broadcasts = bc.getBroadcastMessages();
-
-                if (pc.checkForDisapprovedPlans() > 0)
-                    broadcasts.add("* Plan has been disapproved. Tap the MCP tab to edit");
-
-                if (broadcasts.size() > 0) {
-                    count_broadcast.setVisibility(View.VISIBLE);
-                    count_broadcast.setText(broadcasts.size() + "");
-                } else
-                    count_broadcast.setVisibility(View.GONE);
             }
+
+            if (pc.checkForDisapprovedPlans() > 0)
+                broadcasts.add("* Plan has been disapproved. Tap the MCP tab to edit");
+
+            if (broadcasts.size() > 0) {
+                count_broadcast.setVisibility(View.VISIBLE);
+                count_broadcast.setText(broadcasts.size() + "");
+            } else
+                count_broadcast.setVisibility(View.GONE);
         }
 
         super.onResume();

@@ -462,15 +462,15 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
 
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-        String selected_doc = listDataChild.get(groupPosition).get(childPosition).get("doc_name");
-        plan_details_id = Integer.parseInt(listDataChild.get(groupPosition).get(childPosition).get("plan_details_id"));
-        IDM_id = listDataChild.get(groupPosition).get(childPosition).get("IDM_id");
-        int pd_id = Integer.parseInt(listDataChild.get(groupPosition).get(childPosition).get("plan_details_id"));
-        int temp_pd_id = Integer.parseInt(listDataChild.get(groupPosition).get(childPosition).get("temp_plandetails_id"));
-
         if (ongoing_call)
             Snackbar.make(root, "There is an ongoing call. You are not allowed to do this action", Snackbar.LENGTH_SHORT).show();
         else {
+            String selected_doc = listDataChild.get(groupPosition).get(childPosition).get("doc_name");
+            plan_details_id = Integer.parseInt(listDataChild.get(groupPosition).get(childPosition).get("plan_details_id"));
+            IDM_id = listDataChild.get(groupPosition).get(childPosition).get("IDM_id");
+            int pd_id = Integer.parseInt(listDataChild.get(groupPosition).get(childPosition).get("plan_details_id"));
+            int temp_pd_id = Integer.parseInt(listDataChild.get(groupPosition).get(childPosition).get("temp_plandetails_id"));
+
             menu_check = 20;
             image.setVisibility(View.INVISIBLE);
 

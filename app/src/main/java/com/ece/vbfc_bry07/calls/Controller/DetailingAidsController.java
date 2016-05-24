@@ -17,9 +17,6 @@ public class DetailingAidsController extends DbHelper {
             DOWNLOADED = "downloaded",
             DOWNLOADED_DATE = "downloaded_date";
 
-    public static final String CREATE_DetailingAids = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
-            TBL_DetailingAids, AI_ID, DetailingAids_ID, FILENAME, FILETYPE, FILESIZE, PRODUCTS, DOWNLOAD_PATH, STATUS_ID_FK, DOWNLOADED, DOWNLOADED_DATE, CREATED_AT, UPDATED_AT, DELETED_AT);
-
     public DetailingAidsController(Context context) {
         super(context);
         dbHelper = new DbHelper(context);
