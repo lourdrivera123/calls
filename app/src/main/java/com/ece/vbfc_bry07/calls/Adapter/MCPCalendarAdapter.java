@@ -1,8 +1,7 @@
-package com.ece.vbfc_bry07.calls.Adapter;
+package com.ece.vbfc_bry07.calls.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,7 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.Activity.MCPActivity;
+import com.ece.vbfc_bry07.calls.activity.MCPActivity;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 

@@ -1,4 +1,4 @@
-package com.ece.vbfc_bry07.calls.Activity;
+package com.ece.vbfc_bry07.calls.activity;
 
 import android.graphics.Color;
 
@@ -12,14 +12,13 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.Adapter.ProductListAdapter;
-import com.ece.vbfc_bry07.calls.Controller.DbHelper;
-import com.ece.vbfc_bry07.calls.Controller.MaterialMonitoringController;
+import com.ece.vbfc_bry07.calls.adapter.ProductListAdapter;
+import com.ece.vbfc_bry07.calls.controller.DbHelper;
+import com.ece.vbfc_bry07.calls.controller.MaterialMonitoringController;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MaterialMonitoringActivity extends AppCompatActivity {
     DbHelper dbHelper;

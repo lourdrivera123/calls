@@ -1,4 +1,4 @@
-package com.ece.vbfc_bry07.calls.Activity;
+package com.ece.vbfc_bry07.calls.activity;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -26,20 +26,20 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.Adapter.ACPListAdapter;
-import com.ece.vbfc_bry07.calls.Adapter.ACPTabsAdapter;
-import com.ece.vbfc_bry07.calls.Controller.CallsController;
-import com.ece.vbfc_bry07.calls.Controller.InstitutionDoctorMapsController;
-import com.ece.vbfc_bry07.calls.Controller.MissedCallsController;
-import com.ece.vbfc_bry07.calls.Controller.PlanDetailsController;
-import com.ece.vbfc_bry07.calls.Controller.PlansController;
-import com.ece.vbfc_bry07.calls.Controller.ReasonsController;
-import com.ece.vbfc_bry07.calls.Dialog.HelpDialog;
-import com.ece.vbfc_bry07.calls.Dialog.ViewCycleMonth;
-import com.ece.vbfc_bry07.calls.Dialog.ViewDoctorsHistoryDialog;
-import com.ece.vbfc_bry07.calls.Fragment.NewCallsFragment;
-import com.ece.vbfc_bry07.calls.Fragment.NotesFragment;
-import com.ece.vbfc_bry07.calls.Fragment.ProductsFragment;
+import com.ece.vbfc_bry07.calls.adapter.ACPListAdapter;
+import com.ece.vbfc_bry07.calls.adapter.ACPTabsAdapter;
+import com.ece.vbfc_bry07.calls.controller.CallsController;
+import com.ece.vbfc_bry07.calls.controller.InstitutionDoctorMapsController;
+import com.ece.vbfc_bry07.calls.controller.MissedCallsController;
+import com.ece.vbfc_bry07.calls.controller.PlanDetailsController;
+import com.ece.vbfc_bry07.calls.controller.PlansController;
+import com.ece.vbfc_bry07.calls.controller.ReasonsController;
+import com.ece.vbfc_bry07.calls.dialog.HelpDialog;
+import com.ece.vbfc_bry07.calls.dialog.ViewCycleMonth;
+import com.ece.vbfc_bry07.calls.dialog.ViewDoctorsHistoryDialog;
+import com.ece.vbfc_bry07.calls.fragment.NewCallsFragment;
+import com.ece.vbfc_bry07.calls.fragment.NotesFragment;
+import com.ece.vbfc_bry07.calls.fragment.ProductsFragment;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 
@@ -373,7 +373,7 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                                         String get_remarks = remarks.getText().toString();
                                         int reason_id = rcc.getReasonID(spinner_of_reasons.getSelectedItem().toString());
 
-                                        if (!mcc.insertMissedCalls(reason_id, get_remarks, listDataChild))
+                                        if (mcc.insertMissedCalls(reason_id, get_remarks, listDataChild))
                                             Snackbar.make(root, "All calls have been declared as missed", Snackbar.LENGTH_SHORT).show();
 
                                         dialog_reasons.dismiss();

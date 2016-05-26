@@ -1,4 +1,4 @@
-package com.ece.vbfc_bry07.calls.Activity;
+package com.ece.vbfc_bry07.calls.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -9,11 +9,11 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.Adapter.CallReportAdapter;
-import com.ece.vbfc_bry07.calls.Controller.CallReportsController;
-import com.ece.vbfc_bry07.calls.Controller.CallsController;
-import com.ece.vbfc_bry07.calls.Controller.InstitutionDoctorMapsController;
-import com.ece.vbfc_bry07.calls.Dialog.CallReportDetails;
+import com.ece.vbfc_bry07.calls.adapter.CallReportAdapter;
+import com.ece.vbfc_bry07.calls.controller.CallReportsController;
+import com.ece.vbfc_bry07.calls.controller.CallsController;
+import com.ece.vbfc_bry07.calls.controller.InstitutionDoctorMapsController;
+import com.ece.vbfc_bry07.calls.dialog.CallReportDetails;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 

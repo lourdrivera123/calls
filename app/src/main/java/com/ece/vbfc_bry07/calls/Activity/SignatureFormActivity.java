@@ -1,4 +1,4 @@
-package com.ece.vbfc_bry07.calls.Activity;
+package com.ece.vbfc_bry07.calls.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,15 +15,15 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.Adapter.SignatureFormAdapter;
-import com.ece.vbfc_bry07.calls.Controller.CallMaterialsController;
-import com.ece.vbfc_bry07.calls.Controller.CallNotesController;
-import com.ece.vbfc_bry07.calls.Controller.CallsController;
-import com.ece.vbfc_bry07.calls.Controller.PlanDetailsController;
-import com.ece.vbfc_bry07.calls.Controller.ReasonsController;
-import com.ece.vbfc_bry07.calls.Controller.RescheduledCallsController;
-import com.ece.vbfc_bry07.calls.Controller.SignaturesController;
-import com.ece.vbfc_bry07.calls.Fragment.ProductsFragment;
+import com.ece.vbfc_bry07.calls.adapter.SignatureFormAdapter;
+import com.ece.vbfc_bry07.calls.controller.CallMaterialsController;
+import com.ece.vbfc_bry07.calls.controller.CallNotesController;
+import com.ece.vbfc_bry07.calls.controller.CallsController;
+import com.ece.vbfc_bry07.calls.controller.PlanDetailsController;
+import com.ece.vbfc_bry07.calls.controller.ReasonsController;
+import com.ece.vbfc_bry07.calls.controller.RescheduledCallsController;
+import com.ece.vbfc_bry07.calls.controller.SignaturesController;
+import com.ece.vbfc_bry07.calls.fragment.ProductsFragment;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 import com.ece.vbfc_bry07.calls.Signature;

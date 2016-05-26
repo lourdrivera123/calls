@@ -1,18 +1,17 @@
-package com.ece.vbfc_bry07.calls.Fragment;
+package com.ece.vbfc_bry07.calls.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.ece.vbfc_bry07.calls.Activity.ACPActivity;
-import com.ece.vbfc_bry07.calls.Adapter.CallMaterialsFragmentAdapter;
-import com.ece.vbfc_bry07.calls.Adapter.ProductsFragmentAdapter;
-import com.ece.vbfc_bry07.calls.Controller.CallMaterialsController;
-import com.ece.vbfc_bry07.calls.Controller.ProductsController;
+import com.ece.vbfc_bry07.calls.activity.ACPActivity;
+import com.ece.vbfc_bry07.calls.adapter.CallMaterialsFragmentAdapter;
+import com.ece.vbfc_bry07.calls.adapter.ProductsFragmentAdapter;
+import com.ece.vbfc_bry07.calls.controller.CallMaterialsController;
+import com.ece.vbfc_bry07.calls.controller.ProductsController;
 import com.ece.vbfc_bry07.calls.R;
 
 import java.util.ArrayList;

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="5dp">
+    android:background="@color/background"
+    android:orientation="vertical">
 
     <ExpandableListView
         android:id="@+id/call_report_details"
@@ -11,5 +11,6 @@
         android:layout_height="match_parent"
         android:childDivider="@android:color/transparent"
         android:divider="@android:color/transparent"
-        android:dividerHeight="2dp" />
-</LinearLayout>
+        android:dividerHeight="2dp"
+        android:padding="5dp" />
+</RelativeLayout>

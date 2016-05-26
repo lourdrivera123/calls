@@ -1,15 +1,14 @@
-package com.ece.vbfc_bry07.calls.Dialog;
+package com.ece.vbfc_bry07.calls.dialog;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.Adapter.ACPCalendarAdapter;
-import com.ece.vbfc_bry07.calls.Controller.PlanDetailsController;
+import com.ece.vbfc_bry07.calls.adapter.ACPCalendarAdapter;
+import com.ece.vbfc_bry07.calls.controller.PlanDetailsController;
 import com.ece.vbfc_bry07.calls.R;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.ece.vbfc_bry07.calls.Activity;
+package com.ece.vbfc_bry07.calls.activity;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -12,10 +12,10 @@ import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.Adapter.ExpandableListAdapter;
-import com.ece.vbfc_bry07.calls.Controller.DbHelper;
-import com.ece.vbfc_bry07.calls.Controller.DoctorsController;
-import com.ece.vbfc_bry07.calls.Controller.InstitutionDoctorMapsController;
+import com.ece.vbfc_bry07.calls.adapter.ExpandableListAdapter;
+import com.ece.vbfc_bry07.calls.controller.DbHelper;
+import com.ece.vbfc_bry07.calls.controller.DoctorsController;
+import com.ece.vbfc_bry07.calls.controller.InstitutionDoctorMapsController;
 import com.ece.vbfc_bry07.calls.R;
 
 import java.util.ArrayList;
@@ -173,12 +173,12 @@ public class DoctorsInfoActivity extends AppCompatActivity implements TextWatche
         specialization.setText(listDataChild.get(groupPosition).get(childPosition).get("specialization"));
 
         if (DoctorNumber.equals(""))
-            TxtDoctorNumber.setText("No mobile # to display");
+            TxtDoctorNumber.setText("N/A");
         else
             TxtDoctorNumber.setText(DoctorNumber);
 
         if (DoctorBirthDate.equals(""))
-            TxtDoctorBirthDate.setText("No birth date to display");
+            TxtDoctorBirthDate.setText("N/A");
         else
             TxtDoctorBirthDate.setText(DoctorBirthDate);
 

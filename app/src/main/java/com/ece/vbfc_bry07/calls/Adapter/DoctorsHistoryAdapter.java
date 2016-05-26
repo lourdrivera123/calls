@@ -1,7 +1,6 @@
-package com.ece.vbfc_bry07.calls.Adapter;
+package com.ece.vbfc_bry07.calls.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.Activity.ACPActivity;
-import com.ece.vbfc_bry07.calls.Dialog.ViewDoctorsHistoryDialog;
+import com.ece.vbfc_bry07.calls.activity.ACPActivity;
+import com.ece.vbfc_bry07.calls.dialog.ViewDoctorsHistoryDialog;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 

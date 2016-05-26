@@ -1,4 +1,4 @@
-package com.ece.vbfc_bry07.calls.Adapter;
+package com.ece.vbfc_bry07.calls.adapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;

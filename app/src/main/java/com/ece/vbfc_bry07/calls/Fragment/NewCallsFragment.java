@@ -1,16 +1,15 @@
-package com.ece.vbfc_bry07.calls.Fragment;
+package com.ece.vbfc_bry07.calls.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.ece.vbfc_bry07.calls.Activity.ACPActivity;
-import com.ece.vbfc_bry07.calls.Adapter.CallsFragmentAdapter;
-import com.ece.vbfc_bry07.calls.Controller.PlanDetailsController;
+import com.ece.vbfc_bry07.calls.activity.ACPActivity;
+import com.ece.vbfc_bry07.calls.adapter.CallsFragmentAdapter;
+import com.ece.vbfc_bry07.calls.controller.PlanDetailsController;
 import com.ece.vbfc_bry07.calls.R;
 
 import java.util.ArrayList;

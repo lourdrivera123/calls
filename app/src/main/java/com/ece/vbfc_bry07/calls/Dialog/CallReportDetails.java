@@ -1,11 +1,13 @@
-package com.ece.vbfc_bry07.calls.Dialog;
+package com.ece.vbfc_bry07.calls.dialog;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
 
-import com.ece.vbfc_bry07.calls.Adapter.ExpandableListAdapter;
-import com.ece.vbfc_bry07.calls.Controller.CallsController;
+import com.ece.vbfc_bry07.calls.adapter.ExpandableListAdapter;
+import com.ece.vbfc_bry07.calls.controller.CallsController;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 
@@ -25,7 +27,12 @@ public class CallReportDetails extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int screenSize = (int) (metrics.widthPixels * 0.70);
+
         setContentView(R.layout.dialog_expandable);
+        getWindow().setLayout(screenSize, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         call_report_details = (ExpandableListView) findViewById(R.id.call_report_details);
 

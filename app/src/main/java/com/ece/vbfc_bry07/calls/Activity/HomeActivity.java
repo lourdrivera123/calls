@@ -1,4 +1,4 @@
-package com.ece.vbfc_bry07.calls.Activity;
+package com.ece.vbfc_bry07.calls.activity;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -17,12 +17,12 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.Adapter.BirthdayAdapter;
-import com.ece.vbfc_bry07.calls.Controller.BroadcastsController;
-import com.ece.vbfc_bry07.calls.Controller.CallsController;
-import com.ece.vbfc_bry07.calls.Controller.DbHelper;
-import com.ece.vbfc_bry07.calls.Controller.DoctorsController;
-import com.ece.vbfc_bry07.calls.Controller.PlansController;
+import com.ece.vbfc_bry07.calls.adapter.BirthdayAdapter;
+import com.ece.vbfc_bry07.calls.controller.BroadcastsController;
+import com.ece.vbfc_bry07.calls.controller.CallsController;
+import com.ece.vbfc_bry07.calls.controller.DbHelper;
+import com.ece.vbfc_bry07.calls.controller.DoctorsController;
+import com.ece.vbfc_bry07.calls.controller.PlansController;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 
@@ -153,7 +153,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             if (pc.checkForDisapprovedPlans() > 0)
-                broadcasts.add("* Plan has been disapproved. Tap the MCP tab to edit");
+                broadcasts.add("* Plan has been disapproved. Tap the MCP tab to update plan");
 
             if (broadcasts.size() > 0) {
                 count_broadcast.setVisibility(View.VISIBLE);

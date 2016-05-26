@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Activity.LoginActivity"
+            android:name=".activity.LoginActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme">
             <intent-filter>
@@ -21,56 +21,57 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.HomeActivity"
+            android:name=".activity.HomeActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme" />
         <activity
-            android:name=".Activity.MCPActivity"
+            android:name=".activity.MCPActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme" />
         <activity
-            android:name=".Activity.ACPActivity"
+            android:name=".activity.ACPActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".Activity.SignatureFormActivity"
+            android:name=".activity.SignatureFormActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme" />
         <activity
-            android:name=".Activity.DoctorsInfoActivity"
+            android:name=".activity.DoctorsInfoActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
-            android:name=".Activity.MaterialMonitoringActivity"
+            android:name=".activity.MaterialMonitoringActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
-            android:name=".Activity.SalesReportActivity"
+            android:name=".activity.SalesReportActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
-            android:name=".Activity.StatusSummaryActivity"
+            android:name=".activity.StatusSummaryActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
-            android:name=".Activity.QuickSignActivity"
+            android:name=".activity.QuickSignActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme" />
         <activity
-            android:name=".Activity.CallReportActivity"
+            android:name=".activity.CallReportActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme" />
 
+
         <!-- DIALOG -->
         <activity
-            android:name=".Dialog.ViewCycleMonth"
+            android:name=".dialog.ViewCycleMonth"
             android:screenOrientation="landscape"
             android:theme="@style/myDialog" />
         <activity
-            android:name=".Dialog.ViewDoctorsHistoryDialog"
+            android:name=".dialog.ViewDoctorsHistoryDialog"
             android:theme="@style/myDialog" />
         <activity
-            android:name=".Dialog.HelpDialog"
+            android:name=".dialog.HelpDialog"
             android:theme="@style/myDialog" />
         <activity
-            android:name=".Dialog.CallReportDetails"
+            android:name=".dialog.CallReportDetails"
             android:theme="@style/myDialog" />
     </application>
 </manifest>

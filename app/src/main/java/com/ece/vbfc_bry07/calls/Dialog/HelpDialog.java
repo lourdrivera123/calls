@@ -1,4 +1,4 @@
-package com.ece.vbfc_bry07.calls.Dialog;
+package com.ece.vbfc_bry07.calls.dialog;
 
 import android.content.Context;
 import android.content.Intent;

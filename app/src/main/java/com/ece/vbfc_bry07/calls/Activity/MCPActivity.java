@@ -1,4 +1,4 @@
-package com.ece.vbfc_bry07.calls.Activity;
+package com.ece.vbfc_bry07.calls.activity;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -20,12 +20,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.Adapter.ExpandableListAdapter;
-import com.ece.vbfc_bry07.calls.Adapter.MCPAdapter;
-import com.ece.vbfc_bry07.calls.Adapter.MCPCalendarAdapter;
-import com.ece.vbfc_bry07.calls.Controller.InstitutionDoctorMapsController;
-import com.ece.vbfc_bry07.calls.Controller.PlanDetailsController;
-import com.ece.vbfc_bry07.calls.Controller.PlansController;
+import com.ece.vbfc_bry07.calls.adapter.ExpandableListAdapter;
+import com.ece.vbfc_bry07.calls.adapter.MCPAdapter;
+import com.ece.vbfc_bry07.calls.adapter.MCPCalendarAdapter;
+import com.ece.vbfc_bry07.calls.controller.InstitutionDoctorMapsController;
+import com.ece.vbfc_bry07.calls.controller.PlanDetailsController;
+import com.ece.vbfc_bry07.calls.controller.PlansController;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 

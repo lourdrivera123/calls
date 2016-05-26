@@ -1,11 +1,10 @@
-package com.ece.vbfc_bry07.calls.Fragment;
+package com.ece.vbfc_bry07.calls.fragment;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -16,9 +15,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.Activity.ACPActivity;
-import com.ece.vbfc_bry07.calls.Adapter.NotesFragmentAdapter;
-import com.ece.vbfc_bry07.calls.Controller.CallNotesController;
+import com.ece.vbfc_bry07.calls.activity.ACPActivity;
+import com.ece.vbfc_bry07.calls.adapter.NotesFragmentAdapter;
+import com.ece.vbfc_bry07.calls.controller.CallNotesController;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 

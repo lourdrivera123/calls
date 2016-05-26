@@ -1,4 +1,4 @@
-package com.ece.vbfc_bry07.calls.Activity;
+package com.ece.vbfc_bry07.calls.activity;
 
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -16,9 +16,9 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.Controller.CallsController;
-import com.ece.vbfc_bry07.calls.Controller.DbHelper;
-import com.ece.vbfc_bry07.calls.Controller.PlansController;
+import com.ece.vbfc_bry07.calls.controller.CallsController;
+import com.ece.vbfc_bry07.calls.controller.DbHelper;
+import com.ece.vbfc_bry07.calls.controller.PlansController;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 
