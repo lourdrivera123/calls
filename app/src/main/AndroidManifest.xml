@@ -39,7 +39,8 @@
             android:theme="@style/Theme.MyTheme" />
         <activity
             android:name=".activity.DoctorsInfoActivity"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="sensorLandscape"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".activity.MaterialMonitoringActivity"
             android:screenOrientation="sensorLandscape" />
@@ -62,16 +63,19 @@
         <!-- DIALOG -->
         <activity
             android:name=".dialog.ViewCycleMonth"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/myDialog" />
         <activity
             android:name=".dialog.ViewDoctorsHistoryDialog"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/myDialog" />
         <activity
             android:name=".dialog.HelpDialog"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/myDialog" />
         <activity
             android:name=".dialog.CallReportDetails"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/myDialog" />
     </application>
 </manifest>

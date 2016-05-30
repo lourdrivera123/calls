@@ -15,7 +15,6 @@
             android:layout_height="wrap_content"
             android:layout_weight=".6"
             android:text="Call Rate"
-            android:textSize="12sp"
             android:textStyle="bold" />
 
         <TextView
@@ -23,8 +22,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".4"
-            android:gravity="right"
-            android:textSize="12sp" />
+            android:gravity="right" />
     </LinearLayout>
 
     <View
@@ -43,7 +41,6 @@
             android:layout_height="wrap_content"
             android:layout_weight=".6"
             android:text="Call Reach"
-            android:textSize="12sp"
             android:textStyle="bold" />
 
         <TextView
@@ -51,8 +48,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".4"
-            android:gravity="right"
-            android:textSize="12sp" />
+            android:gravity="right" />
     </LinearLayout>
 
     <View
@@ -71,7 +67,6 @@
             android:layout_height="wrap_content"
             android:layout_weight=".6"
             android:text="Planned Calls"
-            android:textSize="12sp"
             android:textStyle="bold" />
 
         <TextView
@@ -79,8 +74,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".4"
-            android:gravity="right"
-            android:textSize="12sp" />
+            android:gravity="right" />
     </LinearLayout>
 
     <View
@@ -99,7 +93,6 @@
             android:layout_height="wrap_content"
             android:layout_weight=".6"
             android:text="Incidental Calls"
-            android:textSize="12sp"
             android:textStyle="bold" />
 
         <TextView
@@ -107,8 +100,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".4"
-            android:gravity="right"
-            android:textSize="12sp" />
+            android:gravity="right" />
     </LinearLayout>
 
     <View
@@ -127,7 +119,6 @@
             android:layout_height="wrap_content"
             android:layout_weight=".6"
             android:text="Recovered Calls"
-            android:textSize="12sp"
             android:textStyle="bold" />
 
         <TextView
@@ -135,8 +126,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".4"
-            android:gravity="right"
-            android:textSize="12sp" />
+            android:gravity="right" />
     </LinearLayout>
 
     <View
@@ -155,7 +145,6 @@
             android:layout_height="wrap_content"
             android:layout_weight=".6"
             android:text="Declared Missed Calls"
-            android:textSize="12sp"
             android:textStyle="bold" />
 
         <TextView
@@ -163,8 +152,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".4"
-            android:gravity="right"
-            android:textSize="12sp" />
+            android:gravity="right" />
     </LinearLayout>
 
     <View
@@ -183,7 +171,6 @@
             android:layout_height="wrap_content"
             android:layout_weight=".6"
             android:text="Unprocessed Calls"
-            android:textSize="12sp"
             android:textStyle="bold" />
 
         <TextView
@@ -191,7 +178,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".4"
-            android:gravity="right"
-            android:textSize="12sp" />
+            android:gravity="right" />
     </LinearLayout>
 </LinearLayout>

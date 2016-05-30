@@ -35,23 +35,22 @@ public class DoctorsInfoActivity extends AppCompatActivity implements TextWatche
 
     EditText BtnSearch;
     ExpandableListView list_of_doctors;
-    TextView TxtDoctorName, TxtDoctorNumber, TxtDoctorClass, TxtDoctorBirthDate, no_records, doctor_count, specialization;
-
-    String DoctorNumber, DoctorBirthDate;
+    TextView TxtDoctorName, TxtDoctorNumber, TxtDoctorClass, TxtDoctorBirthDate, no_records, doctor_count, specialization, txt_email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doc_info);
 
-        TxtDoctorName = (TextView) findViewById(R.id.TxtDoctorName);
-        TxtDoctorNumber = (TextView) findViewById(R.id.TxtDoctorNumber);
-        TxtDoctorClass = (TextView) findViewById(R.id.TxtDoctorClass);
-        TxtDoctorBirthDate = (TextView) findViewById(R.id.TxtDoctorBirthDate);
-        doctor_count = (TextView) findViewById(R.id.doctor_count);
-        no_records = (TextView) findViewById(R.id.no_records);
-        specialization = (TextView) findViewById(R.id.specialization);
         BtnSearch = (EditText) findViewById(R.id.BtnSearch);
+        txt_email = (TextView) findViewById(R.id.txt_email);
+        no_records = (TextView) findViewById(R.id.no_records);
+        doctor_count = (TextView) findViewById(R.id.doctor_count);
+        TxtDoctorName = (TextView) findViewById(R.id.TxtDoctorName);
+        TxtDoctorClass = (TextView) findViewById(R.id.TxtDoctorClass);
+        specialization = (TextView) findViewById(R.id.specialization);
+        TxtDoctorNumber = (TextView) findViewById(R.id.TxtDoctorNumber);
+        TxtDoctorBirthDate = (TextView) findViewById(R.id.TxtDoctorBirthDate);
         list_of_doctors = (ExpandableListView) findViewById(R.id.list_of_doctors);
 
         dbHelper = new DbHelper(this);
@@ -165,22 +164,29 @@ public class DoctorsInfoActivity extends AppCompatActivity implements TextWatche
 
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-        DoctorNumber = listDataChild.get(groupPosition).get(childPosition).get("contact_number");
-        TxtDoctorName.setText(listDataChild.get(groupPosition).get(childPosition).get("doc_name"));
+        String doc_number = listDataChild.get(groupPosition).get(childPosition).get("contact_number");
+        String doc_birthdate = listDataChild.get(groupPosition).get(childPosition).get("birthday");
+        String doc_email = listDataChild.get(groupPosition).get(childPosition).get("email_address");
         String class_name = listDataChild.get(groupPosition).get(childPosition).get("class_name") + " (" + listDataChild.get(groupPosition).get(childPosition).get("class_code") + "x)";
-        DoctorBirthDate = listDataChild.get(groupPosition).get(childPosition).get("birthday");
+
+        TxtDoctorName.setText(listDataChild.get(groupPosition).get(childPosition).get("doc_name"));
         TxtDoctorClass.setText(class_name);
         specialization.setText(listDataChild.get(groupPosition).get(childPosition).get("specialization"));
 
-        if (DoctorNumber.equals(""))
+        if (doc_number.equals(""))
             TxtDoctorNumber.setText("N/A");
         else
-            TxtDoctorNumber.setText(DoctorNumber);
+            TxtDoctorNumber.setText(doc_number);
 
-        if (DoctorBirthDate.equals(""))
+        if (doc_birthdate.equals(""))
             TxtDoctorBirthDate.setText("N/A");
         else
-            TxtDoctorBirthDate.setText(DoctorBirthDate);
+            TxtDoctorBirthDate.setText(doc_birthdate);
+
+        if (doc_email.equals(""))
+            txt_email.setText("N/A");
+        else
+            txt_email.setText(doc_email);
 
         return false;
     }
