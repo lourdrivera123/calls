@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.ece.vbfc_bry07.calls.Helpers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class BroadcastsController extends DbHelper {
     DbHelper dbHelper;
@@ -19,14 +20,18 @@ public class BroadcastsController extends DbHelper {
     }
 
     ////////////////////////GET METHODS
-    public ArrayList<String> getBroadcastMessages() {
+    public ArrayList<HashMap<String, String>> getBroadcastMessages() {
         String sql = "SELECT * FROM Broadcasts WHERE end_date >= '" + helpers.getCurrentDate("") + "'";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
-        ArrayList<String> array = new ArrayList<>();
+        ArrayList<HashMap<String, String>> array = new ArrayList<>();
 
-        while (cur.moveToNext())
-            array.add("* " + cur.getString(cur.getColumnIndex("message")));
+        while (cur.moveToNext()) {
+            HashMap<String, String> map = new HashMap<>();
+            map.put("date", helpers.convertToAlphabetDate(cur.getString(cur.getColumnIndex("created_at")), ""));
+            map.put("message", "* " + cur.getString(cur.getColumnIndex("message")));
+            array.add(map);
+        }
 
         cur.close();
         db.close();

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,7 +49,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     int cycle_month;
 
-    ArrayList<String> broadcasts;
+    ArrayList<HashMap<String, String>> broadcasts;
     ArrayList<HashMap<String, String>> birthdays;
 
     @Override
@@ -152,8 +153,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 call_reach.setText(callReach);
             }
 
-            if (pc.checkForDisapprovedPlans() > 0)
-                broadcasts.add("* Plan has been disapproved. Tap the MCP tab to update plan");
+            if (!pc.checkForDisapprovedPlans().get("date").equals("")) {
+                HashMap<String, String> map = new HashMap<>();
+                map.put("date", pc.checkForDisapprovedPlans().get("date"));
+                map.put("message", "* Plan has been disapproved. Tap the MCP tab to update plan");
+                broadcasts.add(map);
+            }
 
             if (broadcasts.size() > 0) {
                 count_broadcast.setVisibility(View.VISIBLE);

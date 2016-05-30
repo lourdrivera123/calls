@@ -61,20 +61,23 @@ public class PlansController extends DbHelper {
         return status_id;
     }
 
-    public int checkForDisapprovedPlans() {
+    public HashMap<String, String> checkForDisapprovedPlans() {
         String sql = "SELECT * FROM Plans WHERE status = 2";
         SQLiteDatabase db = dbhelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
-        int cycle_number = 0;
+        HashMap<String, String> map = new HashMap<>();
+        map.put("cycle_number", "");
+        map.put("date", "");
 
         if (cur.moveToNext()) {
-            cycle_number = cur.getInt(cur.getColumnIndex(PLANS_CYCLE_NUMBER));
+            map.put("cycle_number", cur.getString(cur.getColumnIndex(PLANS_CYCLE_NUMBER)));
+            map.put("date", helpers.convertToAlphabetDate(cur.getString(cur.getColumnIndex("updated_at")), ""));
         }
 
         cur.close();
         db.close();
 
-        return cycle_number;
+        return map;
     }
 
     ///////////////////////////////////////////GET METHODS

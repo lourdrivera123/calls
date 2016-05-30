@@ -142,11 +142,10 @@ public class MCPActivity extends AppCompatActivity implements ExpandableListView
                 getMenuInflater().inflate(R.menu.add_menu, menu);
                 no_plans.setText("No plotted plan for this month. Tap the \"+\" icon to start plotting.");
             } else {
-                if (pc.checkForDisapprovedPlans() == month) {
+                if (pc.checkForDisapprovedPlans().get("cycle_number").equals(String.valueOf(month)))
                     getMenuInflater().inflate(R.menu.edit_white_menu, menu);
-                } else {
+                else
                     getMenuInflater().inflate(R.menu.view_all, menu);
-                }
 
                 all_doctors.setVisibility(View.VISIBLE);
                 change_view.setVisibility(View.GONE);

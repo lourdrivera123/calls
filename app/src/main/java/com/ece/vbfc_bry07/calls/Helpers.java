@@ -11,9 +11,7 @@ import java.util.TimeZone;
 
 public class Helpers {
 
-    public Helpers() {
-
-    }
+    public Helpers() {}
 
     public String convertToAlphabetDate(String input, String type) {
         SimpleDateFormat outputFormat = null;
