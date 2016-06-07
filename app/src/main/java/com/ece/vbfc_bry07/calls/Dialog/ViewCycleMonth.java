@@ -7,7 +7,7 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.adapter.ACPCalendarAdapter;
+import com.ece.vbfc_bry07.calls.adapter.ViewCycleMonthCalendarAdapter;
 import com.ece.vbfc_bry07.calls.controller.PlanDetailsController;
 import com.ece.vbfc_bry07.calls.R;
 
@@ -22,7 +22,7 @@ public class ViewCycleMonth extends AppCompatActivity {
 
     Calendar calendar;
 
-    ACPCalendarAdapter adapter;
+    ViewCycleMonthCalendarAdapter adapter;
     PlanDetailsController pdc;
 
     ArrayList<HashMap<String, String>> list_of_calls;
@@ -48,7 +48,7 @@ public class ViewCycleMonth extends AppCompatActivity {
 
         list_of_calls = pdc.getMonthDetails(calendar.get(Calendar.MONTH) + 1);
 
-        adapter = new ACPCalendarAdapter(this, calendar, list_of_calls);
+        adapter = new ViewCycleMonthCalendarAdapter(this, calendar, list_of_calls);
         acp_gridview.setAdapter(adapter);
 
         cycle_number.setText(android.text.format.DateFormat.format("MMMM yyyy", calendar));

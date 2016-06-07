@@ -28,7 +28,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight=".25"
+            android:layout_weight=".20"
             android:baselineAligned="false">
 
             <RelativeLayout
@@ -42,8 +42,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_above="@+id/label_incidental"
-                    android:gravity="center"
-                    android:textSize="14sp" />
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center|bottom"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/label_incidental"
@@ -53,8 +54,7 @@
                     android:background="@android:color/white"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="@string/incidental_call"
-                    android:textSize="12sp" />
+                    android:text="@string/incidental_call" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -68,8 +68,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_above="@+id/label_declared_missed"
-                    android:gravity="center"
-                    android:textSize="14sp" />
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center|bottom"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/label_declared_missed"
@@ -79,8 +80,7 @@
                     android:background="@android:color/white"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="@string/declared_missed"
-                    android:textSize="12sp" />
+                    android:text="@string/declared_missed" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -94,8 +94,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_above="@+id/label_call_reach"
-                    android:gravity="center"
-                    android:textSize="14sp" />
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center|bottom"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/label_call_reach"
@@ -105,8 +106,7 @@
                     android:background="@android:color/white"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="@string/call_reach"
-                    android:textSize="12sp" />
+                    android:text="@string/call_reach" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -120,8 +120,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_above="@+id/label_call_rate"
-                    android:gravity="center"
-                    android:textSize="13sp" />
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center|bottom"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/label_call_rate"
@@ -131,15 +132,14 @@
                     android:background="@android:color/white"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="@string/call_rate"
-                    android:textSize="12sp" />
+                    android:text="@string/call_rate" />
             </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight=".75"
+            android:layout_weight=".80"
             android:orientation="vertical">
 
             <LinearLayout
@@ -154,28 +154,32 @@
                     style="@style/tableHeader"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight=".4" />
+                    android:layout_weight=".4"
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/prev_cycle"
                     style="@style/tableHeader"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight=".2" />
+                    android:layout_weight=".2"
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/current_cycle"
                     style="@style/tableHeader"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight=".2" />
+                    android:layout_weight=".2"
+                    android:textSize="15sp" />
 
                 <TextView
                     style="@style/tableHeader"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight=".2"
-                    android:text="@string/average" />
+                    android:text="@string/average"
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <View

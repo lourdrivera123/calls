@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class ACPCalendarAdapter extends BaseAdapter {
+public class ViewCycleMonthCalendarAdapter extends BaseAdapter {
     Calendar calendar, pmonth, pmonthmaxset;
     DateFormat df;
 
@@ -39,7 +39,7 @@ public class ACPCalendarAdapter extends BaseAdapter {
     ArrayList<HashMap<String, String>> list_of_calls;
     ViewCycleMonth activity;
 
-    public ACPCalendarAdapter(ViewCycleMonth context, Calendar calendar, ArrayList<HashMap<String, String>> list_of_calls) {
+    public ViewCycleMonthCalendarAdapter(ViewCycleMonth context, Calendar calendar, ArrayList<HashMap<String, String>> list_of_calls) {
         this.activity = context;
         this.calendar = calendar;
         this.list_of_calls = list_of_calls;

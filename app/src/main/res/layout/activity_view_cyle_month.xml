@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:textColor="@android:color/white"
-            android:textSize="13sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
     </android.support.v7.widget.Toolbar>
 
@@ -42,56 +42,56 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="SUN"
-            android:textSize="12sp" />
+            android:text="@string/sun"
+            android:textSize="15sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="MON"
-            android:textSize="12sp" />
+            android:text="@string/mon"
+            android:textSize="15sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="TUE"
-            android:textSize="12sp" />
+            android:text="@string/tue"
+            android:textSize="15sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="WED"
-            android:textSize="12sp" />
+            android:text="@string/wed"
+            android:textSize="15sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="THU"
-            android:textSize="12sp" />
+            android:text="@string/thu"
+            android:textSize="15sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="FRI"
-            android:textSize="12sp" />
+            android:text="@string/fri"
+            android:textSize="15sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="SAT"
-            android:textSize="12sp" />
+            android:text="@string/sat"
+            android:textSize="15sp" />
     </LinearLayout>
 
     <GridView

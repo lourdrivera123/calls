@@ -46,6 +46,16 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
+    public void copyDatabase() throws IOException {
+        this.getReadableDatabase();
+
+        try {
+            copyDataBase();
+        } catch (IOException e) {
+            throw new Error("" + e);
+        }
+    }
+
     private boolean checkDataBase() {
         File databasePath = myContext.getDatabasePath(DB_NAME);
         return databasePath.exists();

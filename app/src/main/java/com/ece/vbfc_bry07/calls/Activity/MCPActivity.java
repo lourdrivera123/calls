@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -128,30 +129,45 @@ public class MCPActivity extends AppCompatActivity implements ExpandableListView
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        int year = cal_month.get(Calendar.YEAR);
+        int month = cal_month.get(Calendar.MONTH) + 1;
+        long plan_id = pc.checkForPlanByMonthYear(year, month);
+
         if (flag) {
+            no_plans.setVisibility(View.GONE);
             getMenuInflater().inflate(R.menu.save_menu, menu);
-        } else {
-            int month = cal_month.get(Calendar.MONTH) + 1;
-            int plan_id = pc.checkIfHasPlan(month);
 
-            if (plan_id == 0) {
-                all_doctors.setVisibility(View.GONE);
-                change_view.setVisibility(View.GONE);
-                doc_details.setVisibility(View.GONE);
-                no_plans.setVisibility(View.VISIBLE);
-                getMenuInflater().inflate(R.menu.add_menu, menu);
-                no_plans.setText("No plotted plan for this month. Tap the \"+\" icon to start plotting.");
-            } else {
-                if (pc.checkForDisapprovedPlans().get("cycle_number").equals(String.valueOf(month)))
-                    getMenuInflater().inflate(R.menu.edit_white_menu, menu);
-                else
-                    getMenuInflater().inflate(R.menu.view_all, menu);
-
+            if (plan_id > 0 && pc.checkPlanIfApproved(plan_id) == 2) {
                 all_doctors.setVisibility(View.VISIBLE);
-                change_view.setVisibility(View.GONE);
-                no_plans.setVisibility(View.GONE);
                 prepareListData();
                 list_of_plans = pdc.getPlanDetailsByPID(plan_id);
+            }
+        } else {
+            no_plans.setVisibility(View.VISIBLE);
+
+            if (plan_id == 0) { //WALA PAY NA RECEIVE NA PERMISSION GIKAN SA SERVER
+                no_plans.setText("You are not yet allowed to plot plan for this month");
+                no_plans.setTextColor(Color.parseColor("#808080"));
+                all_doctors.setVisibility(View.GONE);
+                doc_details.setVisibility(View.GONE);
+            } else { //ALLOWED NA MAG PLOT UG PLAN OR GI DISAPPROVED ANG PLAN
+                if (pc.checkPlanIfApproved(plan_id) == 2) {
+                    getMenuInflater().inflate(R.menu.edit_white_menu, menu);
+                    no_plans.setText("Plan has been disapproved. Tap the edit icon to update plan");
+                    no_plans.setTextColor(Color.RED);
+                } else if (pc.checkPlanIfApproved(plan_id) == 1 || pc.checkPlanIfApproved(plan_id) == 0) {
+                    if (pdc.checkPlanDetailsByPlanID(plan_id)) {
+                        no_plans.setVisibility(View.GONE);
+                        all_doctors.setVisibility(View.VISIBLE);
+                        getMenuInflater().inflate(R.menu.view_all, menu);
+                        prepareListData();
+                        list_of_plans = pdc.getPlanDetailsByPID(plan_id);
+                    } else {
+                        no_plans.setText("No plotted plan for this month. Tap the \"+\" icon to start plotting.");
+                        no_plans.setTextColor(Color.parseColor("#236B8E"));
+                        getMenuInflater().inflate(R.menu.add_menu, menu);
+                    }
+                }
             }
 
             cal_adapter = new MCPCalendarAdapter(this, cal_month);
@@ -181,18 +197,18 @@ public class MCPActivity extends AppCompatActivity implements ExpandableListView
 
             case R.id.save:
                 if (list_of_plans.size() > 0) {
-                    long plan_id = pc.insertPlans(year, month);
+                    AppCompatDialog dialog = new AppCompatDialog(this);
+                    dialog.setCancelable(false);
+                    dialog.show();
+                    long plan_id = pc.checkForPlanByMonthYear(year, month);
 
-                    if (plan_id > 0 || plan_id == -1) {
-                        long new_plan_id = plan_id;
-
-                        if (plan_id == -1) {
-                            new_plan_id = pc.getPlanID(month, "");
-                            pdc.deletePlanDetails(new_plan_id);
-                            pc.updatePlanStatus(new_plan_id);
+                    if (plan_id > 0) {
+                        if (pc.checkPlanIfApproved(plan_id) == 2) {
+                            pdc.deletePlanDetails(plan_id);
+                            pc.updatePlanStatus(plan_id);
                         }
 
-                        if (pdc.savePlanDetails(new_plan_id, list_of_plans)) {
+                        if (pdc.savePlanDetails(plan_id, list_of_plans)) {
                             Snackbar.make(root, "Successfully saved", Snackbar.LENGTH_SHORT).show();
                             flag = false;
                             cal_adapter = new MCPCalendarAdapter(this, cal_month);
@@ -200,6 +216,8 @@ public class MCPActivity extends AppCompatActivity implements ExpandableListView
                             invalidateOptionsMenu();
                         } else
                             Snackbar.make(root, "Error occurred", Snackbar.LENGTH_SHORT).show();
+
+                        dialog.dismiss();
                     } else if (plan_id == 0)
                         Snackbar.make(root, "Error occurred", Snackbar.LENGTH_SHORT).show();
                 } else

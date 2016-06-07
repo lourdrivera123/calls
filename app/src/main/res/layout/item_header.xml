@@ -12,6 +12,6 @@
         android:layout_height="wrap_content"
         android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
         android:textColor="#7C6A6A"
-        android:textSize="15sp"
+        android:textSize="18sp"
         android:textStyle="bold" />
 </LinearLayout>

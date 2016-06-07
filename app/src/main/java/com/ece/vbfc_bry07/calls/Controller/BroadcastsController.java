@@ -28,7 +28,7 @@ public class BroadcastsController extends DbHelper {
 
         while (cur.moveToNext()) {
             HashMap<String, String> map = new HashMap<>();
-            map.put("date", helpers.convertToAlphabetDate(cur.getString(cur.getColumnIndex("created_at")), ""));
+            map.put("date", cur.getString(cur.getColumnIndex("created_at")));
             map.put("message", "* " + cur.getString(cur.getColumnIndex("message")));
             array.add(map);
         }

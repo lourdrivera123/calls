@@ -3,6 +3,7 @@
     package="com.ece.vbfc_bry07.calls">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -68,7 +69,8 @@
         <activity
             android:name=".dialog.ViewDoctorsHistoryDialog"
             android:screenOrientation="sensorLandscape"
-            android:theme="@style/myDialog" />
+            android:theme="@style/myDialog"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".dialog.HelpDialog"
             android:screenOrientation="sensorLandscape"

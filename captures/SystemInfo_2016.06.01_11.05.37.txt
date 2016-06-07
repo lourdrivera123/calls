@@ -1,0 +1,106 @@
+TASK com.example.vbfc_bry07.calls id=117
+  ACTIVITY com.example.vbfc_bry07.calls/com.ece.vbfc_bry07.calls.activity.HomeActivity 41448330 pid=8544
+    Local FragmentActivity 412adef8 State:
+      mCreated=truemResumed=true mStopped=false mReallyStopped=false
+      mLoadersStarted=true
+    FragmentManager misc state:
+      mHost=android.support.v4.app.FragmentActivity$HostCallbacks@41270fd8
+      mContainer=android.support.v4.app.FragmentActivity$HostCallbacks@41270fd8
+      mCurState=5 mStateSaved=false mDestroyed=false
+    View Hierarchy:
+      com.android.internal.policy.impl.PhoneWindow$DecorView{412ae1b8 V.E..... ... 0,0-1024,552}
+        android.widget.LinearLayout{412a0be8 V.E..... ... 0,0-1024,552}
+          android.view.ViewStub{41298f50 G.E..... ... 0,0-0,0 #102038c}
+          android.widget.FrameLayout{4129c220 V.E..... ... 0,0-1024,552}
+            android.support.v7.internal.widget.FitWindowsLinearLayout{4129efd0 V.E..... ... 0,0-1024,552 #7f0d0050 app:id/action_bar_root}
+              android.support.v7.internal.widget.ViewStubCompat{412a0f60 G.E..... ... 0,0-0,0 #7f0d0051 app:id/action_mode_bar_stub}
+              android.support.v7.internal.widget.ContentFrameLayout{4129eb80 V.ED.... ... 0,0-1024,552 #1020002 android:id/content}
+                android.widget.LinearLayout{412ac2b8 V.E..... ... 0,0-1024,552 #7f0d0064 app:id/root}
+                  android.widget.LinearLayout{412ae528 V.E..... ... 0,0-307,552}
+                    android.view.View{412a10c0 V.ED.... ... 0,0-307,64}
+                    android.widget.LinearLayout{412aa848 V.E..... ... 0,64-307,552}
+                      android.support.v7.widget.AppCompatTextView{41268280 V.ED.... ... 0,5-307,33 #7f0d0086 app:id/username}
+                      android.view.View{412ae9f8 V.ED.... ... 15,38-292,39}
+                      android.widget.ScrollView{4129f6a0 VFED.V.. ... 0,39-307,488}
+                        android.widget.LinearLayout{41256278 V.E..... ... 0,0-307,450}
+                          android.widget.LinearLayout{41256480 V.E...C. ... 0,10-307,50 #7f0d0087 app:id/quick_sign}
+                            android.widget.ImageView{4125cd00 V.ED.... ... 5,5-63,35}
+                            android.support.v7.widget.AppCompatTextView{41297740 V.ED.... ... 68,5-302,35}
+                          android.widget.LinearLayout{41297e70 V.E...C. ... 0,60-307,100 #7f0d0088 app:id/actual_coverage_plan}
+                            android.widget.ImageView{41254e10 V.ED.... ... 5,5-63,35}
+                            android.support.v7.widget.AppCompatTextView{412a6ec0 V.ED.... ... 68,5-302,35}
+                          android.widget.LinearLayout{412a7210 V.E...C. ... 0,110-307,150 #7f0d0089 app:id/master_coverage_plan}
+                            android.widget.ImageView{4125e220 V.ED.... ... 5,5-63,35}
+                            android.support.v7.widget.AppCompatTextView{4125e7e8 V.ED.... ... 68,5-302,35}
+                          android.widget.LinearLayout{4124eb60 V.E...C. ... 0,160-307,200 #7f0d008a app:id/doctors_information}
+                            android.widget.ImageView{4124f738 V.ED.... ... 5,5-63,35}
+                            android.support.v7.widget.AppCompatTextView{4124fe90 V.ED.... ... 68,5-302,35}
+                          android.widget.LinearLayout{413351f8 V.E...C. ... 0,210-307,250 #7f0d008b app:id/call_report}
+                            android.widget.ImageView{41335dd0 V.ED.... ... 5,5-63,35}
+                            android.support.v7.widget.AppCompatTextView{413387b0 V.ED.... ... 68,5-302,35}
+                          android.widget.LinearLayout{41338d88 V.E...C. ... 0,260-307,300 #7f0d008c app:id/sales_report}
+                            android.widget.ImageView{41339960 V.ED.... ... 5,5-63,35}
+                            android.support.v7.widget.AppCompatTextView{4133c348 V.ED.... ... 68,5-302,35}
+                          android.widget.LinearLayout{4133c920 V.E...C. ... 0,310-307,350 #7f0d008d app:id/material_monitoring}
+                            android.widget.ImageView{4133d4f8 V.ED.... ... 5,5-63,35}
+                            android.support.v7.widget.AppCompatTextView{4133fef8 V.ED.... ... 68,5-302,35}
+                          android.widget.LinearLayout{413404d0 V.E...C. ... 0,360-307,400 #7f0d008e app:id/status_summary}
+                            android.widget.ImageView{413410a8 V.ED.... ... 5,5-63,35}
+                            android.support.v7.widget.AppCompatTextView{41343a90 V.ED.... ... 68,5-302,35}
+                          android.widget.LinearLayout{41344068 V.E...C. ... 0,410-307,450 #7f0d008f app:id/export_database}
+                            android.widget.ImageView{41344c40 V.ED.... ... 5,5-63,35}
+                            android.support.v7.widget.AppCompatTextView{41344f10 V.ED.... ... 68,5-302,35}
+                  android.widget.LinearLayout{41345540 V.E..... ... 307,0-1024,552}
+                    android.support.v7.widget.Toolbar{4134dcb0 V.E..... ... 0,0-717,64 #7f0d0065 app:id/toolbar}
+                      android.widget.TextView{413503b8 V.ED.... ... 68,18-112,46}
+                      android.widget.ImageButton{412a2e68 VFED..C. ... 8,4-64,60}
+                      android.support.v7.widget.ActionMenuView{413482c0 V.E..... ... 613,4-709,60}
+                        android.support.v7.internal.view.menu.ActionMenuItemView{4132bc38 VFED..CL ... 0,4-48,52 #7f0d00fd app:id/sync}
+                        android.support.v7.internal.view.menu.ActionMenuItemView{4136fb60 VFED..CL ... 48,4-96,52 #7f0d00fe app:id/logout}
+                    android.view.View{413521a8 V.ED.... ... 0,64-717,66}
+                    android.widget.LinearLayout{41352488 V.E..... ... 0,66-717,552}
+                      android.widget.LinearLayout{41352788 V.E..... ... 0,0-427,486}
+                        android.support.v7.widget.AppCompatTextView{41352a88 V.ED.... ... 0,0-427,38 #7f0d0090 app:id/cycle_number}
+                        android.widget.ScrollView{41353018 GFED.V.. ... 0,0-0,0 #7f0d0091 app:id/statistics}
+                          android.widget.LinearLayout{41353dd8 V.E..... ... 0,0-0,0}
+                            android.widget.LinearLayout{413540d8 V.E..... ... 0,0-0,0}
+                              android.support.v7.widget.AppCompatTextView{41354420 V.ED.... ... 0,0-0,0}
+                              android.support.v7.widget.AppCompatTextView{413549f8 V.ED.... ... 0,0-0,0 #7f0d0075 app:id/call_rate}
+                            android.view.View{41354fc8 V.ED.... ... 0,0-0,0}
+                            android.widget.LinearLayout{41355248 V.E..... ... 0,0-0,0}
+                              android.support.v7.widget.AppCompatTextView{41355548 V.ED.... ... 0,0-0,0}
+                              android.support.v7.widget.AppCompatTextView{41355b20 V.ED.... ... 0,0-0,0 #7f0d0073 app:id/call_reach}
+                            android.view.View{413560b0 V.ED.... ... 0,0-0,0}
+                            android.widget.LinearLayout{41356310 V.E..... ... 0,0-0,0}
+                              android.support.v7.widget.AppCompatTextView{41356610 V.ED.... ... 0,0-0,0}
+                              android.support.v7.widget.AppCompatTextView{41356bf0 V.ED.... ... 0,0-0,0 #7f0d00d0 app:id/planned_calls}
+                            android.view.View{41357180 V.ED.... ... 0,0-0,0}
+                            android.widget.LinearLayout{413573e0 V.E..... ... 0,0-0,0}
+                              android.support.v7.widget.AppCompatTextView{413576e0 V.ED.... ... 0,0-0,0}
+                              android.support.v7.widget.AppCompatTextView{41357cc8 V.ED.... ... 0,0-0,0 #7f0d00d1 app:id/incidental_calls}
+                            android.view.View{41358258 V.ED.... ... 0,0-0,0}
+                            android.widget.LinearLayout{413584b8 V.E..... ... 0,0-0,0}
+                              android.support.v7.widget.AppCompatTextView{413587b8 V.ED.... ... 0,0-0,0}
+                              android.support.v7.widget.AppCompatTextView{41358da0 V.ED.... ... 0,0-0,0 #7f0d00d2 app:id/recovered_calls}
+                            android.view.View{41359330 V.ED.... ... 0,0-0,0}
+                            android.widget.LinearLayout{41359590 V.E..... ... 0,0-0,0}
+                              android.support.v7.widget.AppCompatTextView{41359890 V.ED.... ... 0,0-0,0}
+                              android.support.v7.widget.AppCompatTextView{41359e80 V.ED.... ... 0,0-0,0 #7f0d00d3 app:id/declared_missed_calls}
+                            android.view.View{4135a410 V.ED.... ... 0,0-0,0}
+                            android.widget.LinearLayout{4135a670 V.E..... ... 0,0-0,0}
+                              android.support.v7.widget.AppCompatTextView{4135a970 V.ED.... ... 0,0-0,0}
+                              android.support.v7.widget.AppCompatTextView{4135af58 V.ED.... ... 0,0-0,0 #7f0d00d4 app:id/unprocessed_calls}
+                        android.support.v7.widget.AppCompatTextView{4135b560 V.ED.... ... 0,38-427,486 #7f0d0092 app:id/no_data}
+                      android.widget.LinearLayout{4135bb48 V.E..... ... 432,0-717,486}
+                        android.widget.LinearLayout{4135be48 V.E...C. ... 0,0-285,243 #7f0d0093 app:id/broadcast_msg}
+                          android.widget.LinearLayout{4135ca40 V.E..... ... 0,88-285,136}
+                            android.widget.ImageView{4135cd40 V.ED.... ... 118,0-166,48}
+                            android.widget.LinearLayout{4135f6f8 V.E..... ... 166,0-166,48}
+                              android.support.v7.widget.AppCompatTextView{4135f9f8 G.ED.... ... 0,0-0,0 #7f0d0094 app:id/count_broadcast}
+                          android.support.v7.widget.AppCompatTextView{41360590 V.ED.... ... 0,136-285,155}
+                        android.widget.LinearLayout{41360b78 V.E...C. ... 0,243-285,486 #7f0d0095 app:id/birthday}
+                          android.widget.LinearLayout{41361770 V.E..... ... 0,88-285,136}
+                            android.widget.ImageView{41361a70 V.ED.... ... 118,0-166,48}
+                            android.widget.LinearLayout{41364420 V.E..... ... 166,0-166,48}
+                              android.support.v7.widget.AppCompatTextView{41364720 G.ED.... ... 0,0-0,0 #7f0d0096 app:id/count_birthday}
+                          android.support.v7.widget.AppCompatTextView{41364e68 V.ED.... ... 0,136-285,155}

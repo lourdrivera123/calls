@@ -66,7 +66,7 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
 
         tv_month.setText(helpers.getMonthYear());
         tv_month.setPaintFlags(tv_month.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        AddData(cycle_month);
+        AddData(cycle_month, helpers.getCurrentYear());
 
         tv_month.setOnClickListener(this);
     }
@@ -81,8 +81,8 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
         return super.onOptionsItemSelected(item);
     }
 
-    void AddData(int month) {
-        if (pc.checkIfHasPlan(month) == 0) {
+    void AddData(int month, int year) {
+        if (pc.checkForPlanByMonthYear(year, month) == 0) {
             no_data.setVisibility(View.VISIBLE);
             statistics.setVisibility(View.GONE);
         } else {
@@ -129,7 +129,7 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
                 listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        AddData(Integer.parseInt(all_plans.get(position).get("cycle_number")));
+                        AddData(Integer.parseInt(all_plans.get(position).get("cycle_number")), Integer.parseInt(all_plans.get(position).get("year")));
                         pdialog.dismiss();
                     }
                 });

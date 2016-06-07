@@ -21,7 +21,7 @@
             android:hint="Search Doctor..."
             android:textColor="#F6F2EC"
             android:textColorHint="#F6F2EC"
-            android:textSize="12sp" />
+            android:textSize="18sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -34,6 +34,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight=".7"
+            android:background="@android:color/white"
             android:orientation="vertical">
 
             <ExpandableListView
@@ -52,7 +53,7 @@
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="No matching records were found"
-                android:textSize="12sp"
+                android:textSize="15sp"
                 android:visibility="gone" />
         </LinearLayout>
 
@@ -69,6 +70,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Call History"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <ListView
@@ -84,7 +86,7 @@
                 android:background="@android:drawable/list_selector_background"
                 android:gravity="center"
                 android:text="+ Add Incidental Call"
-                android:textSize="12sp"
+                android:textSize="15sp"
                 android:textStyle="italic"
                 android:visibility="gone" />
         </LinearLayout>

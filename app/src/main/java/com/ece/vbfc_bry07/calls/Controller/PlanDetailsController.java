@@ -19,11 +19,7 @@ public class PlanDetailsController extends DbHelper {
             PlanDetails_ID = "plan_details_id",
             PLAN_ID_FK = "plan_id",
             INST_DOC_ID_FK = "inst_doc_id",
-            CYCLE_DAY = "cycle_day",
-            CYCLE_DAY_LABEL = "label";
-
-    public static final String CREATE_PlanDetails = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
-            TBL_PlanDetails, AI_ID, PlanDetails_ID, PLAN_ID_FK, INST_DOC_ID_FK, CYCLE_DAY, CYCLE_DAY_LABEL, CREATED_AT, UPDATED_AT, DELETED_AT);
+            CYCLE_DAY = "cycle_day";
 
     public PlanDetailsController(Context context) {
         super(context);
@@ -76,7 +72,7 @@ public class PlanDetailsController extends DbHelper {
         return array;
     }
 
-    public ArrayList<HashMap<String, ArrayList<String>>> getPlanDetailsByPID(int plan_ID) {
+    public ArrayList<HashMap<String, ArrayList<String>>> getPlanDetailsByPID(long plan_ID) {
         String sql1 = "SELECT DISTINCT inst_doc_id FROM PlanDetails as pd INNER JOIN Plans as p ON pd.plan_id = p._id WHERE plan_id = " + plan_ID;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql1, null);
@@ -275,12 +271,27 @@ public class PlanDetailsController extends DbHelper {
         int planID = pc.getPlanID(cycleMonth, "PlanDetails");
         int rowID = 0;
 
-        if (planID > 0) {
+        if (planID > 0)
             rowID = 1;
-        } else if (planID == -1)
+        else if (planID == -1)
             rowID = -1;
 
         return rowID;
+    }
+
+    public boolean checkPlanDetailsByPlanID(long planID) {
+        String sql = "SELECT * FROM PlanDetails WHERE plan_id = " + planID;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+        int check = 0;
+
+        if (cur.moveToNext())
+            check = 1;
+
+        cur.close();
+        db.close();
+
+        return check > 0;
     }
 
     //////////////////////////////////DELETE METHODS

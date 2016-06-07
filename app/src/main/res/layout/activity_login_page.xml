@@ -53,7 +53,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Username"
-                    android:textSize="13sp" />
+                    android:textSize="20sp" />
 
                 <EditText
                     android:id="@+id/password"
@@ -63,7 +63,7 @@
                     android:layout_marginTop="10dp"
                     android:hint="Password"
                     android:inputType="textPassword"
-                    android:textSize="13sp" />
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <Button
@@ -75,7 +75,7 @@
                 android:minHeight="40dp"
                 android:text="LOGIN"
                 android:textColor="@android:color/white"
-                android:textSize="13sp" />
+                android:textSize="20sp" />
         </RelativeLayout>
 
         <View

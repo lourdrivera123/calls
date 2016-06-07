@@ -1,9 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        esel {
+            keyAlias 'callsKey'
+            keyPassword 'calls_2016'
+            storeFile file('D:/ESEL/SIMPLE-SFA/trunk/calls/app/build/outputs/apk/callsKey.jks')
+            storePassword 'calls_2016'
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
-
     defaultConfig {
         applicationId "com.example.vbfc_bry07.calls"
         minSdkVersion 14
@@ -24,9 +31,8 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:design:23.0.1'
-    compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
 }

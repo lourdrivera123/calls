@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Color Coded Circles"
-        android:textSize="13sp"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
     <View

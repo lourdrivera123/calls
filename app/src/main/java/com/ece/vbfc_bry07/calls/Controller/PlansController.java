@@ -7,11 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.ece.vbfc_bry07.calls.Helpers;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 
 public class PlansController extends DbHelper {
     DbHelper dbhelper;
@@ -19,10 +16,8 @@ public class PlansController extends DbHelper {
 
     static String TBL_PLANS = "Plans",
             PLANS_ID = "plans_id",
-            PLANS_CYCLE_SET = "cycle_set_id",
             PLANS_CYCLE_NUMBER = "cycle_number",
-            PLANS_STATUS = "status",
-            PLANS_STATUS_DATE = "status_date";
+            PLANS_STATUS = "status";
 
     public PlansController(Context context) {
         super(context);
@@ -31,14 +26,26 @@ public class PlansController extends DbHelper {
     }
 
     //////////////////////////////CHECK METHODS///////////////////////////
-    public int checkIfHasPlan(int month) {
+    public long checkForPlanByMonthYear(int year, int month) {
+        String sql1 = "SELECT * FROM Plans as p INNER JOIN CycleSets as cs ON p.cycle_set_id = cs.cycle_sets_id WHERE year = " + year;
         SQLiteDatabase db = dbhelper.getWritableDatabase();
-        String sql = "SELECT * FROM " + TBL_PLANS + " WHERE " + PLANS_CYCLE_NUMBER + " = " + month;
-        Cursor cur = db.rawQuery(sql, null);
-        int plan_id = 0;
+        Cursor cur = db.rawQuery(sql1, null);
+        int cycle_set_id = 0;
+        long plan_id = 0;
 
         if (cur.moveToNext())
-            plan_id = cur.getInt(cur.getColumnIndex(AI_ID));
+            cycle_set_id = cur.getInt(cur.getColumnIndex("cycle_set_id"));
+
+        if (cycle_set_id > 0) {
+            String sql2 = "SELECT * FROM Plans WHERE cycle_set_id = " + cycle_set_id + " AND cycle_number = " + month;
+            Cursor cur2 = db.rawQuery(sql2, null);
+
+            if (cur2.moveToNext()) {
+                plan_id = cur.getInt(cur.getColumnIndex("plans_id"));
+            }
+
+            cur2.close();
+        }
 
         cur.close();
         db.close();
@@ -46,6 +53,7 @@ public class PlansController extends DbHelper {
         return plan_id;
     }
 
+    ///////////////////////ISAHON LANG NI SILA
     public int checkIfPlanIsApproved(int cycle_number) {
         String sql = "SELECT * FROM Plans WHERE cycle_number = " + cycle_number;
         SQLiteDatabase db = dbhelper.getWritableDatabase();
@@ -61,6 +69,22 @@ public class PlansController extends DbHelper {
         return status_id;
     }
 
+    public int checkPlanIfApproved(long plan_id) {
+        String sql = "SELECT * FROM Plans WHERE plans_id = " + plan_id;
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+        Cursor cur = db.rawQuery(sql, null);
+        int status_id = -1;
+
+        if (cur.moveToNext())
+            status_id = cur.getInt(cur.getColumnIndex("status"));
+
+        cur.close();
+        db.close();
+
+        return status_id;
+    }
+    ///////////////////////////////
+
     public HashMap<String, String> checkForDisapprovedPlans() {
         String sql = "SELECT * FROM Plans WHERE status = 2";
         SQLiteDatabase db = dbhelper.getWritableDatabase();
@@ -71,7 +95,7 @@ public class PlansController extends DbHelper {
 
         if (cur.moveToNext()) {
             map.put("cycle_number", cur.getString(cur.getColumnIndex(PLANS_CYCLE_NUMBER)));
-            map.put("date", helpers.convertToAlphabetDate(cur.getString(cur.getColumnIndex("updated_at")), ""));
+            map.put("date", cur.getString(cur.getColumnIndex("updated_at")));
         }
 
         cur.close();
@@ -82,7 +106,7 @@ public class PlansController extends DbHelper {
 
     ///////////////////////////////////////////GET METHODS
     public ArrayList<HashMap<String, String>> getAllPlans() {
-        String sql = "SELECT * FROM Plans as p INNER JOIN CycleSets as cs ON p.cycle_set_id = cs.cycle_sets_id WHERE status = 1";
+        String sql = "SELECT * FROM Plans as p INNER JOIN CycleSets as cs ON p.cycle_set_id = cs.cycle_sets_id";
         SQLiteDatabase db = dbhelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
         ArrayList<HashMap<String, String>> array = new ArrayList<>();
@@ -93,6 +117,7 @@ public class PlansController extends DbHelper {
             int year = cur.getInt(cur.getColumnIndex("year"));
             map.put("name", month + " " + year);
             map.put("cycle_number", cur.getString(cur.getColumnIndex(PLANS_CYCLE_NUMBER)));
+            map.put("year", cur.getString(cur.getColumnIndex("year")));
 
             array.add(map);
         }
@@ -122,42 +147,6 @@ public class PlansController extends DbHelper {
         db.close();
 
         return planID;
-    }
-
-    ///////////////////////////////INSERT METHODS/////////////////////////
-    public long insertPlans(int year, int month) {
-        ContentValues val = new ContentValues();
-        SQLiteDatabase db = getWritableDatabase();
-        String sql = "SELECT * FROM CycleSets WHERE year = " + year;
-        Cursor cur = db.rawQuery(sql, null);
-        int cycle_set_id = 0;
-        long id;
-
-        if (cur.moveToNext())
-            cycle_set_id = cur.getInt(cur.getColumnIndex("cycle_sets_id"));
-
-        String check_sql = "SELECT * FROM " + TBL_PLANS + " WHERE " + PLANS_CYCLE_NUMBER + " = " + month + " AND " + PLANS_CYCLE_SET + " = " + cycle_set_id;
-        Cursor cur1 = db.rawQuery(check_sql, null);
-
-        if (cur1.moveToNext()) {
-            return -1;
-        } else {
-            Date datenow = new Date();
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-
-            val.put(PLANS_CYCLE_SET, cycle_set_id);
-            val.put(PLANS_CYCLE_NUMBER, month);
-            val.put(PLANS_STATUS, 0);
-            val.put(PLANS_STATUS_DATE, formatter.format(datenow));
-
-            id = db.insert(TBL_PLANS, null, val);
-        }
-
-        cur.close();
-        cur1.close();
-        db.close();
-
-        return id;
     }
 
     /////////////////////UPDATE METHODS

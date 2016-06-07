@@ -6,5 +6,5 @@
     android:layout_gravity="center_horizontal"
     android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
     android:paddingTop="5dp"
-    android:textSize="13sp"
+    android:textSize="18sp"
     android:textStyle="bold" />

@@ -6,12 +6,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
 
 public class Helpers {
 
-    public Helpers() {}
+    public Helpers() {
+    }
 
     public String convertToAlphabetDate(String input, String type) {
         SimpleDateFormat outputFormat = null;
@@ -67,6 +69,15 @@ public class Helpers {
         df.setTimeZone(TimeZone.getTimeZone("GMT+8"));
 
         return df.format(cal.getTime());
+    }
+
+    public int getCurrentYear() {
+        SimpleDateFormat df;
+        Calendar cal = Calendar.getInstance();
+
+        df = new SimpleDateFormat("yyyy", Locale.getDefault());
+        df.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+        return Integer.parseInt(df.format(cal.getTime()));
     }
 
     public String getFirstDateOfMonth(int month) {
@@ -163,6 +174,25 @@ public class Helpers {
             e.printStackTrace();
         }
         return date;
+    }
+
+    public HashMap<String, String> divideDate(String date) {
+        Date date1;
+        HashMap<String, String> map = new HashMap<>();
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+        try {
+            date1 = date_format.parse(date);
+            cal.setTime(date1);
+
+            map.put("date", cal.get(Calendar.DATE) + "");
+            map.put("month", new SimpleDateFormat("MMM", Locale.getDefault()).format(cal.getTime()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return map;
     }
 
     public String getTodaysDate() {

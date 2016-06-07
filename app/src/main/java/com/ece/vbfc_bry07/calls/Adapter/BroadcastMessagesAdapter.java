@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 
 import java.util.ArrayList;
@@ -16,11 +17,15 @@ public class BroadcastMessagesAdapter extends BaseAdapter {
     Context context;
     ArrayList<HashMap<String, String>> objects;
 
-    TextView name;
+    TextView message, month, date;
+
+    Helpers helpers;
 
     public BroadcastMessagesAdapter(Context context, ArrayList<HashMap<String, String>> objects) {
         this.context = context;
         this.objects = objects;
+
+        helpers = new Helpers();
     }
 
     @Override
@@ -44,11 +49,16 @@ public class BroadcastMessagesAdapter extends BaseAdapter {
 
         if (convertView == null) {
             LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = vi.inflate(R.layout.item_plain_textview, parent, false);
+            v = vi.inflate(R.layout.item_broadcast, parent, false);
         }
 
-        name = (TextView) v.findViewById(R.id.name);
-        name.setText(objects.get(position).get("message"));
+        message = (TextView) v.findViewById(R.id.message);
+        month = (TextView) v.findViewById(R.id.month);
+        date = (TextView) v.findViewById(R.id.date);
+
+        message.setText(objects.get(position).get("message"));
+        month.setText(helpers.divideDate(objects.get(position).get("date")).get("month"));
+        date.setText(helpers.divideDate(objects.get(position).get("date")).get("date"));
 
         return v;
     }

@@ -29,7 +29,7 @@ public class CallReportDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         DisplayMetrics metrics = getResources().getDisplayMetrics();
-        int screenSize = (int) (metrics.widthPixels * 0.70);
+        int screenSize = (int) (metrics.widthPixels * 0.50);
 
         setContentView(R.layout.dialog_expandable);
         getWindow().setLayout(screenSize, LinearLayout.LayoutParams.WRAP_CONTENT);

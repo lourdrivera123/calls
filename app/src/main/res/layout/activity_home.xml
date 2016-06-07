@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="#F6F2EC"
-                android:textSize="15sp" />
+                android:textSize="20sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -76,7 +76,7 @@
                             android:gravity="center_vertical"
                             android:text="@string/quick_sign"
                             android:textColor="#F6F2EC"
-                            android:textSize="15sp" />
+                            android:textSize="17sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -103,7 +103,7 @@
                             android:gravity="center_vertical"
                             android:text="@string/acp"
                             android:textColor="#F6F2EC"
-                            android:textSize="15sp" />
+                            android:textSize="17sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -130,7 +130,7 @@
                             android:gravity="center_vertical"
                             android:text="@string/mcp"
                             android:textColor="#F6F2EC"
-                            android:textSize="15sp" />
+                            android:textSize="17sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -157,7 +157,7 @@
                             android:gravity="center_vertical"
                             android:text="@string/doctor_information"
                             android:textColor="#F6F2EC"
-                            android:textSize="15sp" />
+                            android:textSize="17sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -184,7 +184,7 @@
                             android:gravity="center_vertical"
                             android:text="@string/call_report"
                             android:textColor="#F6F2EC"
-                            android:textSize="15sp" />
+                            android:textSize="17sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -211,7 +211,7 @@
                             android:gravity="center_vertical"
                             android:text="@string/sales_report"
                             android:textColor="#F6F2EC"
-                            android:textSize="15sp" />
+                            android:textSize="17sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -238,7 +238,7 @@
                             android:gravity="center_vertical"
                             android:text="@string/material_monitoring"
                             android:textColor="#F6F2EC"
-                            android:textSize="15sp" />
+                            android:textSize="17sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -265,7 +265,34 @@
                             android:gravity="center_vertical"
                             android:text="@string/status_summary"
                             android:textColor="#F6F2EC"
-                            android:textSize="15sp" />
+                            android:textSize="17sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/export_database"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal"
+                        android:padding="5dp">
+
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_height="30dp"
+                            android:layout_weight=".2"
+                            android:contentDescription="@string/status_summary"
+                            android:src="@mipmap/ic_settings" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight=".8"
+                            android:gravity="center_vertical"
+                            android:text="Export Database"
+                            android:textColor="#F6F2EC"
+                            android:textSize="17sp" />
                     </LinearLayout>
                 </LinearLayout>
             </ScrollView>
@@ -312,20 +339,19 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:textSize="15sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <ScrollView
                     android:id="@+id/statistics"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
                     android:fillViewport="true">
 
                     <include
                         layout="@layout/cycle_statistics"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="match_parent" />
                 </ScrollView>
 
                 <TextView

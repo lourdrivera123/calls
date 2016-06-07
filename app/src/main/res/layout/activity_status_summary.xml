@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:textColor="#C87C7C"
-            android:textSize="15sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -52,6 +52,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="No data available"
+                android:textSize="15sp"
                 android:textStyle="italic"
                 android:visibility="gone" />
         </LinearLayout>

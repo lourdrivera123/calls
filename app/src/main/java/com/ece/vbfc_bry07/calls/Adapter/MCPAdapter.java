@@ -22,11 +22,6 @@ public class MCPAdapter extends BaseAdapter {
         this.objects = objects;
     }
 
-    public void remove(int position) {
-        objects.remove(position);
-        this.notifyDataSetChanged();
-    }
-
     @Override
     public int getCount() {
         return objects.size();

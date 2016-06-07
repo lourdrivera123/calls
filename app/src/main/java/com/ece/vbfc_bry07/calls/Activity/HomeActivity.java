@@ -1,24 +1,27 @@
 package com.ece.vbfc_bry07.calls.activity;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ece.vbfc_bry07.calls.adapter.BirthdayAdapter;
+import com.ece.vbfc_bry07.calls.adapter.BroadcastMessagesAdapter;
 import com.ece.vbfc_bry07.calls.controller.BroadcastsController;
 import com.ece.vbfc_bry07.calls.controller.CallsController;
 import com.ece.vbfc_bry07.calls.controller.DbHelper;
@@ -27,6 +30,11 @@ import com.ece.vbfc_bry07.calls.controller.PlansController;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -36,7 +44,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     TextView username, no_data, call_rate, call_reach, planned_calls, incidental_calls, recovered_calls,
             declared_missed_calls, unprocessed_calls, cycle_number, count_birthday, count_broadcast;
     LinearLayout root, birthday, quick_sign, actual_coverage_plan, master_coverage_plan, doctors_information,
-            call_report, sales_report, material_monitoring, status_summary, broadcast_msg;
+            call_report, sales_report, material_monitoring, status_summary, broadcast_msg, export_database;
 
     SharedPreferences sharedpref;
 
@@ -47,7 +55,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     DoctorsController dc;
     BroadcastsController bc;
 
-    int cycle_month;
+    int cycle_month, current_year;
 
     ArrayList<HashMap<String, String>> broadcasts;
     ArrayList<HashMap<String, String>> birthdays;
@@ -74,6 +82,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         broadcast_msg = (LinearLayout) findViewById(R.id.broadcast_msg);
         count_broadcast = (TextView) findViewById(R.id.count_broadcast);
         recovered_calls = (TextView) findViewById(R.id.recovered_calls);
+        export_database = (LinearLayout) findViewById(R.id.export_database);
         incidental_calls = (TextView) findViewById(R.id.incidental_calls);
         status_summary = (LinearLayout) findViewById(R.id.status_summary);
         unprocessed_calls = (TextView) findViewById(R.id.unprocessed_calls);
@@ -92,6 +101,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         sharedpref = getSharedPreferences("ECECalls", Context.MODE_PRIVATE);
         cycle_month = helpers.convertDateToCycleMonth(helpers.getCurrentDate(""));
+        current_year = helpers.getCurrentYear();
 
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;
@@ -103,6 +113,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         sales_report.setOnClickListener(this);
         broadcast_msg.setOnClickListener(this);
         status_summary.setOnClickListener(this);
+        export_database.setOnClickListener(this);
         actual_coverage_plan.setOnClickListener(this);
         master_coverage_plan.setOnClickListener(this);
         doctors_information.setOnClickListener(this);
@@ -128,7 +139,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(this, LoginActivity.class));
             this.finish();
         } else {
-            if (pc.checkIfHasPlan(cycle_month) == 0) {
+            if (pc.checkForPlanByMonthYear(current_year, cycle_month) == 0) {
                 no_data.setVisibility(View.VISIBLE);
                 statistics.setVisibility(View.GONE);
             } else {
@@ -156,7 +167,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             if (!pc.checkForDisapprovedPlans().get("date").equals("")) {
                 HashMap<String, String> map = new HashMap<>();
                 map.put("date", pc.checkForDisapprovedPlans().get("date"));
-                map.put("message", "* Plan has been disapproved. Tap the MCP tab to update plan");
+                map.put("message", "* Plan has been disapproved. Tap the MCP tab to update plan.");
                 broadcasts.add(map);
             }
 
@@ -213,7 +224,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(this, CallReportActivity.class));
                 break;
             case R.id.sales_report:
-                startActivity(new Intent(this, SalesReportActivity.class));
+//                startActivity(new Intent(this, SalesReportActivity.class));
+                try {
+                    dbHelper.copyDatabase();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.material_monitoring:
                 startActivity(new Intent(this, MaterialMonitoringActivity.class));
@@ -243,13 +259,73 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     dialog.show();
 
                     ListView listview = (ListView) dialog.findViewById(R.id.listview);
-                    listview.setAdapter(new ArrayAdapter<>(this, R.layout.item_plain_textview, broadcasts));
+                    listview.setAdapter(new BroadcastMessagesAdapter(this, broadcasts));
                 }
+                break;
+
+            case R.id.export_database:
+                new ExportDatabaseFileTask().execute();
                 break;
         }
     }
 
     public String getUsername() {
         return sharedpref.getString("Username", "");
+    }
+
+    /////////////////////////EXPORTING DATABASE
+    private class ExportDatabaseFileTask extends AsyncTask<String, Void, Boolean> {
+        private final ProgressDialog dialog = new ProgressDialog(HomeActivity.this);
+
+        // can use UI thread here
+        protected void onPreExecute() {
+            this.dialog.setMessage("Exporting database...");
+            this.dialog.show();
+        }
+
+        // automatically done on worker thread (separate from UI thread)
+        protected Boolean doInBackground(final String... args) {
+            File dbFile = new File(Environment.getDataDirectory() + "/data/" + getPackageName() + "/databases/ECE_calls");
+
+            File exportDir = new File(Environment.getExternalStorageDirectory(), "");
+            if (!exportDir.exists()) {
+                exportDir.mkdirs();
+            }
+            File file = new File(exportDir, dbFile.getName());
+
+            try {
+                file.createNewFile();
+                this.copyFile(dbFile, file);
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        // can use UI thread here
+        protected void onPostExecute(final Boolean success) {
+            if (this.dialog.isShowing()) {
+                this.dialog.dismiss();
+            }
+            if (success)
+                Toast.makeText(HomeActivity.this, "Export successful!", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(HomeActivity.this, "Export failed", Toast.LENGTH_SHORT).show();
+        }
+
+        void copyFile(File src, File dst) throws IOException {
+            FileChannel inChannel = new FileInputStream(src).getChannel();
+            FileChannel outChannel = new FileOutputStream(dst).getChannel();
+            try {
+                inChannel.transferTo(0, inChannel.size(), outChannel);
+            } finally {
+                if (inChannel != null)
+                    inChannel.close();
+                if (outChannel != null)
+                    outChannel.close();
+            }
+        }
+
     }
 }
