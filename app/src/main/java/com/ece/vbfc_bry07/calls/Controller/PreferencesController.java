@@ -13,14 +13,30 @@ public class PreferencesController extends DbHelper {
     }
 
     // Validate user upon login
-    public long checkUser(String username, String password) {
+    public int checkUserType(String uname, String pword) {
         SQLiteDatabase db = dbhelper.getReadableDatabase();
-        String sql0 = "SELECT * FROM Preferences WHERE (key = 'PASSWORD' AND value = '" + password + "') OR (key = 'USERNAME' AND value = '"+username+"')";
-        Cursor cur = db.rawQuery(sql0, null);
-        long count = cur.getCount();
+        String sql = "SELECT * FROM Preferences WHERE key = 'PASSWORD' OR key = 'USERNAME' OR key = 'USER_TYPE'";
+        Cursor cur = db.rawQuery(sql, null);
+        int user_type = 0;
+        int count = 0;
 
-        db.close();
+        while (cur.moveToNext()) {
+            if (cur.getString(cur.getColumnIndex("key")).equals("USERNAME") && cur.getString(cur.getColumnIndex("value")).equals(uname))
+                count += 1;
+
+            if (cur.getString(cur.getColumnIndex("key")).equals("PASSWORD") && cur.getString(cur.getColumnIndex("value")).equals(pword))
+                count += 1;
+
+            if (cur.getString(cur.getColumnIndex("key")).equals("USER_TYPE"))
+                user_type = cur.getInt(cur.getColumnIndex("value"));
+        }
+
         cur.close();
-        return count;
+        db.close();
+
+        if (count == 2)
+            return user_type;
+        else
+            return 0;
     }
 }

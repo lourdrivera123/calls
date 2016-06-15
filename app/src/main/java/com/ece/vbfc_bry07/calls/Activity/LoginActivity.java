@@ -54,7 +54,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onResume() {
         if (shared.contains("Username")) {
-            startActivity(new Intent(this, HomeActivity.class));
+            if (shared.getInt("User_type", 0) == 1)
+                startActivity(new Intent(this, PSRHomeActivity.class));
+            else if (shared.getInt("User_type", 0) == 2)
+                startActivity(new Intent(this, BDMHomeActivity.class));
+            
             this.finish();
         }
 
@@ -80,12 +84,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 
         if (success == 2) {
-            if (PC.checkUser(get_username, get_password) > 1) {
+            int user_type = PC.checkUserType(get_username, get_password);
+
+            if (user_type > 0) {
                 SharedPreferences.Editor editor = shared.edit();
                 editor.putString("Username", get_username);
+                Intent intent = null;
+
+                if (user_type == 1) {
+                    editor.putInt("User_type", 1);
+                    intent = new Intent(this, PSRHomeActivity.class);
+                } else if (user_type == 2) {
+                    editor.putInt("User_type", 2);
+                    intent = new Intent(this, BDMHomeActivity.class);
+                }
+
                 editor.apply();
-                startActivity(new Intent(this, HomeActivity.class));
+                startActivity(intent);
                 this.finish();
+
             } else
                 Snackbar.make(root, "Invalid Login Credentials", Snackbar.LENGTH_SHORT).show();
         }

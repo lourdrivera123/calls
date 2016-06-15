@@ -16,7 +16,7 @@
             android:layout_weight=".4"
             android:text="Product Name"
             android:textColor="@color/text_color"
-            android:textSize="15sp" />
+            android:textSize="17sp" />
 
         <TextView
             android:layout_width="0dp"
@@ -25,7 +25,7 @@
             android:gravity="center"
             android:text="Sample"
             android:textColor="@color/text_color"
-            android:textSize="15sp" />
+            android:textSize="17sp" />
 
         <TextView
             android:layout_width="0dp"
@@ -34,7 +34,7 @@
             android:gravity="center"
             android:text="Literature"
             android:textColor="@color/text_color"
-            android:textSize="15sp" />
+            android:textSize="17sp" />
 
         <TextView
             android:layout_width="0dp"
@@ -43,7 +43,7 @@
             android:gravity="center"
             android:text="Promaterials"
             android:textColor="@color/text_color"
-            android:textSize="15sp" />
+            android:textSize="17sp" />
     </LinearLayout>
 
     <View

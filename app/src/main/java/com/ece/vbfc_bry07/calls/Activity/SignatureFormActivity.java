@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ece.vbfc_bry07.calls.GetLocationActivity;
 import com.ece.vbfc_bry07.calls.adapter.SignatureFormAdapter;
 import com.ece.vbfc_bry07.calls.controller.CallMaterialsController;
 import com.ece.vbfc_bry07.calls.controller.CallNotesController;
@@ -23,10 +24,10 @@ import com.ece.vbfc_bry07.calls.controller.PlanDetailsController;
 import com.ece.vbfc_bry07.calls.controller.ReasonsController;
 import com.ece.vbfc_bry07.calls.controller.RescheduledCallsController;
 import com.ece.vbfc_bry07.calls.controller.SignaturesController;
-import com.ece.vbfc_bry07.calls.fragment.ProductsFragment;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 import com.ece.vbfc_bry07.calls.Signature;
+import com.ece.vbfc_bry07.calls.fragment.ProductsFragment;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,26 +37,28 @@ public class SignatureFormActivity extends AppCompatActivity {
     Toolbar toolbar;
     ListView list_of_products;
     LinearLayout signature_layout;
-    RelativeLayout root;
+    static RelativeLayout root;
     TextView timestamp_now, doctor_name, last_visited;
 
-    Helpers helpers;
-    CallsController cc;
-    Signature signature;
-    ReasonsController rc;
-    CallNotesController cnc;
-    SignaturesController sc;
-    PlanDetailsController pdc;
-    CallMaterialsController cmc;
-    SignatureFormAdapter adapter;
-    RescheduledCallsController rcc;
+    static Helpers helpers;
+    static CallsController cc;
+    static Signature signature;
+    static ReasonsController rc;
+    static CallNotesController cnc;
+    static SignaturesController sc;
+    static PlanDetailsController pdc;
+    static CallMaterialsController cmc;
+    static SignatureFormAdapter adapter;
+    static RescheduledCallsController rcc;
+    static SignatureFormActivity sfa;
 
-    int retry_count;
+    static int retry_count;
 
-    View mView;
+    static View mView;
 
-    ArrayList<HashMap<String, String>> products, notes;
-    HashMap<String, String> details, additional_call;
+    static ArrayList<HashMap<String, String>> products, notes;
+    static HashMap<String, String> details;
+    static HashMap<String, String> additional_call;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -78,6 +81,7 @@ public class SignatureFormActivity extends AppCompatActivity {
         root = (RelativeLayout) findViewById(R.id.root);
 
         helpers = new Helpers();
+        sfa = this;
         cc = new CallsController(this);
         rc = new ReasonsController(this);
         sc = new SignaturesController(this);
@@ -123,65 +127,7 @@ public class SignatureFormActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.save:
                 if (signature.hasSigned()) {
-                    mView.setDrawingCacheEnabled(true);
-                    String path = signature.save(mView);
-
-                    details.put("calls_retry_count", String.valueOf(retry_count));
-                    details.put("calls_status", "1");
-
-                    if (additional_call != null && additional_call.size() > 0) {
-                        details.put("calls_status", "2"); //INCIDENTAL CALLS
-                        details.put("calls_makeup", "0");
-                        details.put("calls_temp_planDetails_id", String.valueOf(pdc.insertAdditionalCall(additional_call)));
-                    } else if (!ACPActivity.missed_call_date.equals("")) {
-                        Date makeup_date = helpers.convertStringToDate(ACPActivity.missed_call_date);
-                        Date current_date = helpers.convertStringToDate(helpers.getCurrentDate("date"));
-                        details.put("calls_status", "2");
-
-                        if (current_date.after(makeup_date))
-                            details.put("calls_makeup", "1"); //MAKE UP CALLS
-                        else if (current_date.before(makeup_date))
-                            details.put("calls_makeup", "0"); //ADVANCE CALLS
-                    }
-
-                    long callID = cc.insertCall(details);
-
-                    if (callID > 0) {
-                        if (!sc.insertSignature(callID, path))
-                            Snackbar.make(root, "Error occurred while saving signature", Snackbar.LENGTH_SHORT).show();
-
-                        if (products.size() > 0) {
-                            if (!cmc.insertCallMaterials(products, callID))
-                                Snackbar.make(root, "Error occurred while saving materials", Snackbar.LENGTH_SHORT).show();
-                        }
-
-                        if (notes.size() > 0) {
-                            if (!cnc.insertCallNotes(notes, callID))
-                                Snackbar.make(root, "Error occurred while saving notes", Snackbar.LENGTH_SHORT).show();
-                        }
-
-                        if (details.get("calls_status").equals("2") && !ACPActivity.missed_call_date.equals("")) {
-                            int reason_id = 0;
-
-                            if (!ACPActivity.selected_reason.equals(""))
-                                reason_id = rc.getReasonID(ACPActivity.selected_reason);
-
-                            HashMap<String, String> map = new HashMap<>();
-                            map.put("call_id", String.valueOf(callID));
-                            map.put("reschedule_date", helpers.getCurrentDate("date"));
-                            map.put("reason_id", String.valueOf(reason_id));
-                            map.put("remarks", "");
-
-                            if (!rcc.insertRescheduledCalls(map))
-                                Snackbar.make(root, "Error saving call", Snackbar.LENGTH_SHORT).show();
-                        }
-
-                        ProductsFragment.array_of_products = new ArrayList<>();
-                        ACPActivity.acp.finish();
-                        startActivity(new Intent(this, ACPActivity.class));
-                        finish();
-                    } else
-                        Snackbar.make(root, "Error occurred", Snackbar.LENGTH_SHORT).show();
+                    new GetLocationActivity(this);
                 } else
                     Snackbar.make(root, "Signature is required", Snackbar.LENGTH_SHORT).show();
                 break;
@@ -196,5 +142,72 @@ public class SignatureFormActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public static void insertCall(double latitude, double longitude) {
+        mView.setDrawingCacheEnabled(true);
+        String path = signature.save(mView);
+
+        details.put("calls_latitude", latitude + "");
+        details.put("calls_longitude", longitude + "");
+        details.put("calls_retry_count", String.valueOf(retry_count));
+        details.put("calls_status", "1");
+
+        if (additional_call != null && additional_call.size() > 0) {
+            details.put("calls_status", "2"); //INCIDENTAL CALLS
+            details.put("calls_makeup", "0");
+            details.put("calls_temp_planDetails_id", String.valueOf(pdc.insertAdditionalCall(additional_call)));
+        } else if (!ACPActivity.missed_call_date.equals("")) {
+            Date makeup_date = helpers.convertStringToDate(ACPActivity.missed_call_date);
+            Date current_date = helpers.convertStringToDate(helpers.getCurrentDate("date"));
+            details.put("calls_status", "2");
+
+            if (current_date.after(makeup_date))
+                details.put("calls_makeup", "1"); //MAKE UP CALLS
+            else if (current_date.before(makeup_date))
+                details.put("calls_makeup", "0"); //ADVANCE CALLS
+        }
+
+        if (latitude == 0 && longitude == 0)
+            Snackbar.make(root, "Couldn't get location", Snackbar.LENGTH_SHORT).show();
+
+        long callID = cc.insertCall(details);
+
+        if (callID > 0) {
+            if (!sc.insertSignature(callID, path))
+                Snackbar.make(root, "Error occurred while saving signature", Snackbar.LENGTH_SHORT).show();
+
+            if (products.size() > 0) {
+                if (!cmc.insertCallMaterials(products, callID))
+                    Snackbar.make(root, "Error occurred while saving materials", Snackbar.LENGTH_SHORT).show();
+            }
+
+            if (notes.size() > 0) {
+                if (!cnc.insertCallNotes(notes, callID))
+                    Snackbar.make(root, "Error occurred while saving notes", Snackbar.LENGTH_SHORT).show();
+            }
+
+            if (details.get("calls_status").equals("2") && !ACPActivity.missed_call_date.equals("")) {
+                int reason_id = 0;
+
+                if (!ACPActivity.selected_reason.equals(""))
+                    reason_id = rc.getReasonID(ACPActivity.selected_reason);
+
+                HashMap<String, String> map = new HashMap<>();
+                map.put("call_id", String.valueOf(callID));
+                map.put("reschedule_date", helpers.getCurrentDate("date"));
+                map.put("reason_id", String.valueOf(reason_id));
+                map.put("remarks", "");
+
+                if (!rcc.insertRescheduledCalls(map))
+                    Snackbar.make(root, "Error saving call", Snackbar.LENGTH_SHORT).show();
+            }
+
+            ProductsFragment.array_of_products = new ArrayList<>();
+            ACPActivity.acp.finish();
+            sfa.startActivity(new Intent(sfa, ACPActivity.class));
+            SignatureFormActivity.sfa.finish();
+        } else
+            Snackbar.make(root, "Error occurred", Snackbar.LENGTH_SHORT).show();
     }
 }

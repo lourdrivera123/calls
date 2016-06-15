@@ -17,7 +17,6 @@ public class CallsController extends DbHelper {
     DbHelper dbHelper;
 
     static String TBL_Calls = "Calls",
-            Calls_ID = "calls_id",
             PLANDETAILS_ID = "plan_details_id",
             TEMP_PLANDETAILS_ID = "temp_planDetails_id",
             STATUS_ID_FK = "status_id",
@@ -27,13 +26,9 @@ public class CallsController extends DbHelper {
             LATITUDE = "latitude",
             LONGITUDE = "longtitude",
             RESCHEDULE_DATE = "reschedule_date",
-            SIGNED_DAY_ID = "signed_day",
             RETRY_COUNT = "retry_count",
             JOINT_CALL = "joint_call",
             QUICK_SIGN = "quick_sign";
-
-    public static final String CREATE_Calls = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, %s INTEGER, %s INTEGER, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s DOUBLE, %s DOUBLE, %s TEXT, %s TEXT, %s LONG, %s INTEGER, %s INTEGER, %s TEXT, %s TEXT, %s TEXT)",
-            TBL_Calls, AI_ID, Calls_ID, PLANDETAILS_ID, TEMP_PLANDETAILS_ID, STATUS_ID_FK, MAKEUP, START_DATETIME, END_DATETIME, LATITUDE, LONGITUDE, RESCHEDULE_DATE, SIGNED_DAY_ID, RETRY_COUNT, JOINT_CALL, QUICK_SIGN, CREATED_AT, UPDATED_AT, DELETED_AT);
 
     public CallsController(Context context) {
         super(context);
@@ -205,6 +200,8 @@ public class CallsController extends DbHelper {
         val.put(END_DATETIME, map.get("calls_end"));
         val.put(RETRY_COUNT, map.get("calls_retry_count"));
         val.put(JOINT_CALL, map.get("calls_joint_call"));
+        val.put(LATITUDE, map.get("calls_latitude"));
+        val.put(LONGITUDE, map.get("calls_longitude"));
         val.put(QUICK_SIGN, 0);
         val.put(CREATED_AT, helpers.getCurrentDate("timestamp"));
 

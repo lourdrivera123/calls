@@ -47,7 +47,8 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:textColor="@color/header"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -58,6 +59,7 @@
                     <ImageView
                         android:id="@+id/declared_as_missed"
                         android:layout_width="35dp"
+                        android:contentDescription="@string/declared_missed"
                         android:layout_height="35dp"
                         android:layout_marginRight="10dp"
                         android:background="@drawable/state_circle"
@@ -70,6 +72,7 @@
                         android:layout_height="35dp"
                         android:layout_marginRight="10dp"
                         android:background="@drawable/state_circle"
+                        android:contentDescription="@string/incidental_call"
                         android:padding="1dp"
                         android:src="@mipmap/ic_add_incidental_call" />
 
@@ -110,7 +113,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="You have no scheduled calls for today. \nTap the edit icon to switch between dates or add icon to add Incidental call"
-                    android:textSize="15sp"
+                    android:textSize="17sp"
                     android:textStyle="italic" />
             </LinearLayout>
         </LinearLayout>
@@ -135,7 +138,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:textColor="@android:color/white"
-                    android:textSize="18sp" />
+                    android:textSize="20sp" />
 
                 <ImageView
                     android:id="@+id/image"

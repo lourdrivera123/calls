@@ -1,5 +1,6 @@
 package com.ece.vbfc_bry07.calls.activity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -247,7 +248,7 @@ public class MCPActivity extends AppCompatActivity implements ExpandableListView
                     change_view.setVisibility(View.VISIBLE);
                     all_doctors.setVisibility(View.GONE);
                     doc_details.setVisibility(View.GONE);
-                    int planID = pc.getPlanID(month, "");
+                    int planID = pc.getPlanID(month);
                     String first_date = helpers.getFirstDateOfMonth(month - 1);
 
                     picked_date.setText(helpers.convertToAlphabetDate(first_date, ""));
@@ -264,7 +265,7 @@ public class MCPActivity extends AppCompatActivity implements ExpandableListView
 
             case R.id.copy_from:
                 int previous_month = (cal_month.get(Calendar.MONTH) + 1) - 1;
-                int plan_id = pc.getPlanID(previous_month, "");
+                int plan_id = pc.getPlanID(previous_month);
                 ArrayList<HashMap<String, ArrayList<String>>> previous_mcp = pdc.getPlanDetailsByPID(plan_id), new_mcp = new ArrayList<>();
 
                 if (previous_mcp.size() > 0) {
@@ -334,6 +335,11 @@ public class MCPActivity extends AppCompatActivity implements ExpandableListView
     }
 
     private void prepareListData() {
+        ProgressDialog progress = new ProgressDialog(this);
+        progress.setMessage("Please wait...");
+        progress.setCancelable(false);
+        progress.show();
+
         listDataChild = new HashMap<>();
         listDataHeader = new ArrayList<>();
         duplicate_list_child = new HashMap<>();
@@ -358,6 +364,7 @@ public class MCPActivity extends AppCompatActivity implements ExpandableListView
         duplicate_list_child.putAll(listDataChild);
         doctor_adapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
         list_of_doctors.setAdapter(doctor_adapter);
+        progress.dismiss();
     }
 
     public static void duringOnClick(String selected_date) {

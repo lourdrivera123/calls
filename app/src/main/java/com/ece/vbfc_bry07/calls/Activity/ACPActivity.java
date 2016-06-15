@@ -144,62 +144,64 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
         image.setVisibility(View.INVISIBLE);
 
         if (check_adapter_acp == 30 || check_adapter_acp >= 50) {
-            int checkPlanDetails = pdc.checkPlanDetails(cycle_month);
+            int plan_ID = pc.getPlanID(cycle_month);
+            boolean has_plan_details = pdc.checkPlanDetailsByPlanID(plan_ID);
 
-            if (checkPlanDetails == 0)
-                Snackbar.make(root, "You have to plot a plan for this month first", Snackbar.LENGTH_LONG).show();
-            else if (checkPlanDetails == -1)
-                Snackbar.make(root, "Current plan hasn't been approved. You are not yet allowed to make any transaction.", Snackbar.LENGTH_LONG).show();
-            else {
-                HospitalListView.setVisibility(View.VISIBLE);
-                no_calls.setVisibility(View.GONE);
+            if (plan_ID > 0) { //IF NAAY NA RECEIVE NA PLAN GIKAN SA SERVER
+                if (!has_plan_details) {
+                    Snackbar.make(root, "You have to plot a plan for this month first", Snackbar.LENGTH_LONG).show();
+                } else { //NAAY SULOD ANG PLANDETAILS NGA TABLE
+                    HospitalListView.setVisibility(View.VISIBLE);
+                    no_calls.setVisibility(View.GONE);
 
-                if (check_adapter_acp == 50) {
-                    AlertDialog.Builder alert = new AlertDialog.Builder(this);
-                    alert.setMessage("You have missed a  call from this Doctor on " + helpers.convertToAlphabetDate(missed_call_date, "complete")
-                            + ". This will count as a recovered call");
-                    alert.setPositiveButton("Ok", null);
-                    alert.show();
-                } else if (check_adapter_acp == 55) {
-                    showDialog(true);
+                    if (check_adapter_acp == 50) {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                        alert.setMessage("You have missed a  call from this Doctor on " + helpers.convertToAlphabetDate(missed_call_date, "complete")
+                                + ". This will count as a recovered call");
+                        alert.setPositiveButton("Ok", null);
+                        alert.show();
+                    } else if (check_adapter_acp == 55) {
+                        showDialog(true);
 
-                    proceed.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            selected_reason = String.valueOf(spinner_of_reasons.getSelectedItem());
-                            dialog_reasons.dismiss();
-                        }
-                    });
-                }
-
-                if (ViewDoctorsHistoryDialog.child_clicked.get("plan_details_id").equals("0")) {
-                    missed_call_date = "";
-                    additional_call = ViewDoctorsHistoryDialog.child_clicked;
-                    additional_call.put("plan_details_id", additional_call.get("plan_details_id"));
-                    additional_call.put("temp_plandetails_id", "0");
-                }
-
-                ArrayList<HashMap<String, String>> temp_array = new ArrayList<>();
-
-                if (listDataHeader.contains(ViewDoctorsHistoryDialog.child_clicked.get("inst_name"))) {
-                    for (int x = 0; x < listDataHeader.size(); x++) {
-                        if (listDataHeader.get(x).equals(ViewDoctorsHistoryDialog.child_clicked.get("inst_name"))) {
-                            temp_array = listDataChild.get(x);
-                            temp_array.add(ViewDoctorsHistoryDialog.child_clicked);
-                            break;
-                        }
+                        proceed.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                selected_reason = String.valueOf(spinner_of_reasons.getSelectedItem());
+                                dialog_reasons.dismiss();
+                            }
+                        });
                     }
 
-                } else {
-                    int index = listDataHeader.size();
-                    listDataHeader.add(ViewDoctorsHistoryDialog.child_clicked.get("inst_name"));
-                    temp_array.add(ViewDoctorsHistoryDialog.child_clicked);
-                    listDataChild.put(index, temp_array);
-                }
+                    if (ViewDoctorsHistoryDialog.child_clicked.get("plan_details_id").equals("0")) {
+                        missed_call_date = "";
+                        additional_call = ViewDoctorsHistoryDialog.child_clicked;
+                        additional_call.put("plan_details_id", additional_call.get("plan_details_id"));
+                        additional_call.put("temp_plandetails_id", "0");
+                    }
 
-                hospital_adapter = new ACPListAdapter(this, listDataHeader, listDataChild);
-                HospitalListView.setAdapter(hospital_adapter);
-            }
+                    ArrayList<HashMap<String, String>> temp_array = new ArrayList<>();
+
+                    if (listDataHeader.contains(ViewDoctorsHistoryDialog.child_clicked.get("inst_name"))) {
+                        for (int x = 0; x < listDataHeader.size(); x++) {
+                            if (listDataHeader.get(x).equals(ViewDoctorsHistoryDialog.child_clicked.get("inst_name"))) {
+                                temp_array = listDataChild.get(x);
+                                temp_array.add(ViewDoctorsHistoryDialog.child_clicked);
+                                break;
+                            }
+                        }
+
+                    } else {
+                        int index = listDataHeader.size();
+                        listDataHeader.add(ViewDoctorsHistoryDialog.child_clicked.get("inst_name"));
+                        temp_array.add(ViewDoctorsHistoryDialog.child_clicked);
+                        listDataChild.put(index, temp_array);
+                    }
+
+                    hospital_adapter = new ACPListAdapter(this, listDataHeader, listDataChild);
+                    HospitalListView.setAdapter(hospital_adapter);
+                }
+            } else //PAG WALA PAY NA RECEIVE NA PLAN GIKAN SA SERVER (EMPTY ANG Plans NGA TABLE)
+                Snackbar.make(root, "You are not yet allowed to make any transaction.", Snackbar.LENGTH_SHORT).show();
         } else if (!viewotheracp.equals("") && check_adapter_acp == 0) {
             if (viewotheracp.equals(helpers.getCurrentDate("date"))) {
                 current_date = helpers.getCurrentDate("date");

@@ -26,6 +26,7 @@ import com.ece.vbfc_bry07.calls.controller.BroadcastsController;
 import com.ece.vbfc_bry07.calls.controller.CallsController;
 import com.ece.vbfc_bry07.calls.controller.DbHelper;
 import com.ece.vbfc_bry07.calls.controller.DoctorsController;
+import com.ece.vbfc_bry07.calls.controller.PlanDetailsController;
 import com.ece.vbfc_bry07.calls.controller.PlansController;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
@@ -38,11 +39,11 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
+public class PSRHomeActivity extends AppCompatActivity implements View.OnClickListener {
     Toolbar toolbar;
     ScrollView statistics;
     TextView username, no_data, call_rate, call_reach, planned_calls, incidental_calls, recovered_calls,
-            declared_missed_calls, unprocessed_calls, cycle_number, count_birthday, count_broadcast;
+            declared_missed_calls, unprocessed_calls, cycle_number, count_birthday, count_broadcast, notif_mcp;
     LinearLayout root, birthday, quick_sign, actual_coverage_plan, master_coverage_plan, doctors_information,
             call_report, sales_report, material_monitoring, status_summary, broadcast_msg, export_database;
 
@@ -54,22 +55,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     PlansController pc;
     DoctorsController dc;
     BroadcastsController bc;
+    PlanDetailsController pdc;
 
     int cycle_month, current_year;
 
-    ArrayList<HashMap<String, String>> broadcasts;
-    ArrayList<HashMap<String, String>> birthdays;
+    ArrayList<HashMap<String, String>> broadcasts, birthdays;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_psr_home);
 
         root = (LinearLayout) findViewById(R.id.root);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         no_data = (TextView) findViewById(R.id.no_data);
         username = (TextView) findViewById(R.id.username);
         call_rate = (TextView) findViewById(R.id.call_rate);
+        notif_mcp = (TextView) findViewById(R.id.notif_mcp);
         call_reach = (TextView) findViewById(R.id.call_reach);
         statistics = (ScrollView) findViewById(R.id.statistics);
         birthday = (LinearLayout) findViewById(R.id.birthday);
@@ -98,6 +100,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         dc = new DoctorsController(this);
         pc = new PlansController(this);
         bc = new BroadcastsController(this);
+        pdc = new PlanDetailsController(this);
 
         sharedpref = getSharedPreferences("ECECalls", Context.MODE_PRIVATE);
         cycle_month = helpers.convertDateToCycleMonth(helpers.getCurrentDate(""));
@@ -139,7 +142,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(this, LoginActivity.class));
             this.finish();
         } else {
-            if (pc.checkForPlanByMonthYear(current_year, cycle_month) == 0) {
+            if (!pdc.checkPlanDetailsByPlanID(pc.getPlanID(cycle_month))) {
                 no_data.setVisibility(View.VISIBLE);
                 statistics.setVisibility(View.GONE);
             } else {
@@ -164,12 +167,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 call_reach.setText(callReach);
             }
 
-            if (!pc.checkForDisapprovedPlans().get("date").equals("")) {
-                HashMap<String, String> map = new HashMap<>();
-                map.put("date", pc.checkForDisapprovedPlans().get("date"));
-                map.put("message", "* Plan has been disapproved. Tap the MCP tab to update plan.");
-                broadcasts.add(map);
-            }
+            if (pdc.checkForMCPNotif())
+                notif_mcp.setVisibility(View.VISIBLE);
+            else
+                notif_mcp.setVisibility(View.GONE);
 
             if (broadcasts.size() > 0) {
                 count_broadcast.setVisibility(View.VISIBLE);
@@ -224,12 +225,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(this, CallReportActivity.class));
                 break;
             case R.id.sales_report:
-//                startActivity(new Intent(this, SalesReportActivity.class));
-                try {
-                    dbHelper.copyDatabase();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                startActivity(new Intent(this, SalesReportActivity.class));
+//                try {
+//                    dbHelper.copyDatabase();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
                 break;
             case R.id.material_monitoring:
                 startActivity(new Intent(this, MaterialMonitoringActivity.class));
@@ -275,7 +276,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     /////////////////////////EXPORTING DATABASE
     private class ExportDatabaseFileTask extends AsyncTask<String, Void, Boolean> {
-        private final ProgressDialog dialog = new ProgressDialog(HomeActivity.this);
+        private final ProgressDialog dialog = new ProgressDialog(PSRHomeActivity.this);
 
         // can use UI thread here
         protected void onPreExecute() {
@@ -288,9 +289,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             File dbFile = new File(Environment.getDataDirectory() + "/data/" + getPackageName() + "/databases/ECE_calls");
 
             File exportDir = new File(Environment.getExternalStorageDirectory(), "");
-            if (!exportDir.exists()) {
+            if (!exportDir.exists())
                 exportDir.mkdirs();
-            }
+
             File file = new File(exportDir, dbFile.getName());
 
             try {
@@ -309,23 +310,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 this.dialog.dismiss();
             }
             if (success)
-                Toast.makeText(HomeActivity.this, "Export successful!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PSRHomeActivity.this, "Export successful!", Toast.LENGTH_SHORT).show();
             else
-                Toast.makeText(HomeActivity.this, "Export failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PSRHomeActivity.this, "Export failed", Toast.LENGTH_SHORT).show();
         }
 
         void copyFile(File src, File dst) throws IOException {
             FileChannel inChannel = new FileInputStream(src).getChannel();
             FileChannel outChannel = new FileOutputStream(dst).getChannel();
+
             try {
                 inChannel.transferTo(0, inChannel.size(), outChannel);
             } finally {
                 if (inChannel != null)
                     inChannel.close();
-                if (outChannel != null)
-                    outChannel.close();
+
+                outChannel.close();
             }
         }
-
     }
 }

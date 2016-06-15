@@ -23,6 +23,25 @@
     <string name="thu">THU</string>
     <string name="fri">FRI</string>
     <string name="sat">SAT</string>
+    <string name="S">S</string>
+    <string name="L">L</string>
+    <string name="P">P</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="total">Total</string>
+    <string name="content">Content</string>
+    <string name="product">PRODUCT</string>
+    <string name="no_data_available">No data available</string>
+    <string name="search_doctor">Search Doctor…</string>
+    <string name="no_matching_records">No matching records were found</string>
+
+    <!--BDM-->
+    <string name="actual_call">Actual Call</string>
+    <string name="itinerary">Itinerary</string>
+    <string name="developmental_plan">Developmental Plan</string>
+    <string name="pmr">PMR</string>
+    <string name="mcp_approval">MCP Approval</string>
+    <string name="pmr_coverage">PMR Coverage</string>
 
     <array name="color_coded_circles">
         <item>Missed Call</item>

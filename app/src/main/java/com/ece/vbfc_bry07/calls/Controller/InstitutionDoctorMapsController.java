@@ -24,11 +24,11 @@ public class InstitutionDoctorMapsController extends DbHelper {
                     "Doctors as d INNER JOIN InstitutionDoctorMaps as idm ON idm.doctor_id = d.doc_id INNER JOIN DoctorClasses as dc ON idm.class_id = dc.doctor_classes_id " +
                     "INNER JOIN Institutions as i on idm.institution_id = i.inst_id INNER JOIN PlanDetails as pd ON idm.IDM_ID = pd.inst_doc_id " +
                     "LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id LEFT JOIN RescheduledCalls as rc ON c._id = rc.call_id " +
-                    "WHERE pd.cycle_day = '" + date + "' OR rc.cycle_day = '" + date + "' GROUP BY pd._id";
+                    "WHERE pd.cycle_day = '" + date + "' OR rc.cycle_day = '" + date + "' GROUP BY pd._id ORDER BY inst_name, doc_name";
         } else
             sql = "SELECT *, dc.name as class_name, s.name as specialization_name from InstitutionDoctorMaps as idm INNER JOIN Doctors as d on idm.doctor_id = d.doc_id " +
                     "INNER JOIN DoctorClasses as dc on idm.class_id = dc.doctor_classes_id INNER JOIN Institutions as i on idm.institution_id = i.inst_id " +
-                    "INNER JOIN Specializations as s on d.specialization_id = s.specialization_id ORDER BY doc_name ASC";
+                    "INNER JOIN Specializations as s on d.specialization_id = s.specialization_id ORDER BY inst_name, doc_name";
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -89,7 +89,7 @@ public class InstitutionDoctorMapsController extends DbHelper {
         String sql = "SELECT * FROM Doctors as d INNER JOIN InstitutionDoctorMaps as idm ON d.doc_id = idm.doctor_id INNER JOIN Institutions as i ON idm.institution_id = i.inst_id " +
                 "LEFT JOIN PlanDetails as pd ON idm.IDM_ID = pd.inst_doc_id WHERE idm.IDM_ID NOT IN (SELECT pd.inst_doc_id FROM PlanDetails as pd " +
                 "LEFT JOIN Calls as c ON c.plan_details_id = pd.plan_details_id " +
-                "LEFT JOIN RescheduledCalls as rc ON c._id = rc.call_id WHERE pd.cycle_day = '" + date + "' OR rc.cycle_day = '" + date + "') GROUP BY d._id ORDER BY institution_id";
+                "LEFT JOIN RescheduledCalls as rc ON c._id = rc.call_id WHERE pd.cycle_day = '" + date + "' OR rc.cycle_day = '" + date + "') GROUP BY d._id ORDER BY inst_name, doc_name";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
         ArrayList<HashMap<String, String>> array = new ArrayList<>();

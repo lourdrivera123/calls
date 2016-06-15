@@ -249,7 +249,7 @@ public class PlanDetailsController extends DbHelper {
     }
 
     public long insertAdditionalCall(HashMap<String, String> map) {
-        int planID = pc.getPlanID(helpers.convertDateToCycleMonth(helpers.getCurrentDate("date")), "");
+        int planID = pc.getPlanID(helpers.convertDateToCycleMonth(helpers.getCurrentDate("date")));
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues val = new ContentValues();
 
@@ -267,26 +267,31 @@ public class PlanDetailsController extends DbHelper {
     }
 
     ///////////////////////////////CHECK METHODS
-    public int checkPlanDetails(int cycleMonth) {
-        int planID = pc.getPlanID(cycleMonth, "PlanDetails");
-        int rowID = 0;
-
-        if (planID > 0)
-            rowID = 1;
-        else if (planID == -1)
-            rowID = -1;
-
-        return rowID;
-    }
-
     public boolean checkPlanDetailsByPlanID(long planID) {
         String sql = "SELECT * FROM PlanDetails WHERE plan_id = " + planID;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
+        int check = cur.getCount();
+
+        cur.close();
+        db.close();
+
+        return check > 0;
+    }
+
+    public boolean checkForMCPNotif() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String sql = "SELECT  p._id as plan_id, p.status, COUNT(pd._id) as count FROM Plans as p LEFT JOIN PlanDetails as pd ON p._id = pd.plan_id " +
+                "WHERE p.status = 0 OR p.status = 2 GROUP BY p._id";
+        Cursor cur = db.rawQuery(sql, null);
         int check = 0;
 
-        if (cur.moveToNext())
-            check = 1;
+        while (cur.moveToNext()) {
+            if (cur.getInt(cur.getColumnIndex("status")) == 0 && cur.getInt(cur.getColumnIndex("count")) == 0)
+                check += 1;
+            else if (cur.getInt(cur.getColumnIndex("status")) == 2 && cur.getInt(cur.getColumnIndex("count")) > 0)
+                check += 1;
+        }
 
         cur.close();
         db.close();

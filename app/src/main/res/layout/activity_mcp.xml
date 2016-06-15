@@ -96,7 +96,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
-                        android:hint="Search Doctor..."
+                        android:hint="@string/search_doctor"
                         android:textColor="#F6F2EC"
                         android:textColorHint="#F6F2EC"
                         android:textSize="18sp" />
@@ -116,7 +116,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:padding="10dp"
-                    android:text="No matching records were found"
+                    android:text="@string/no_matching_records"
                     android:textSize="15sp"
                     android:visibility="gone" />
             </LinearLayout>
@@ -134,7 +134,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_weight=".6"
             android:background="@android:color/transparent"
             android:baselineAligned="false"
@@ -157,15 +157,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:textSize="15sp" />
+                    android:textSize="17sp" />
 
                 <TextView
                     android:id="@+id/class_code"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
                     android:gravity="center_vertical"
-                    android:textSize="15sp" />
+                    android:textSize="17sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -189,7 +189,9 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_gravity="center"
-                        android:background="@mipmap/ic_prev" />
+                        android:background="?android:attr/selectableItemBackground"
+                        android:contentDescription="@string/previous"
+                        android:src="@mipmap/ic_prev" />
 
                     <TextView
                         android:id="@+id/tv_month"
@@ -205,7 +207,9 @@
                         android:id="@+id/next"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:background="@mipmap/ic_next" />
+                        android:background="?android:attr/selectableItemBackground"
+                        android:contentDescription="@string/next"
+                        android:src="@mipmap/ic_next" />
                 </LinearLayout>
 
                 <TableRow

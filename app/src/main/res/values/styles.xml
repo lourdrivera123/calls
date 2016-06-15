@@ -8,7 +8,7 @@
     </style>
 
     <style name="TabLayoutTextPref" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:textAllCaps">false</item>
     </style>
 

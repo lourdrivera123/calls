@@ -112,27 +112,29 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_month:
-                AlertDialog.Builder alert = new AlertDialog.Builder(this);
-                View view = LayoutInflater.from(this).inflate(R.layout.layout_listview_only, null);
-                alert.setView(view);
-                final AppCompatDialog pdialog = alert.create();
-                pdialog.show();
+                if (no_data.getVisibility() == View.GONE) {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                    View view = LayoutInflater.from(this).inflate(R.layout.layout_listview_only, null);
+                    alert.setView(view);
+                    final AppCompatDialog pdialog = alert.create();
+                    pdialog.show();
 
-                final ArrayList<HashMap<String, String>> all_plans = pc.getAllPlans();
-                ArrayList<String> names = new ArrayList<>();
+                    final ArrayList<HashMap<String, String>> all_plans = pc.getAllPlans();
+                    ArrayList<String> names = new ArrayList<>();
 
-                for (int x = 0; x < all_plans.size(); x++)
-                    names.add(all_plans.get(x).get("name"));
+                    for (int x = 0; x < all_plans.size(); x++)
+                        names.add(all_plans.get(x).get("name"));
 
-                ListView listview = (ListView) view.findViewById(R.id.listview);
-                listview.setAdapter(new ArrayAdapter<>(this, R.layout.item_small_textview_colored, names));
-                listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        AddData(Integer.parseInt(all_plans.get(position).get("cycle_number")), Integer.parseInt(all_plans.get(position).get("year")));
-                        pdialog.dismiss();
-                    }
-                });
+                    ListView listview = (ListView) view.findViewById(R.id.listview);
+                    listview.setAdapter(new ArrayAdapter<>(this, R.layout.item_small_textview_colored, names));
+                    listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            AddData(Integer.parseInt(all_plans.get(position).get("cycle_number")), Integer.parseInt(all_plans.get(position).get("year")));
+                            pdialog.dismiss();
+                        }
+                    });
+                }
                 break;
         }
     }

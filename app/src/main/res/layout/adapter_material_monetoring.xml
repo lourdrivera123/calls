@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:padding="5dp">
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/TxtProductName"
@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:paddingLeft="10dp"
-        android:textSize="15sp" />
+        android:textSize="17sp" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -31,8 +31,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="0"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/TotalL"
@@ -40,8 +39,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="0"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/TotalP"
@@ -49,8 +47,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="0"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -65,8 +62,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="0"
-                android:textSize="12sp" />
+                android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/ContentL"
@@ -74,8 +70,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="0"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/ContentP"
@@ -83,8 +78,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="0"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

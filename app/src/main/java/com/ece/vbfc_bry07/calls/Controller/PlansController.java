@@ -128,20 +128,14 @@ public class PlansController extends DbHelper {
         return array;
     }
 
-    public int getPlanID(int cycleMonth, String from) {
+    public int getPlanID(int cycleMonth) {
         String sql = "SELECT * FROM Plans WHERE cycle_number = " + cycleMonth;
         SQLiteDatabase db = dbhelper.getWritableDatabase();
         Cursor cur = db.rawQuery(sql, null);
         int planID = 0;
 
-        if (cur.moveToNext()) {
+        if (cur.moveToNext())
             planID = cur.getInt(cur.getColumnIndex(AI_ID));
-
-            if (from.equals("PlanDetails")) {
-                if (cur.getInt(cur.getColumnIndex(PLANS_STATUS)) == 0)
-                    planID = -1;
-            }
-        }
 
         cur.close();
         db.close();

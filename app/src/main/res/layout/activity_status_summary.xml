@@ -51,8 +51,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="No data available"
-                android:textSize="15sp"
+                android:text="@string/no_data_available"
+                android:textSize="18sp"
                 android:textStyle="italic"
                 android:visibility="gone" />
         </LinearLayout>

@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".4"
             android:gravity="right"
-            android:textSize="15sp" />
+            android:textSize="17sp" />
     </LinearLayout>
 
     <View
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".4"
             android:gravity="right"
-            android:textSize="15sp" />
+            android:textSize="17sp" />
     </LinearLayout>
 
     <View
@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".4"
             android:gravity="right"
-            android:textSize="15sp" />
+            android:textSize="17sp" />
     </LinearLayout>
 
     <View
@@ -109,7 +109,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".4"
             android:gravity="right"
-            android:textSize="15sp" />
+            android:textSize="17sp" />
     </LinearLayout>
 
     <View
@@ -137,7 +137,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".4"
             android:gravity="right"
-            android:textSize="15sp" />
+            android:textSize="17sp" />
     </LinearLayout>
 
     <View
@@ -165,7 +165,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".4"
             android:gravity="right"
-            android:textSize="15sp" />
+            android:textSize="17sp" />
     </LinearLayout>
 
     <View
@@ -193,6 +193,6 @@
             android:layout_height="wrap_content"
             android:layout_weight=".4"
             android:gravity="right"
-            android:textSize="15sp" />
+            android:textSize="17sp" />
     </LinearLayout>
 </LinearLayout>
