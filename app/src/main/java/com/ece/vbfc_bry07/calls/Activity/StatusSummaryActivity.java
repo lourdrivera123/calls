@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -118,6 +119,7 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
                     alert.setView(view);
                     final AppCompatDialog pdialog = alert.create();
                     pdialog.show();
+                    pdialog.getWindow().setLayout(800, LinearLayout.LayoutParams.WRAP_CONTENT);
 
                     final ArrayList<HashMap<String, String>> all_plans = pc.getAllPlans();
                     ArrayList<String> names = new ArrayList<>();
@@ -126,7 +128,7 @@ public class StatusSummaryActivity extends AppCompatActivity implements View.OnC
                         names.add(all_plans.get(x).get("name"));
 
                     ListView listview = (ListView) view.findViewById(R.id.listview);
-                    listview.setAdapter(new ArrayAdapter<>(this, R.layout.item_small_textview_colored, names));
+                    listview.setAdapter(new ArrayAdapter<>(this, R.layout.item_textview_colored, names));
                     listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

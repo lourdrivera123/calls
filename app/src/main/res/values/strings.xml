@@ -15,7 +15,10 @@
     <string name="call_reach">Call Reach</string>
     <string name="call_rate">Call Rate</string>
     <string name="average">Average</string>
+    <string name="image">Image</string>
+    <string name="proceed">Proceed</string>
     <string name="header">Please select from one of the reasons below to use for the entire list of doctors:</string>
+
     <string name="sun">SUN</string>
     <string name="mon">MON</string>
     <string name="tue">TUE</string>
@@ -23,9 +26,11 @@
     <string name="thu">THU</string>
     <string name="fri">FRI</string>
     <string name="sat">SAT</string>
+
     <string name="S">S</string>
     <string name="L">L</string>
     <string name="P">P</string>
+
     <string name="previous">Previous</string>
     <string name="next">Next</string>
     <string name="total">Total</string>

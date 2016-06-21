@@ -54,21 +54,6 @@ public class PlansController extends DbHelper {
     }
 
     ///////////////////////ISAHON LANG NI SILA
-    public int checkIfPlanIsApproved(int cycle_number) {
-        String sql = "SELECT * FROM Plans WHERE cycle_number = " + cycle_number;
-        SQLiteDatabase db = dbhelper.getWritableDatabase();
-        Cursor cur = db.rawQuery(sql, null);
-        int status_id = 0;
-
-        if (cur.moveToNext())
-            status_id = cur.getInt(cur.getColumnIndex(PLANS_STATUS));
-
-        cur.close();
-        db.close();
-
-        return status_id;
-    }
-
     public int checkPlanIfApproved(long plan_id) {
         String sql = "SELECT * FROM Plans WHERE plans_id = " + plan_id;
         SQLiteDatabase db = dbhelper.getWritableDatabase();
@@ -82,26 +67,6 @@ public class PlansController extends DbHelper {
         db.close();
 
         return status_id;
-    }
-    ///////////////////////////////
-
-    public HashMap<String, String> checkForDisapprovedPlans() {
-        String sql = "SELECT * FROM Plans WHERE status = 2";
-        SQLiteDatabase db = dbhelper.getWritableDatabase();
-        Cursor cur = db.rawQuery(sql, null);
-        HashMap<String, String> map = new HashMap<>();
-        map.put("cycle_number", "");
-        map.put("date", "");
-
-        if (cur.moveToNext()) {
-            map.put("cycle_number", cur.getString(cur.getColumnIndex(PLANS_CYCLE_NUMBER)));
-            map.put("date", cur.getString(cur.getColumnIndex("updated_at")));
-        }
-
-        cur.close();
-        db.close();
-
-        return map;
     }
 
     ///////////////////////////////////////////GET METHODS

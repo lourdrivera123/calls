@@ -1,10 +1,8 @@
 package com.ece.vbfc_bry07.calls.activity;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -13,7 +11,6 @@ import com.ece.vbfc_bry07.calls.adapter.CallReportAdapter;
 import com.ece.vbfc_bry07.calls.controller.CallReportsController;
 import com.ece.vbfc_bry07.calls.controller.CallsController;
 import com.ece.vbfc_bry07.calls.controller.InstitutionDoctorMapsController;
-import com.ece.vbfc_bry07.calls.dialog.CallReportDetails;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 
@@ -69,21 +66,12 @@ public class CallReportActivity extends AppCompatActivity {
         prepareData();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.view_details_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 this.finish();
-                break;
-
-            case R.id.view_details:
-                startActivity(new Intent(this, CallReportDetails.class));
                 break;
         }
 

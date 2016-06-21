@@ -175,6 +175,27 @@ public class CallsController extends DbHelper {
         return array;
     }
 
+    public ArrayList<HashMap<String, String>> getUnprocessedCallsPerDay(String date) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String sql = "SELECT pd.plan_details_id as pd_id, * FROM Doctors as d INNER JOIN InstitutionDoctorMaps as idm ON d.doc_id = idm.doctor_id " +
+                "INNER JOIN PlanDetails as pd ON idm.IDM_ID = pd.inst_doc_id LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id " +
+                "WHERE pd.cycle_day = '" + date + "' AND c.plan_details_id IS NULL";
+        Cursor cur = db.rawQuery(sql, null);
+        ArrayList<HashMap<String, String>> array = new ArrayList<>();
+
+        while (cur.moveToNext()) {
+            HashMap<String, String> map = new HashMap<>();
+            map.put("doc_name", cur.getString(cur.getColumnIndex("doc_name")));
+            map.put("plan_details_id", cur.getString(cur.getColumnIndex("pd_id")));
+            array.add(map);
+        }
+
+        cur.close();
+        db.close();
+
+        return array;
+    }
+
     /////////////////////////////////////////////INSERT METHODS//////////////////////////////
     public long insertCall(HashMap<String, String> map) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -216,7 +237,6 @@ public class CallsController extends DbHelper {
     public int hasCalled(int id, String type) {
         int check = 0;
         String sql = "";
-
 
         if (type.equals("planDetails"))
             sql = "SELECT mc._id as mc_id, * FROM PlanDetails as pd LEFT JOIN Calls as c ON pd.plan_details_id = c.plan_details_id " +

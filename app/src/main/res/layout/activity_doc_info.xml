@@ -94,14 +94,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/TxtDoctorClass"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
         </LinearLayout>
 
         <ScrollView
@@ -145,7 +145,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Mobile"
-                            android:textSize="15sp" />
+                            android:textSize="17sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -186,7 +186,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Birthday"
-                            android:textSize="15sp" />
+                            android:textSize="17sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -212,7 +212,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
                         android:orientation="vertical">
 
                         <TextView
@@ -227,7 +227,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="E-mail"
-                            android:textSize="15sp" />
+                            android:textSize="17sp" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>

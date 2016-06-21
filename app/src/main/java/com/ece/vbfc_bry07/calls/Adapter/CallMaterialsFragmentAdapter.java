@@ -39,7 +39,6 @@ public class CallMaterialsFragmentAdapter extends BaseAdapter {
 
     static class ViewHolder {
         TextView name, sample, literature, promaterials;
-        int ref;
     }
 
     @Override
@@ -60,10 +59,20 @@ public class CallMaterialsFragmentAdapter extends BaseAdapter {
         } else
             holder = (ViewHolder) v.getTag();
 
+        int count_literature = Integer.parseInt(objects.get(position).get("literature"));
+        int count_promaterials = Integer.parseInt(objects.get(position).get("promaterials"));
+        int count_sample = Integer.parseInt(objects.get(position).get("sample"));
+
         holder.name.setText(objects.get(position).get("product_name"));
-        holder.literature.setText(objects.get(position).get("literature"));
-        holder.promaterials.setText(objects.get(position).get("promaterials"));
-        holder.sample.setText(objects.get(position).get("sample"));
+
+        if (count_literature > 0)
+            holder.literature.setText(objects.get(position).get("literature"));
+
+        if (count_promaterials > 0)
+            holder.promaterials.setText(objects.get(position).get("promaterials"));
+
+        if (count_sample > 0)
+            holder.sample.setText(objects.get(position).get("sample"));
 
         return v;
     }

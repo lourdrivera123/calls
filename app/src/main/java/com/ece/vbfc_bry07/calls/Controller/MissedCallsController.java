@@ -14,11 +14,6 @@ public class MissedCallsController extends DbHelper {
     CallsController cc;
     DbHelper dbHelper;
 
-    static String TBL_MissedCalls = "MissedCalls",
-            PLAN_DETAILS_ID = "plan_details_id",
-            REASON_ID = "reason_id",
-            REMARKS = "remarks";
-
     public MissedCallsController(Context context) {
         super(context);
         helpers = new Helpers();
@@ -26,30 +21,24 @@ public class MissedCallsController extends DbHelper {
         dbHelper = new DbHelper(context);
     }
 
-
-    public boolean insertMissedCalls(int reason_id, String remarks, HashMap<Integer, ArrayList<HashMap<String, String>>> planDetails) {
+    ///////////////////INSERT METHODS
+    public boolean insertMissedCalls(ArrayList<HashMap<String, String>> unprocessed_calls) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        long check = 0;
+        long id = 0;
 
-        for (int x = 0; x < planDetails.size(); x++) {
-            for (int y = 0; y < planDetails.get(x).size(); y++) {
-                ContentValues val = new ContentValues();
-                val.put(REASON_ID, reason_id);
-                val.put(REMARKS, remarks);
+        for (int x = 0; x < unprocessed_calls.size(); x++) {
+            HashMap<String, String> map = unprocessed_calls.get(x);
+            ContentValues val = new ContentValues();
+            val.put("plan_details_id", map.get("plan_details_id"));
+            val.put("reason_id", map.get("reason"));
+            val.put("remarks", map.get("remarks"));
+            val.put("created_at", helpers.getCurrentDate("timestamp"));
 
-                int plan_details_id = Integer.parseInt(planDetails.get(x).get(y).get(PLAN_DETAILS_ID));
-                int hascalled = cc.hasCalled(plan_details_id, "planDetails");
-
-                if (hascalled == 0) {
-                    val.put(PLAN_DETAILS_ID, planDetails.get(x).get(y).get(PLAN_DETAILS_ID));
-                    val.put(CREATED_AT, helpers.getCurrentDate("timestamp"));
-
-                    check = db.insert(TBL_MissedCalls, null, val);
-                }
-            }
+            id = db.insert("MissedCalls", null, val);
         }
 
         db.close();
-        return check > 0;
+
+        return id > 0;
     }
 }

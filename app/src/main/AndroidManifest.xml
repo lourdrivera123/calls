@@ -90,7 +90,7 @@
             android:screenOrientation="sensorLandscape"
             android:theme="@style/myDialog" />
         <activity
-            android:name=".dialog.CallReportDetails"
+            android:name=".dialog.DeclareMissedCalls"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/myDialog" />
     </application>

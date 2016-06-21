@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,6 +33,7 @@ import com.ece.vbfc_bry07.calls.controller.MissedCallsController;
 import com.ece.vbfc_bry07.calls.controller.PlanDetailsController;
 import com.ece.vbfc_bry07.calls.controller.PlansController;
 import com.ece.vbfc_bry07.calls.controller.ReasonsController;
+import com.ece.vbfc_bry07.calls.dialog.DeclareMissedCalls;
 import com.ece.vbfc_bry07.calls.dialog.HelpDialog;
 import com.ece.vbfc_bry07.calls.dialog.ViewCycleMonth;
 import com.ece.vbfc_bry07.calls.dialog.ViewDoctorsHistoryDialog;
@@ -52,7 +52,6 @@ import java.util.Set;
 
 public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, View.OnClickListener, ExpandableListView.OnChildClickListener {
     LinearLayout root;
-    EditText remarks;
     ImageView image;
     ViewPager pager;
     Toolbar toolbar;
@@ -77,7 +76,7 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
     HashMap<Integer, ArrayList<HashMap<String, String>>> listDataChild;
 
     boolean ongoing_call = false;
-    int plan_details_id = 0, joint_call = 0, cycle_month;
+    int plan_details_id = 0, joint_call = 0, cycle_month, plan_ID;
     String start_dateTime = "";
     public static int check_adapter_acp = 0, menu_check = 0, tab_position = 0;
     public static String current_date = "", viewotheracp = "", IDM_id = "", missed_call_date = "", selected_reason = "";
@@ -125,6 +124,12 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
         additional_call = new HashMap<>();
         current_date = helpers.getCurrentDate("");
         cycle_month = helpers.convertDateToCycleMonth(current_date);
+        plan_ID = pc.getPlanID(cycle_month);
+
+        if (pc.checkPlanIfApproved(plan_ID) == 0)
+            Snackbar.make(root, "Plan has not been approved. You are not yet allowed to make any transactions", Snackbar.LENGTH_LONG).show();
+        else if (pc.checkPlanIfApproved(plan_ID) == 2)
+            Snackbar.make(root, "Plan has been disapproved. You are not yet allowed to make any transactions", Snackbar.LENGTH_LONG).show();
 
         LblDate.setText(helpers.convertToAlphabetDate(current_date, ""));
         prepareListData();
@@ -144,7 +149,6 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
         image.setVisibility(View.INVISIBLE);
 
         if (check_adapter_acp == 30 || check_adapter_acp >= 50) {
-            int plan_ID = pc.getPlanID(cycle_month);
             boolean has_plan_details = pdc.checkPlanDetailsByPlanID(plan_ID);
 
             if (plan_ID > 0) { //IF NAAY NA RECEIVE NA PLAN GIKAN SA SERVER
@@ -161,7 +165,7 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                         alert.setPositiveButton("Ok", null);
                         alert.show();
                     } else if (check_adapter_acp == 55) {
-                        showDialog(true);
+                        showDialog();
 
                         proceed.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -261,7 +265,7 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                 break;
 
             case R.id.start_call:
-                if (pc.checkIfPlanIsApproved(cycle_month) == 1) {
+                if (pc.checkPlanIfApproved(pc.getPlanID(cycle_month)) == 1) {
                     if (ViewDoctorsHistoryDialog.child_clicked != null && !IDM_id.equals(ViewDoctorsHistoryDialog.child_clicked.get("IDM_id")))
                         missed_call_date = "";
 
@@ -365,22 +369,9 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
                         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                prepareListData();
-                                showDialog(false);
-
-                                title.setText(R.string.header);
-                                proceed.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        String get_remarks = remarks.getText().toString();
-                                        int reason_id = rcc.getReasonID(spinner_of_reasons.getSelectedItem().toString());
-
-                                        if (mcc.insertMissedCalls(reason_id, get_remarks, listDataChild))
-                                            Snackbar.make(root, "All calls have been declared as missed", Snackbar.LENGTH_SHORT).show();
-
-                                        dialog_reasons.dismiss();
-                                    }
-                                });
+                                Intent intent = new Intent(ACPActivity.this, DeclareMissedCalls.class);
+                                intent.putExtra("date", current_date);
+                                startActivity(intent);
                             }
                         });
                         alert.show();
@@ -392,7 +383,7 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
             Snackbar.make(root, "There is an ongoing call. You are not allowed to do this action", Snackbar.LENGTH_SHORT).show();
     }
 
-    void showDialog(boolean hidden) {
+    void showDialog() {
         dialog_reasons = new Dialog(this);
         dialog_reasons.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog_reasons.setContentView(R.layout.dialog_reasons);
@@ -401,12 +392,6 @@ public class ACPActivity extends AppCompatActivity implements TabLayout.OnTabSel
         title = (TextView) dialog_reasons.findViewById(R.id.title);
         spinner_of_reasons = (Spinner) dialog_reasons.findViewById(R.id.spinner_of_reasons);
         proceed = (TextView) dialog_reasons.findViewById(R.id.proceed);
-        remarks = (EditText) dialog_reasons.findViewById(R.id.remarks);
-
-        if (hidden)
-            remarks.setVisibility(View.GONE);
-        else
-            remarks.setVisibility(View.VISIBLE);
 
         spinner_of_reasons.setAdapter(new ArrayAdapter<>(ACPActivity.this, R.layout.item_plain_textview, rcc.getEnabledReasons()));
     }
