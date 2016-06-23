@@ -14,8 +14,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ece.vbfc_bry07.calls.activity.ACPActivity;
-import com.ece.vbfc_bry07.calls.adapter.DoctorsHistoryAdapter;
-import com.ece.vbfc_bry07.calls.adapter.ExpandableListAdapter;
+import com.ece.vbfc_bry07.calls.psr_adapter.DoctorsHistoryAdapter;
+import com.ece.vbfc_bry07.calls.psr_adapter.ExpandableListAdapter;
 import com.ece.vbfc_bry07.calls.controller.DoctorClassesController;
 import com.ece.vbfc_bry07.calls.controller.InstitutionDoctorMapsController;
 import com.ece.vbfc_bry07.calls.controller.PlanDetailsController;

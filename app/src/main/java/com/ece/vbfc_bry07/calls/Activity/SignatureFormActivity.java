@@ -16,7 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ece.vbfc_bry07.calls.GetLocationActivity;
-import com.ece.vbfc_bry07.calls.adapter.SignatureFormAdapter;
+import com.ece.vbfc_bry07.calls.psr_adapter.SignatureFormAdapter;
 import com.ece.vbfc_bry07.calls.controller.CallMaterialsController;
 import com.ece.vbfc_bry07.calls.controller.CallNotesController;
 import com.ece.vbfc_bry07.calls.controller.CallsController;

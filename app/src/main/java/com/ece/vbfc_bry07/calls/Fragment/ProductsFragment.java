@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.ece.vbfc_bry07.calls.activity.ACPActivity;
-import com.ece.vbfc_bry07.calls.adapter.CallMaterialsFragmentAdapter;
-import com.ece.vbfc_bry07.calls.adapter.ProductsFragmentAdapter;
+import com.ece.vbfc_bry07.calls.psr_adapter.CallMaterialsFragmentAdapter;
+import com.ece.vbfc_bry07.calls.psr_adapter.ProductsFragmentAdapter;
 import com.ece.vbfc_bry07.calls.controller.CallMaterialsController;
 import com.ece.vbfc_bry07.calls.controller.ProductsController;
 import com.ece.vbfc_bry07.calls.R;

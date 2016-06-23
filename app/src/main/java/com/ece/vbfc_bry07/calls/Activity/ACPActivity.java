@@ -25,8 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.adapter.ACPListAdapter;
-import com.ece.vbfc_bry07.calls.adapter.ACPTabsAdapter;
+import com.ece.vbfc_bry07.calls.psr_adapter.ACPListAdapter;
+import com.ece.vbfc_bry07.calls.psr_adapter.ACPTabsAdapter;
 import com.ece.vbfc_bry07.calls.controller.CallsController;
 import com.ece.vbfc_bry07.calls.controller.InstitutionDoctorMapsController;
 import com.ece.vbfc_bry07.calls.controller.MissedCallsController;

@@ -1,4 +1,4 @@
-package com.ece.vbfc_bry07.calls.adapter;
+package com.ece.vbfc_bry07.calls.psr_adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,25 +7,20 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class BroadcastMessagesAdapter extends BaseAdapter {
+public class BirthdayAdapter extends BaseAdapter {
     Context context;
     ArrayList<HashMap<String, String>> objects;
 
-    TextView message, month, date;
+    TextView doctor_name, institution, birthday;
 
-    Helpers helpers;
-
-    public BroadcastMessagesAdapter(Context context, ArrayList<HashMap<String, String>> objects) {
+    public BirthdayAdapter(Context context, ArrayList<HashMap<String, String>> objects) {
         this.context = context;
         this.objects = objects;
-
-        helpers = new Helpers();
     }
 
     @Override
@@ -49,16 +44,16 @@ public class BroadcastMessagesAdapter extends BaseAdapter {
 
         if (convertView == null) {
             LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = vi.inflate(R.layout.item_broadcast, parent, false);
+            v = vi.inflate(R.layout.adapter_birthday, parent, false);
         }
 
-        message = (TextView) v.findViewById(R.id.message);
-        month = (TextView) v.findViewById(R.id.month);
-        date = (TextView) v.findViewById(R.id.date);
+        doctor_name = (TextView) v.findViewById(R.id.doctor_name);
+        institution = (TextView) v.findViewById(R.id.institution);
+        birthday = (TextView) v.findViewById(R.id.birthday);
 
-        message.setText(objects.get(position).get("message"));
-        month.setText(helpers.divideDate(objects.get(position).get("date")).get("month"));
-        date.setText(helpers.divideDate(objects.get(position).get("date")).get("date"));
+        doctor_name.setText(objects.get(position).get("doctor_name"));
+        institution.setText(objects.get(position).get("institution"));
+        birthday.setText("Birthday: " + objects.get(position).get("birthday"));
 
         return v;
     }

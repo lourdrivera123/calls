@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.ece.vbfc_bry07.calls.activity.ACPActivity;
-import com.ece.vbfc_bry07.calls.adapter.CallsFragmentAdapter;
+import com.ece.vbfc_bry07.calls.psr_adapter.CallsFragmentAdapter;
 import com.ece.vbfc_bry07.calls.controller.PlanDetailsController;
 import com.ece.vbfc_bry07.calls.R;
 

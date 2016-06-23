@@ -20,8 +20,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ece.vbfc_bry07.calls.adapter.BirthdayAdapter;
-import com.ece.vbfc_bry07.calls.adapter.BroadcastMessagesAdapter;
+import com.ece.vbfc_bry07.calls.psr_adapter.BirthdayAdapter;
+import com.ece.vbfc_bry07.calls.psr_adapter.BroadcastMessagesAdapter;
 import com.ece.vbfc_bry07.calls.controller.BroadcastsController;
 import com.ece.vbfc_bry07.calls.controller.CallsController;
 import com.ece.vbfc_bry07.calls.controller.DbHelper;
@@ -236,7 +236,7 @@ public class PSRHomeActivity extends AppCompatActivity implements View.OnClickLi
                 startActivity(new Intent(this, MaterialMonitoringActivity.class));
                 break;
             case R.id.status_summary:
-                startActivity(new Intent(this, StatusSummaryActivity.class));
+                startActivity(new Intent(this, PSRStatusSummaryActivity.class));
                 break;
 
             case R.id.birthday:

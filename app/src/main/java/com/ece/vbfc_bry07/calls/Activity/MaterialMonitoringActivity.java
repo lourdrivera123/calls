@@ -12,7 +12,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.adapter.ProductListAdapter;
+import com.ece.vbfc_bry07.calls.psr_adapter.ProductListAdapter;
 import com.ece.vbfc_bry07.calls.controller.DbHelper;
 import com.ece.vbfc_bry07.calls.controller.MaterialMonitoringController;
 import com.ece.vbfc_bry07.calls.Helpers;

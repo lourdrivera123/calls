@@ -26,7 +26,7 @@ import com.ece.vbfc_bry07.calls.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class StatusSummaryActivity extends AppCompatActivity implements View.OnClickListener {
+public class PSRStatusSummaryActivity extends AppCompatActivity implements View.OnClickListener {
     TextView tv_month, call_rate, call_reach, planned_calls, incidental_calls, recovered_calls, declared_missed_calls, unprocessed_calls, no_data;
     ScrollView statistics;
 

@@ -1,4 +1,4 @@
-package com.ece.vbfc_bry07.calls.adapter;
+package com.ece.vbfc_bry07.calls.psr_adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

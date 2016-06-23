@@ -22,9 +22,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.adapter.ExpandableListAdapter;
-import com.ece.vbfc_bry07.calls.adapter.MCPAdapter;
-import com.ece.vbfc_bry07.calls.adapter.MCPCalendarAdapter;
+import com.ece.vbfc_bry07.calls.psr_adapter.ExpandableListAdapter;
+import com.ece.vbfc_bry07.calls.psr_adapter.MCPAdapter;
+import com.ece.vbfc_bry07.calls.psr_adapter.MCPCalendarAdapter;
 import com.ece.vbfc_bry07.calls.controller.InstitutionDoctorMapsController;
 import com.ece.vbfc_bry07.calls.controller.PlanDetailsController;
 import com.ece.vbfc_bry07.calls.controller.PlansController;

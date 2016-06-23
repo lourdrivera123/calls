@@ -7,7 +7,7 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.adapter.ViewCycleMonthCalendarAdapter;
+import com.ece.vbfc_bry07.calls.psr_adapter.ViewCycleMonthCalendarAdapter;
 import com.ece.vbfc_bry07.calls.controller.PlanDetailsController;
 import com.ece.vbfc_bry07.calls.R;
 

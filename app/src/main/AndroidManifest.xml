@@ -16,7 +16,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -59,7 +58,7 @@
             android:name=".activity.SalesReportActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
-            android:name=".activity.StatusSummaryActivity"
+            android:name=".activity.PSRStatusSummaryActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".activity.QuickSignActivity"
@@ -73,7 +72,10 @@
             android:name=".activity.BDMHomeActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme" />
-
+        <activity
+            android:name=".activity.BDMStatusSummaryActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/Theme.MyTheme" />
 
         <!-- DIALOG -->
         <activity
@@ -94,4 +96,5 @@
             android:screenOrientation="sensorLandscape"
             android:theme="@style/myDialog" />
     </application>
+
 </manifest>

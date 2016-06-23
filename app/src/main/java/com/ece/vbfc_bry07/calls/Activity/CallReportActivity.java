@@ -7,7 +7,7 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.adapter.CallReportAdapter;
+import com.ece.vbfc_bry07.calls.psr_adapter.CallReportAdapter;
 import com.ece.vbfc_bry07.calls.controller.CallReportsController;
 import com.ece.vbfc_bry07.calls.controller.CallsController;
 import com.ece.vbfc_bry07.calls.controller.InstitutionDoctorMapsController;
