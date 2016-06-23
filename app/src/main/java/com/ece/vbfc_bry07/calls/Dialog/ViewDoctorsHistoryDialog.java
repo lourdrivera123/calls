@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.activity.ACPActivity;
+import com.ece.vbfc_bry07.calls.psr_activity.ACPActivity;
 import com.ece.vbfc_bry07.calls.psr_adapter.DoctorsHistoryAdapter;
 import com.ece.vbfc_bry07.calls.psr_adapter.ExpandableListAdapter;
 import com.ece.vbfc_bry07.calls.controller.DoctorClassesController;

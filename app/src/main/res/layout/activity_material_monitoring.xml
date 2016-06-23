@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingTop="5dp"
-    tools:context=".activity.MaterialMonitoringActivity">
+    tools:context=".psr_activity.MaterialMonitoringActivity">
 
     <TextView
         android:id="@+id/cycle_month"

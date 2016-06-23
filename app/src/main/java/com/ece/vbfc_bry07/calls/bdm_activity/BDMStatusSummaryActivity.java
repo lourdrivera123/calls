@@ -1,5 +1,5 @@
 
-package com.ece.vbfc_bry07.calls.activity;
+package com.ece.vbfc_bry07.calls.bdm_activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
-import com.ece.vbfc_bry07.calls.bdm_adapter.StatusSummaryDistrictCallAdapter;
+import com.ece.vbfc_bry07.calls.bdm_adapter.StatusSummaryAdapter;
 
 public class BDMStatusSummaryActivity extends AppCompatActivity implements View.OnClickListener {
     Toolbar toolbar;
@@ -22,7 +22,7 @@ public class BDMStatusSummaryActivity extends AppCompatActivity implements View.
     ListView list_of_names, list_of_broadcasts, list_of_developmental_plan;
     LinearLayout for_district_call_performance, for_broadcast_message, for_developmental_plan_due;
 
-    StatusSummaryDistrictCallAdapter dist_call_adapter;
+    StatusSummaryAdapter dist_call_adapter, broadcasts_adapter, developmental_adapter;
 
     Helpers helpers;
 
@@ -49,11 +49,15 @@ public class BDMStatusSummaryActivity extends AppCompatActivity implements View.
         getSupportActionBar().setTitle("Status Summary");
 
         helpers = new Helpers();
-        dist_call_adapter = new StatusSummaryDistrictCallAdapter(this);
+        dist_call_adapter = new StatusSummaryAdapter(this);
+        broadcasts_adapter = new StatusSummaryAdapter(this);
+        developmental_adapter = new StatusSummaryAdapter(this);
 
         cycle_number.setText("Cycle " + helpers.convertDateToCycleMonth(helpers.getCurrentDate("")));
 
         list_of_names.setAdapter(dist_call_adapter);
+        list_of_broadcasts.setAdapter(broadcasts_adapter);
+        list_of_developmental_plan.setAdapter(developmental_adapter);
         arrow_one.setOnClickListener(this);
         arrow_two.setOnClickListener(this);
         arrow_three.setOnClickListener(this);

@@ -1,4 +1,4 @@
-package com.ece.vbfc_bry07.calls.activity;
+package com.ece.vbfc_bry07.calls.psr_activity;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -20,6 +20,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ece.vbfc_bry07.calls.LoginActivity;
 import com.ece.vbfc_bry07.calls.psr_adapter.BirthdayAdapter;
 import com.ece.vbfc_bry07.calls.psr_adapter.BroadcastMessagesAdapter;
 import com.ece.vbfc_bry07.calls.controller.BroadcastsController;

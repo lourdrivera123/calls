@@ -21,7 +21,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".activity.LoginActivity"
+            android:name=".LoginActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme">
             <intent-filter>
@@ -30,50 +30,58 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--PSR ACTIVITIES-->
         <activity
-            android:name=".activity.PSRHomeActivity"
+            android:name=".psr_activity.PSRHomeActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme" />
         <activity
-            android:name=".activity.MCPActivity"
+            android:name=".psr_activity.MCPActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme" />
         <activity
-            android:name=".activity.ACPActivity"
+            android:name=".psr_activity.ACPActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".activity.SignatureFormActivity"
+            android:name=".psr_activity.SignatureFormActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme" />
         <activity
-            android:name=".activity.DoctorsInfoActivity"
+            android:name=".psr_activity.DoctorsInfoActivity"
             android:screenOrientation="sensorLandscape"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".activity.MaterialMonitoringActivity"
+            android:name=".psr_activity.MaterialMonitoringActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
-            android:name=".activity.SalesReportActivity"
+            android:name=".psr_activity.SalesReportActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
-            android:name=".activity.PSRStatusSummaryActivity"
+            android:name=".psr_activity.PSRStatusSummaryActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
-            android:name=".activity.QuickSignActivity"
+            android:name=".psr_activity.QuickSignActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme" />
         <activity
-            android:name=".activity.CallReportActivity"
+            android:name=".psr_activity.CallReportActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/Theme.MyTheme" />
+
+        <!--BDM ACTIVITIES-->
+        <activity
+            android:name=".bdm_activity.BDMHomeActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme" />
         <activity
-            android:name=".activity.BDMHomeActivity"
+            android:name=".bdm_activity.BDMStatusSummaryActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme" />
         <activity
-            android:name=".activity.BDMStatusSummaryActivity"
+            android:name=".bdm_activity.BDMMCPApprovalActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme" />
 
@@ -96,5 +104,4 @@
             android:screenOrientation="sensorLandscape"
             android:theme="@style/myDialog" />
     </application>
-
 </manifest>

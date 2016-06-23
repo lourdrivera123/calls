@@ -1,15 +1,12 @@
 package com.ece.vbfc_bry07.calls;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
-import com.ece.vbfc_bry07.calls.activity.SignatureFormActivity;
+import com.ece.vbfc_bry07.calls.psr_activity.SignatureFormActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;

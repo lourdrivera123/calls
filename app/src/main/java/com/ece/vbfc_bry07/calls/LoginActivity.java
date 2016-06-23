@@ -1,4 +1,4 @@
-package com.ece.vbfc_bry07.calls.activity;
+package com.ece.vbfc_bry07.calls;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,9 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.ece.vbfc_bry07.calls.bdm_activity.BDMHomeActivity;
 import com.ece.vbfc_bry07.calls.controller.DbHelper;
 import com.ece.vbfc_bry07.calls.controller.PreferencesController;
 import com.ece.vbfc_bry07.calls.R;
+import com.ece.vbfc_bry07.calls.psr_activity.PSRHomeActivity;
 
 import java.io.IOException;
 

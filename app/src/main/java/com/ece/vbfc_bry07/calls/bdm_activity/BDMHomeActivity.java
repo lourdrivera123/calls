@@ -1,4 +1,4 @@
-package com.ece.vbfc_bry07.calls.activity;
+package com.ece.vbfc_bry07.calls.bdm_activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.ece.vbfc_bry07.calls.R;
+import com.ece.vbfc_bry07.calls.LoginActivity;
 
 public class BDMHomeActivity extends AppCompatActivity implements View.OnClickListener {
     SharedPreferences sharedpref;
@@ -106,7 +107,7 @@ public class BDMHomeActivity extends AppCompatActivity implements View.OnClickLi
                 break;
 
             case R.id.mcp_approval:
-
+                startActivity(new Intent(this, BDMMCPApprovalActivity.class));
                 break;
 
             case R.id.status_summary:

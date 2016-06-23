@@ -206,7 +206,8 @@
                 <ListView
                     android:id="@+id/list_of_broadcasts"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp" />
+                    android:layout_height="150dp"
+                    android:dividerHeight="1dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -289,7 +290,8 @@
                 <ListView
                     android:id="@+id/list_of_developmental_plan"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp" />
+                    android:layout_height="150dp"
+                    android:dividerHeight="1dp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

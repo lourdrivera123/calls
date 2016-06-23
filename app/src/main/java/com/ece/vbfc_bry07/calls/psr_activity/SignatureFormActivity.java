@@ -1,4 +1,4 @@
-package com.ece.vbfc_bry07.calls.activity;
+package com.ece.vbfc_bry07.calls.psr_activity;
 
 import android.content.Intent;
 import android.graphics.Color;

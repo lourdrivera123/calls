@@ -9,12 +9,12 @@ import android.widget.TextView;
 
 import com.ece.vbfc_bry07.calls.R;
 
-public class StatusSummaryDistrictCallAdapter extends BaseAdapter {
+public class MCPApprovalAdapter extends BaseAdapter {
     Context context;
 
-    TextView first_column, second_column, third_column;
+    TextView cycle_number, name, target, md_count, status, message, date_updated;
 
-    public StatusSummaryDistrictCallAdapter(Context context) {
+    public MCPApprovalAdapter(Context context) {
         this.context = context;
     }
 
@@ -39,12 +39,16 @@ public class StatusSummaryDistrictCallAdapter extends BaseAdapter {
 
         if (convertView == null) {
             LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = vi.inflate(R.layout.adapter_district_call, parent, false);
+            v = vi.inflate(R.layout.adapter_mcp_approval, parent, false);
         }
 
-        first_column = (TextView) v.findViewById(R.id.first_column);
-        second_column = (TextView) v.findViewById(R.id.second_column);
-        third_column = (TextView) v.findViewById(R.id.third_column);
+        name = (TextView) v.findViewById(R.id.name);
+        target = (TextView) v.findViewById(R.id.target);
+        status = (TextView) v.findViewById(R.id.status);
+        message = (TextView) v.findViewById(R.id.message);
+        md_count = (TextView) v.findViewById(R.id.md_count);
+        cycle_number = (TextView) v.findViewById(R.id.cycle_number);
+        date_updated = (TextView) v.findViewById(R.id.date_updated);
 
         return v;
     }

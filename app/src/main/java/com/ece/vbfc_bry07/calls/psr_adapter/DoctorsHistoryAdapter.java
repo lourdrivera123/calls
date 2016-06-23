@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.activity.ACPActivity;
+import com.ece.vbfc_bry07.calls.psr_activity.ACPActivity;
 import com.ece.vbfc_bry07.calls.dialog.ViewDoctorsHistoryDialog;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;

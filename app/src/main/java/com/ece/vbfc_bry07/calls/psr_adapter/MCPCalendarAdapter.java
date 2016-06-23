@@ -10,7 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ece.vbfc_bry07.calls.activity.MCPActivity;
+import com.ece.vbfc_bry07.calls.psr_activity.MCPActivity;
 import com.ece.vbfc_bry07.calls.Helpers;
 import com.ece.vbfc_bry07.calls.R;
 
