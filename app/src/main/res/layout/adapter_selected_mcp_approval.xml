@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".8"
+        android:gravity="center"
+        android:text="2016-06-02"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/md_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="AWIT, KRIS KAREN"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/specialization"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="UROLOGIST"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/class_code"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="CLASS B"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/institution"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:gravity="center"
+        android:text="METRO DAVAO MEDICAL AND RESEARCH CENTER"
+        android:textSize="16sp" />
+</LinearLayout>
