@@ -88,6 +88,14 @@
             android:name=".bdm_activity.MCPApprovalSelectedActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.MyTheme" />
+        <activity
+            android:name=".bdm_activity.ActualCallActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/Theme.MyTheme" />
+        <activity
+            android:name=".bdm_activity.CalendarCallActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/Theme.MyTheme" />
 
         <!-- DIALOG -->
         <activity

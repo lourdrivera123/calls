@@ -42,15 +42,12 @@ public class ViewCycleMonth extends AppCompatActivity {
 
         TimeZone zone = TimeZone.getTimeZone("GMT+8");
         calendar = Calendar.getInstance(zone);
-
         list_of_calls = new ArrayList<>();
         pdc = new PlanDetailsController(this);
-
         list_of_calls = pdc.getMonthDetails(calendar.get(Calendar.MONTH) + 1);
-
         adapter = new ViewCycleMonthCalendarAdapter(this, calendar, list_of_calls);
-        acp_gridview.setAdapter(adapter);
 
+        acp_gridview.setAdapter(adapter);
         cycle_number.setText(android.text.format.DateFormat.format("MMMM yyyy", calendar));
     }
 }

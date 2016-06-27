@@ -231,14 +231,11 @@ public class MCPCalendarAdapter extends BaseAdapter {
 
     private int getMaxP() {
         int maxP;
-        if (month.get(Calendar.MONTH) == month
-                .getActualMinimum(Calendar.MONTH)) {
-            pmonth.set((month.get(Calendar.YEAR) - 1),
-                    month.getActualMaximum(Calendar.MONTH), 1);
-        } else {
-            pmonth.set(Calendar.MONTH,
-                    month.get(Calendar.MONTH) - 1);
-        }
+        if (month.get(Calendar.MONTH) == month.getActualMinimum(Calendar.MONTH))
+            pmonth.set((month.get(Calendar.YEAR) - 1), month.getActualMaximum(Calendar.MONTH), 1);
+        else
+            pmonth.set(Calendar.MONTH, month.get(Calendar.MONTH) - 1);
+
         maxP = pmonth.getActualMaximum(Calendar.DAY_OF_MONTH);
 
         return maxP;

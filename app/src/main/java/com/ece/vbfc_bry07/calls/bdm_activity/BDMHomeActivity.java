@@ -91,7 +91,7 @@ public class BDMHomeActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.actual_call:
-
+                startActivity(new Intent(this, ActualCallActivity.class));
                 break;
 
             case R.id.itinerary:

@@ -63,6 +63,7 @@ public class MCPAdapter extends BaseAdapter {
         doctor_name.setText(name);
         doctor_hospital.setText(objects.get(position).get("inst_name"));
         doctor_class.setText(class_code);
+
         return v;
     }
 }
